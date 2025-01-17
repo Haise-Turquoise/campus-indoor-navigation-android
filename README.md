@@ -13,4 +13,4 @@ LAB 102-18
 | Ted He | [xxx@uwaterloo.ca](mailto:xxx@uwaterloo.ca) |
 
 \
-[Team Contract](https://google.com/)
+[Team Contract](https://git.uwaterloo.ca/xxx/cs346/-/wikis/Contract)
