@@ -1,7 +1,7 @@
-# CS346-PLACEHOLDER-NAME
+# CS346-NAVIGATION-SOLUTION
 
 ## Title
-We don't exactly know what we're doing yet :/
+An application that makes it easier for people to navigate campus.
 
 ## Team Details
 LAB 102-18
@@ -14,3 +14,5 @@ LAB 102-18
 
 \
 [Team Contract](https://git.uwaterloo.ca/xxx/cs346/-/wikis/Contract)
+\
+[Project Proposal](https://git.uwaterloo.ca/xxx/cs346/-/wikis/Contract)
