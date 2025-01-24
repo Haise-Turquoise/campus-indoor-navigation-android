@@ -1,4 +1,4 @@
-# CS346-NAVIGATION-SOLUTION
+# UW-NAVIGATION-SOLUTION
 
 ## Title
 An application that makes it easier for people to navigate campus.
