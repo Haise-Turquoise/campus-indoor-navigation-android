@@ -16,3 +16,5 @@ LAB 102-18
 [Team Contract](https://git.uwaterloo.ca/xxx/cs346/-/wikis/Contract)
 \
 [Project Proposal](https://git.uwaterloo.ca/xxx/cs346/-/wikis/Project-Proposal)
+\
+[Design Proposal](https://git.uwaterloo.ca/xxx/cs346/-/wikis/Design-Proposal)
