@@ -1,5 +1,6 @@
 package com.example.navigationsolution
 
+import MapRepository
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -55,6 +56,9 @@ data class IndoorSearchScreen(
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        MapRepository.initialize(this.applicationContext)
+
         setContent {
             MaterialTheme {
                 Surface() {
