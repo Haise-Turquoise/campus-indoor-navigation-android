@@ -67,17 +67,33 @@ public object CampusMap {
 
     // ? For pathing to a specific room
     private fun getPath(src: MapNode, dest: MapNode): List<MapNode> {
-        return getPath(src, { n -> n.id == dest.id })
+        return getPath(src, { it.id == dest.id }, dest)
     }
 
     // ? For pathing to a type of PoI
     private fun getPath(src: MapNode, destType: NodeType): List<MapNode> {
-        return getPath(src, { n -> n.type == destType })
+        return getPath(src, { it.type == destType })
     }
 
     // ? Actual pathing implementation
-    private fun getPath(src: MapNode, isTarget: (MapNode) -> Boolean): List<MapNode> {
-        // TODO: implement Djikstra's or A* if ROOM->ROOM or ROOM->OTHER, respectively
+    private fun getPath(src: MapNode, isTarget: (MapNode) -> Boolean, dest: MapNode? = null): List<MapNode> {
+        val parent: Map<MapNode, MapNode>   // Track parents to generate path
+        val srcDist: Map<MapNode, Integer>  // Track shortest known distance to src
+        val queue: PriorityQueue<MapNode>(  // Expand search based on distance and/or heuristic
+            compareBy {
+                // Estimated distance heuristic, used for A* but defaults to zero
+                val estDist = dest?.let {
+                    sqrt(
+                        pow((dest.x - it.x).toDouble(), 2.0) +
+                        pow((dest.y - it.y).toDouble(), 2.0)
+                    )
+                } ?: 0.0
+
+                return srcDist[it] + estDist
+            }
+        )
+
+        
     }
 
     // ? Returns the floor number given a room ID
