@@ -1,5 +1,9 @@
 import android.graphics.Bitmap
+import android.os.Build
+import androidx.annotation.RequiresApi
 import java.util.PriorityQueue
+import java.util.TreeMap
+import java.util.TreeSet
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -46,6 +50,7 @@ public object CampusMap {
 
     // ? Returns marked floor plan for a given building ID and start/end room IDs
     // ? May return a list in case of routes spanning floors
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     public fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int): List<Bitmap> {
         // Get nodes corresponding to src and dest targets
         val sNode = buildings[buildingId]!!.plans[getFloor(srcId)]!!.nodes[srcId]
@@ -56,6 +61,7 @@ public object CampusMap {
 
     // ? Returns marked floor plan for a given building ID, start ID, and PoI type
     // ? May return a list in case of routes spanning floors
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     public fun getMarkedPlan(buildingId: Int, srcId: Int, destType: NodeType): List<Bitmap> {
         // Get node corresponding to src
         val sNode = buildings[buildingId]!!.plans[getFloor(srcId)]!!.nodes[srcId]
@@ -70,11 +76,13 @@ public object CampusMap {
     }
 
     // ? For pathing to a specific room
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun getPath(src: MapNode, dest: MapNode): List<MapNode> {
         return getPath(src, { it.id == dest.id }, dest)
     }
 
     // ? For pathing to a type of PoI
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun getPath(src: MapNode, destType: NodeType): List<MapNode> {
         return getPath(src, { it.type == destType })
     }
@@ -84,6 +92,7 @@ public object CampusMap {
         val ret = mutableListOf<MapNode>()
         var cur: MapNode? = target
 
+        // While root (i.e. src) has not been reached
         while(cur != null) {
             ret.add(cur)
             cur = parent[cur]
@@ -94,10 +103,11 @@ public object CampusMap {
     }
 
     // ? Actual pathing implementation
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun getPath(src: MapNode, isTarget: (MapNode) -> Boolean, dest: MapNode? = null): List<MapNode> {
         val parent: MutableMap<MapNode, MapNode> = HashMap()    // Track parents to generate path
         val srcDist: MutableMap<MapNode, Int> = HashMap()       // Track shortest known distance to src
-        val queue: PriorityQueue<MapNode> = PriorityQueue(      // Expand search based on distance and/or heuristic
+        val queue: TreeSet<MapNode> = TreeSet(                  // Expand search based on distance and/or heuristic
             compareBy { n ->
                 // Estimated distance heuristic, used for A* but defaults to 0 if Djikstra's
                 val estDist = dest?.let {
@@ -111,11 +121,11 @@ public object CampusMap {
         )
 
         // Search root
-        queue.offer(src)
+        queue.add(src)
         srcDist[src] = 0
 
         while(queue.isNotEmpty()) {
-            val cur = queue.poll()!!
+            val cur = queue.removeFirst()!!
             val curDist = srcDist[cur]!!
 
             if(isTarget(cur))
@@ -129,9 +139,13 @@ public object CampusMap {
                 if(srcDist.getOrDefault(n, Int.MAX_VALUE) <= newDist)
                     continue
 
+                // Remove if already exists
+                if(queue.contains(n))
+                    queue.remove(n)
+
                 srcDist[n] = newDist
                 parent[n] = cur
-                queue.offer(n)
+                queue.add(n)
             }
         }
 
