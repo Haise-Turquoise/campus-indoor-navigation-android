@@ -4,11 +4,14 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.BitmapDrawable
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import com.example.navigationsolution.R
 import java.io.File
 import java.io.FileOutputStream
-import java.io.OutputStream
+import java.util.Objects
 import java.util.TreeSet
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -17,12 +20,22 @@ import kotlin.math.sqrt
 // Might be replaced by getting data from API later on, but context is required for accessing resources
 @Suppress("StaticFieldLeak")
 object MapRepository{
-    const val LINE_COLOR = Color.RED
+    private const val LINE_COLOR = Color.RED
 
     private lateinit var applicationContext: Context
 
-    fun initialize(context: Context) {
-        applicationContext = context.applicationContext
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+    fun initialize(applicationContext: Context) {
+        Log.i("i", "INITIALIZED")
+        this.applicationContext = applicationContext
+
+        drawGraph()
+
+        val file = File(applicationContext.cacheDir, "temp_path.png")
+        val outStream = FileOutputStream(file)
+        getMarkedPlan(-1, 1302, 1427)[0].compress(Bitmap.CompressFormat.PNG, 100, outStream)
+        outStream.flush()
+        outStream.close()
     }
 
     // ? Types of PoIs
@@ -30,39 +43,136 @@ object MapRepository{
 
     // ? Represents a location, both indoors and outdoors
     private data class MapNode (
-        val x: Int,                         // x-coordinate of node on floor plan image
-        val y: Int,                         // y-coordinate of node on floor plan image
-        val type: NodeType,                 // Type of node
-        val id: Int,                        // Node ID, room # if indoors, otherwise -1
-        val neighbors: Map<MapNode, Int>,   // Neighboring nodes
-        val floor: FloorMap?                // FloorMap object the node belongs to; null if outdoors
-    )
+        val x: Int,                                 // x-coordinate of node on floor plan image
+        val y: Int,                                 // y-coordinate of node on floor plan image
+        val type: NodeType,                         // Type of node
+        val id: Int,                                // Node ID, room # if indoors, otherwise -1
+        val adj: MutableMap<MapNode, Double>,       // Neighboring nodes
+        val floor: FloorMap?                        // FloorMap object the node belongs to; null if outdoors
+    ) {
+        // Avoids circular references when hashing
+        // ! DO NOT REMOVE
+        override fun hashCode(): Int {
+            return Objects.hash(x, y, type, id)
+        }
+
+        override fun equals(other: Any?): Boolean {
+            return this === other
+        }
+    }
 
     // ? ALl relevant data about a floor
     private data class FloorMap (
-        val level: Int,                     // Which floor the map corresponds to
-        val nodes: Map<Int, MapNode>,       // Maps IDs to nodes within floor
-        val plan: Bitmap                    // Raster floor plan
+        val level: Int,                             // Which floor the map corresponds to
+        val nodes: MutableMap<Int, MapNode>,        // Maps IDs to nodes within floor
+        val plan: Int                               // Resource ID of raster floor plan
     )
 
     // ? All relevant data about a building
     private data class BuildingMap (
-        val id: Int,                        // Building ID
-        val ports: Map<MapNode, MapNode>,   // Maps outdoor nodes to corresponding indoor nodes
-        val plans: Map<Int, FloorMap>       // Maps floor numbers to floors
+        val id: Int,                               // Building ID
+        val ports: MutableMap<MapNode, MapNode>,   // Maps outdoor nodes to corresponding indoor nodes
+        val plans: MutableMap<Int, FloorMap>       // Maps floor numbers to floors
     )
 
-    private val buildings: Map<Int, BuildingMap> = HashMap()    // Maps building IDs to building objects
-    private val nodes: Map<Int, MapNode> = HashMap()            // All outdoor nodes and port nodes, currently unused
+    private val buildings: MutableMap<Int, BuildingMap> = HashMap()    // Maps building IDs to building objects
+    private val nodes: Map<Int, MapNode> = HashMap()                   // All outdoor nodes and port nodes, currently unused
+
+    // TODO: Delete this function, it's used only for concise generation of edges
+    private fun addEdge(f: FloorMap, r1: Int, r2: Int) {
+        val n1 = f.nodes[r1]!!
+        val n2 = f.nodes[r2]!!
+
+        val dist = sqrt((n1.x - n2.x).toDouble().pow(2.0) + (n1.y - n2.y).toDouble().pow(2.0))
+
+        n1.adj[n2] = dist;
+        n2.adj[n1] = dist;
+    }
+
+    // TODO: Delete this function, it's used only for verification of graph models
+    private fun drawGraph() {
+        // Load floor plan copy
+        val img = (applicationContext.resources.getDrawable(R.drawable.e7f1, null) as BitmapDrawable).bitmap
+        val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
+
+        val canvas = Canvas(copy)
+        val paint = Paint()
+        paint.color = LINE_COLOR
+        paint.strokeWidth = 15f
+
+        for(n in buildings[-1]!!.plans[1]!!.nodes.values)
+            for(nn in n.adj.keys)
+                canvas.drawLine(
+                    n.x.toFloat(),
+                    n.y.toFloat(),
+                    nn.x.toFloat(),
+                    nn.y.toFloat(),
+                    paint
+                )
+
+        val file = File(applicationContext.cacheDir, "temp_full_graph.png")
+        val outStream = FileOutputStream(file)
+        copy.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+        outStream.flush()
+        outStream.close()
+    }
 
     init {
         // TODO: Add logic for retrieving and/or loading serialized map data
         // ? Will hardcode points for now
+
+        buildings[-1] = BuildingMap(
+            -1,
+            HashMap(),
+            HashMap()
+        )
+
+        buildings[-1]!!.plans[1] = FloorMap(
+            1,
+            HashMap(),
+            R.drawable.e7f1
+        )
+
+        val f = buildings[-1]!!.plans[1]!!
+
+        f.nodes[1331] = MapNode(1114,   1016,   NodeType.ROOM, 1331,    HashMap(), f)
+        f.nodes[1339] = MapNode(1114,   813,    NodeType.ROOM, 1339,    HashMap(), f)
+        f.nodes[1327] = MapNode(1114,   694,    NodeType.ROOM, 1327,    HashMap(), f)
+        f.nodes[1343] = MapNode(1114,   710,    NodeType.ROOM, 1343,    HashMap(), f)
+        f.nodes[1302] = MapNode(1114,   638,    NodeType.ROOM, 1302,    HashMap(), f)
+        f.nodes[1324] = MapNode(750,    638,    NodeType.ROOM, 1324,    HashMap(), f)
+        f.nodes[1326] = MapNode(750,    820,    NodeType.ROOM, 1326,    HashMap(), f)
+        f.nodes[-1] =   MapNode(750,    1085,   NodeType.NONE, -1,      HashMap(), f)
+        f.nodes[-2] =   MapNode(1114,   1085,   NodeType.NONE, -2,      HashMap(), f)
+        f.nodes[-3] =   MapNode(1520,   1085,   NodeType.NONE, -3,      HashMap(), f)
+        f.nodes[-4] =   MapNode(1520,   638,    NodeType.NONE, -4,      HashMap(), f)
+
+        f.nodes[1419] = MapNode(1960,   1085,   NodeType.ROOM,  1419,   HashMap(), f)
+        f.nodes[1416] = MapNode(1960,   1085,   NodeType.ROOM,  1416,   HashMap(), f)
+        f.nodes[1427] = MapNode(2060,   1085,   NodeType.ROOM,  1427,   HashMap(), f)
+
+        addEdge(f, 1331, 1339)
+        addEdge(f, 1339, 1327)
+        addEdge(f, 1327, 1343)
+        addEdge(f, 1343, 1302)
+        addEdge(f, 1302, 1324)
+        addEdge(f, 1324, 1326)
+        addEdge(f, 1326, -1)
+        addEdge(f, -1, -2)
+        addEdge(f, -2, -3)
+        addEdge(f, -3, -4)
+
+        addEdge(f, 1419, 1416)
+        addEdge(f, 1416, 1427)
+
+        addEdge(f, 1331, -2)
+        addEdge(f, 1302, -4)
+        addEdge(f, 1419, -3)
     }
 
     // ? Returns unmarked floor plan for a given building ID and floor number
     fun getPlan(buildingId: Int, floor: Int): Bitmap {
-        return buildings[buildingId]!!.plans[floor]!!.plan
+        return BitmapFactory.decodeResource(applicationContext.resources, buildings[buildingId]!!.plans[floor]!!.plan)
     }
 
     // ? Returns marked floor plan for a given building ID and start/end room IDs
@@ -70,10 +180,10 @@ object MapRepository{
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int): List<Bitmap> {
         // Get nodes corresponding to src and dest targets
-        val sNode = buildings[buildingId]!!.plans[getFloor(srcId)]!!.nodes[srcId]
-        val dNode = buildings[buildingId]!!.plans[getFloor(destId)]!!.nodes[destId]
+        val sNode = buildings[buildingId]!!.plans[getFloor(srcId)]!!.nodes[srcId]!!
+        val dNode = buildings[buildingId]!!.plans[getFloor(destId)]!!.nodes[destId]!!
 
-        return drawPath(buildingId, getPath(sNode!!, dNode!!))
+        return drawPath(buildingId, getPath(sNode, dNode))
     }
 
     // ? Returns marked floor plan for a given building ID, start ID, and PoI type
@@ -91,8 +201,8 @@ object MapRepository{
         // TODO: add support for cross-floor routes
 
         // Load floor plan copy
-        val copy = BitmapFactory.decodeResource(applicationContext.resources, 1)
-            .copy(Bitmap.Config.ARGB_8888, true)
+        val img = (applicationContext.resources.getDrawable(R.drawable.e7f1, null) as BitmapDrawable).bitmap
+        val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
 
         val canvas = Canvas(copy)
         val paint = Paint()
@@ -100,7 +210,7 @@ object MapRepository{
         paint.strokeWidth = 10f
 
         // Draw path
-        for(i in 1..path.size)
+        for(i in 1..<path.size)
             canvas.drawLine(
                 path[i - 1].x.toFloat(),
                 path[i - 1].y.toFloat(),
@@ -123,13 +233,13 @@ object MapRepository{
     // ? For pathing to a specific room
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun getPath(src: MapNode, dest: MapNode): List<MapNode> {
-        return getPath(src, { it.id == dest.id }, dest)
+        return getPath(src, { n -> n.id == dest.id }, dest)
     }
 
     // ? For pathing to a type of PoI
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun getPath(src: MapNode, destType: NodeType): List<MapNode> {
-        return getPath(src, { it.type == destType })
+        return getPath(src, { n -> n.type == destType })
     }
 
     // ? Generates path as list given parentage map
@@ -151,7 +261,7 @@ object MapRepository{
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun getPath(src: MapNode, isTarget: (MapNode) -> Boolean, dest: MapNode? = null): List<MapNode> {
         val parent: MutableMap<MapNode, MapNode> = HashMap()    // Track parents to generate path
-        val srcDist: MutableMap<MapNode, Int> = HashMap()       // Track shortest known distance to src
+        val srcDist: MutableMap<MapNode, Double> = HashMap()    // Track shortest known distance to src
         val queue: TreeSet<MapNode> = TreeSet(                  // Expand search based on distance and/or heuristic
             compareBy { n ->
                 // Estimated distance heuristic, used for A* but defaults to 0 if Djikstra's
@@ -161,13 +271,13 @@ object MapRepository{
                     )
                 } ?: 0.0
 
-                srcDist[n]!! + estDist
+                srcDist.getOrDefault(n, .0) + estDist
             }
         )
 
         // Search root
         queue.add(src)
-        srcDist[src] = 0
+        srcDist[src] = .0
 
         while(queue.isNotEmpty()) {
             val cur = queue.removeFirst()!!
@@ -177,11 +287,11 @@ object MapRepository{
                 return generatePath(cur, parent)
 
             // Enqueue neighbors
-            for (n in cur.neighbors.keys) {
-                val newDist = curDist + cur.neighbors[n]!!
+            for (n in cur.adj.keys) {
+                val newDist = curDist + cur.adj[n]!!
 
                 // Skip if not a relaxation
-                if(srcDist.getOrDefault(n, Int.MAX_VALUE) <= newDist)
+                if(srcDist.getOrDefault(n, Double.MAX_VALUE) <= newDist)
                     continue
 
                 // Remove if already exists
@@ -201,6 +311,6 @@ object MapRepository{
     // ? Returns the floor number given a room ID
     private fun getFloor(roomId: Int): Int {
         // ! REPLACE THIS IF NOT ALL BUILDINGS FOLLOW THIS PATTERN
-        return roomId / 100;
+        return roomId / 1000;
     }
 }

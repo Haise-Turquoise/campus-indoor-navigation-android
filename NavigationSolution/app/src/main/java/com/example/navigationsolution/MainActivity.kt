@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        MapRepository.initialize(this)
+        MapRepository.initialize(this.applicationContext)
 
         setContent {
             MaterialTheme {
