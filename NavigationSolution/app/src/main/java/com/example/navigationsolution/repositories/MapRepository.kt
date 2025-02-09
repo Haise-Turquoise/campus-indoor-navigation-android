@@ -21,6 +21,7 @@ import kotlin.math.sqrt
 @Suppress("StaticFieldLeak")
 object MapRepository{
     private const val LINE_COLOR = Color.RED
+    private const val NODE_COLOR = Color.GREEN
 
     private lateinit var applicationContext: Context
 
@@ -33,7 +34,7 @@ object MapRepository{
 
         val file = File(applicationContext.cacheDir, "temp_path.png")
         val outStream = FileOutputStream(file)
-        getMarkedPlan(-1, 1302, 1427)[0].compress(Bitmap.CompressFormat.PNG, 100, outStream)
+        getMarkedPlan(-1, 1326, 1427)[0].compress(Bitmap.CompressFormat.PNG, 100, outStream)
         outStream.flush()
         outStream.close()
     }
@@ -97,8 +98,9 @@ object MapRepository{
 
         val canvas = Canvas(copy)
         val paint = Paint()
+
+        paint.strokeWidth = 10f
         paint.color = LINE_COLOR
-        paint.strokeWidth = 15f
 
         for(n in buildings[-1]!!.plans[1]!!.nodes.values)
             for(nn in n.adj.keys)
@@ -109,6 +111,16 @@ object MapRepository{
                     nn.y.toFloat(),
                     paint
                 )
+
+        paint.color = NODE_COLOR
+
+        for(n in buildings[-1]!!.plans[1]!!.nodes.values)
+            canvas.drawCircle(
+                n.x.toFloat(),
+                n.y.toFloat(),
+                15f,
+                paint
+            )
 
         val file = File(applicationContext.cacheDir, "temp_full_graph.png")
         val outStream = FileOutputStream(file)
