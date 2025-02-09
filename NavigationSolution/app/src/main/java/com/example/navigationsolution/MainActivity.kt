@@ -23,13 +23,34 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.navigationsolution.ui.theme.NavigationSolutionTheme
+import kotlinx.serialization.Serializable
 
+@Serializable
+object OpeningScreen
+@Serializable
+data class IndoorMapScreen(
+    val from: Int = NOPATH,
+    val to: Int = NOPATH,
+    val imageID: Int = R.drawable.uwlogo
+    )
+@Serializable
+data class IndoorSearchScreen(
+    val from: Int = NOPATH,
+    val to: Int = NOPATH,
+    val imageID: Int = R.drawable.uwlogo
+)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,15 +58,34 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface() {
-                    OpeningScreen()
+                    val navController = rememberNavController()
+                    NavHost(
+                        navController = navController,
+                        startDestination = OpeningScreen
+                    ){
+                        composable<OpeningScreen> {
+                            LoadingScreen(navController)
+                        }
+
+                        composable<IndoorMapScreen> { backStackEntry ->
+                            val dir: IndoorMapScreen = backStackEntry.toRoute()
+                            IndoorBars(navController, dir.from, dir.to, dir.imageID)
+                        }
+
+                        composable<IndoorSearchScreen> { backStackEntry ->
+                            val dir: IndoorSearchScreen = backStackEntry.toRoute()
+                            IndoorSearch(navController, dir.from, dir.to, dir.imageID)
+                        }
+                    }
+
                 }
             }
         }
     }
 }
-@Composable
-fun OpeningScreen() {
 
+@Composable
+fun LoadingScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -63,8 +103,8 @@ fun OpeningScreen() {
 
         Text("Pathfinder", fontSize = 30.sp)
 
-        var buttonText = remember { mutableStateOf("Go")}
-        Button(onClick = { buttonText.value = "Transition"}) {
+        val buttonText = remember { mutableStateOf("Go") }
+        Button(onClick = { navController.navigate(route = IndoorMapScreen()) }) {
             Text(text = buttonText.value)
         }
     }
