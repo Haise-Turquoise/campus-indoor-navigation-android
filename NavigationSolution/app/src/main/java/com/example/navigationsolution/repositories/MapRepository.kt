@@ -73,7 +73,8 @@ object MapRepository{
     private data class BuildingMap (
         val id: Int,                               // Building ID
         val ports: MutableMap<MapNode, MapNode>,   // Maps outdoor nodes to corresponding indoor nodes
-        val plans: MutableMap<Int, FloorMap>       // Maps floor numbers to floors
+        val plans: MutableMap<Int, FloorMap>,      // Maps floor numbers to floors
+        val northDeg: Int = 0                      // Orientation of the North direction, 0 is straight up (i.e. negative-y)
     )
 
     private val buildings: MutableMap<Int, BuildingMap> = HashMap()    // Maps building IDs to building objects
@@ -114,13 +115,19 @@ object MapRepository{
 
         paint.color = NODE_COLOR
 
-        for(n in buildings[-1]!!.plans[1]!!.nodes.values)
+        for(n in buildings[-1]!!.plans[1]!!.nodes.values) {
+            if(n.type == NodeType.NONE)
+                paint.color = LINE_COLOR
+
             canvas.drawCircle(
                 n.x.toFloat(),
                 n.y.toFloat(),
                 15f,
                 paint
             )
+
+            paint.color = NODE_COLOR
+        }
 
         val file = File(applicationContext.cacheDir, "temp_full_graph.png")
         val outStream = FileOutputStream(file)
@@ -136,7 +143,8 @@ object MapRepository{
         buildings[-1] = BuildingMap(
             -1,
             HashMap(),
-            HashMap()
+            HashMap(),
+            305
         )
 
         buildings[-1]!!.plans[1] = FloorMap(
@@ -180,6 +188,10 @@ object MapRepository{
         addEdge(f, 1331, -2)
         addEdge(f, 1302, -4)
         addEdge(f, 1419, -3)
+    }
+
+    fun getNorthHeading(buildingId: Int): Int {
+        return buildings[buildingId]!!.northDeg
     }
 
     // ? Returns unmarked floor plan for a given building ID and floor number
