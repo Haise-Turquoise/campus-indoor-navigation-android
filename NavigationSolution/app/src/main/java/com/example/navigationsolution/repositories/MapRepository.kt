@@ -114,13 +114,19 @@ object MapRepository{
 
         paint.color = NODE_COLOR
 
-        for(n in buildings[-1]!!.plans[1]!!.nodes.values)
+        for(n in buildings[-1]!!.plans[1]!!.nodes.values) {
+            if(n.type == NodeType.NONE)
+                paint.color = LINE_COLOR
+
             canvas.drawCircle(
                 n.x.toFloat(),
                 n.y.toFloat(),
                 15f,
                 paint
             )
+
+            paint.color = NODE_COLOR
+        }
 
         val file = File(applicationContext.cacheDir, "temp_full_graph.png")
         val outStream = FileOutputStream(file)
