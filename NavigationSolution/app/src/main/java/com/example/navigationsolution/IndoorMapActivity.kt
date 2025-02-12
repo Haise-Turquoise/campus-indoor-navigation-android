@@ -1,6 +1,9 @@
 package com.example.navigationsolution
 
+import MapRepository
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -12,28 +15,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.materialIcon
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
-import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -42,7 +34,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,8 +43,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -61,13 +52,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
-const val NOPATH = -1
+const val NO_PATH = -1
 
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IndoorBars(navController: NavController, from:Int = NOPATH, to:Int = NOPATH,
-               imageID: Int = R.drawable.uwlogo) {
+fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PATH,
+               buildingId: Int = -1) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,13 +81,13 @@ fun IndoorBars(navController: NavController, from:Int = NOPATH, to:Int = NOPATH,
             )
         },
 
-        content = {  IndoorBox(from, to, imageID) },
+        content = {  IndoorBox(from, to, buildingId) },
 
         bottomBar = {
             BottomAppBar(modifier = Modifier
                 .pointerInput(Unit) {
                     detectDragGestures { _, _ ->  navController.navigate(
-                        route = IndoorSearchScreen(from, to, imageID))}
+                        route = IndoorSearchScreen(from, to, buildingId))}
                 }) {
 
                 Column (
@@ -118,7 +110,7 @@ fun IndoorBars(navController: NavController, from:Int = NOPATH, to:Int = NOPATH,
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        if (from == NOPATH && to == NOPATH) {
+                        if (from == NO_PATH && to == NO_PATH) {
                             Text(text = "Building Name")
                         } else {
                             Text(text = "$from to $to")
@@ -137,9 +129,10 @@ fun IndoorBars(navController: NavController, from:Int = NOPATH, to:Int = NOPATH,
 }
 
 
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
-fun IndoorBox(from: Int = NOPATH, to: Int = NOPATH,
-              imageID: Int = R.drawable.uwlogo) {
+fun IndoorBox(from: Int = NO_PATH, to: Int = NO_PATH,
+              buildingId: Int = -1) {
     Box(Modifier
         .fillMaxSize()
         .background(Color(red = 0x00, green = 0x00, blue = 0x00, alpha = 0x99))) {
@@ -148,7 +141,7 @@ fun IndoorBox(from: Int = NOPATH, to: Int = NOPATH,
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            IndoorMap(from, to, imageID)
+            IndoorMap(from, to, buildingId)
         }
 
         Column(
@@ -188,9 +181,10 @@ fun IndoorBox(from: Int = NOPATH, to: Int = NOPATH,
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
-fun IndoorMap(from: Int = NOPATH, to: Int = NOPATH,
-              imageID: Int = R.drawable.uwlogo
+fun IndoorMap(from: Int = NO_PATH, to: Int = NO_PATH,
+              buildingId: Int = -1
               ) {
 
     // from https://developer.android.com/develop/ui/compose/touch-input/pointer-input/multi-touch
@@ -203,7 +197,10 @@ fun IndoorMap(from: Int = NOPATH, to: Int = NOPATH,
         offset += offsetChange
     }
 
-    Image(painter = painterResource(id = imageID),
+    Image(
+//        painter = painterResource(id = buildingId),
+        bitmap = (if(from == to) MapRepository.getPlan(buildingId, 1) // ! CHANGE FLOOR FROM CONSTANT, FOR TESTING
+                else MapRepository.getMarkedPlan(buildingId, from, to)[1]).asImageBitmap(),
         contentDescription = null,
         contentScale = ContentScale.Fit,
         modifier = Modifier

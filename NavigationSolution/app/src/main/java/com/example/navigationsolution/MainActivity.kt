@@ -1,21 +1,20 @@
 package com.example.navigationsolution
 
 import MapRepository
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,10 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -35,25 +32,25 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.navigationsolution.ui.theme.NavigationSolutionTheme
 import kotlinx.serialization.Serializable
 
 @Serializable
 object OpeningScreen
 @Serializable
 data class IndoorMapScreen(
-    val from: Int = NOPATH,
-    val to: Int = NOPATH,
-    val imageID: Int = R.drawable.uwlogo
+    val from: Int = 1331,
+    val to: Int = 1416,
+    val buildingId: Int = -1 // ! FOR TESTING, CHANGE THIS FROM CONST VAL
     )
 @Serializable
 data class IndoorSearchScreen(
-    val from: Int = NOPATH,
-    val to: Int = NOPATH,
-    val imageID: Int = R.drawable.uwlogo
+    val from: Int = 1331,
+    val to: Int = 1416,
+    val buildingId: Int = -1 // ! FOR TESTING, CHANGE THIS FROM CONST VAL
 )
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -73,12 +70,22 @@ class MainActivity : ComponentActivity() {
 
                         composable<IndoorMapScreen> { backStackEntry ->
                             val dir: IndoorMapScreen = backStackEntry.toRoute()
-                            IndoorBars(navController, dir.from, dir.to, dir.imageID)
+                            IndoorBars(
+                                navController,
+                                dir.from,
+                                dir.to,
+                                dir.buildingId
+                            )
                         }
 
                         composable<IndoorSearchScreen> { backStackEntry ->
                             val dir: IndoorSearchScreen = backStackEntry.toRoute()
-                            IndoorSearch(navController, dir.from, dir.to, dir.imageID)
+                            IndoorSearch(
+                                navController,
+                                dir.from,
+                                dir.to,
+                                dir.buildingId
+                            )
                         }
                     }
 
