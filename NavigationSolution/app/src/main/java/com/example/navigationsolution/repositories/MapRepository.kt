@@ -194,15 +194,13 @@ object MapRepository{
         return buildings[buildingId]!!.northDeg
     }
 
-    // ? Returns unmarked floor plan for a given building ID and floor number
-    fun getPlan(buildingId: Int, floor: Int): Bitmap {
-        return BitmapFactory.decodeResource(applicationContext.resources, buildings[buildingId]!!.plans[floor]!!.plan)
-    }
-
     // ? Returns marked floor plan for a given building ID and start/end room IDs
     // ? May return a list in case of routes spanning floors
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int): List<Bitmap> {
+        if(srcId == destId)
+            return drawPath(buildingId, listOf())
+
         // Get nodes corresponding to src and dest targets
         val sNode = buildings[buildingId]!!.plans[getFloor(srcId)]!!.nodes[srcId]!!
         val dNode = buildings[buildingId]!!.plans[getFloor(destId)]!!.nodes[destId]!!
@@ -227,6 +225,9 @@ object MapRepository{
         // Load floor plan copy
         val img = (applicationContext.resources.getDrawable(R.drawable.e7f1, null) as BitmapDrawable).bitmap
         val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
+
+        if(path.isEmpty())
+            return listOf(copy);
 
         val canvas = Canvas(copy)
         val paint = Paint()

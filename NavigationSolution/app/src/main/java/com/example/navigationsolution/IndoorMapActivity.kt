@@ -199,8 +199,7 @@ fun IndoorMap(from: Int = NO_PATH, to: Int = NO_PATH,
 
     Image(
 //        painter = painterResource(id = buildingId),
-        bitmap = (if(from == to) MapRepository.getPlan(buildingId, 1) // ! CHANGE FLOOR FROM CONSTANT, FOR TESTING
-                else MapRepository.getMarkedPlan(buildingId, from, to)[1]).asImageBitmap(),
+        bitmap = MapRepository.getMarkedPlan(buildingId, from, to)[0].asImageBitmap(), // ! FLOOR CONSTANT FOR TESTING, CHANGE THIS
         contentDescription = null,
         contentScale = ContentScale.Fit,
         modifier = Modifier
