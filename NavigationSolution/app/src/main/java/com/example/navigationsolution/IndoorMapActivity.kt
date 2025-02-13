@@ -51,7 +51,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-
+import androidx.compose.foundation.layout.padding
 const val NO_PATH = -1
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -136,6 +136,11 @@ fun IndoorBox(from: Int = NO_PATH, to: Int = NO_PATH,
     Box(Modifier
         .fillMaxSize()
         .background(Color(red = 0x00, green = 0x00, blue = 0x00, alpha = 0x99))) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+        )
         Column(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center,
@@ -145,17 +150,20 @@ fun IndoorBox(from: Int = NO_PATH, to: Int = NO_PATH,
         }
 
         Column(
-            modifier = Modifier.align(Alignment.CenterEnd)
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .padding(end = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)  // This adds even spacing between buttons
         ){
             val buttonSize: Dp = 50.dp
+
             FloatingActionButton(
                 onClick = {},
                 shape = CircleShape,
                 modifier = Modifier
                     .size(width = buttonSize, height = buttonSize)
-                    .offset(y = (-10).dp)
             ) {
-                Icon(Icons.Outlined.Person , contentDescription = "")
+                Icon(Icons.Outlined.Person, contentDescription = "")
             }
 
             FloatingActionButton(
@@ -163,17 +171,28 @@ fun IndoorBox(from: Int = NO_PATH, to: Int = NO_PATH,
                 shape = CircleShape,
                 modifier = Modifier
                     .size(width = buttonSize, height = buttonSize)
-
             ) {
                 Icon(Icons.Outlined.Settings, contentDescription = "")
             }
 
             FloatingActionButton(
+                onClick = { },
+                shape = CircleShape,
+                modifier = Modifier
+                    .size(width = buttonSize, height = buttonSize)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.navigation),
+                    contentDescription = "Compass",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+
+            FloatingActionButton(
                 onClick = {},
                 shape = CircleShape,
                 modifier = Modifier
                     .size(width = buttonSize, height = buttonSize)
-                    .offset(y = 10.dp)
             ) {
                 Icon(Icons.Outlined.LocationOn, contentDescription = "")
             }
