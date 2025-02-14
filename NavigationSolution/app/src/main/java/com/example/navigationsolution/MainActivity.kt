@@ -38,14 +38,14 @@ import kotlinx.serialization.Serializable
 object OpeningScreen
 @Serializable
 data class IndoorMapScreen(
-    val from: Int = 1331,
-    val to: Int = 1416,
+    val from: Int = NO_PATH,
+    val to: Int = NO_PATH,
     val buildingId: Int = -1 // ! FOR TESTING, CHANGE THIS FROM CONST VAL
     )
 @Serializable
 data class IndoorSearchScreen(
-    val from: Int = 1331,
-    val to: Int = 1416,
+    val from: Int = NO_PATH,
+    val to: Int = NO_PATH,
     val buildingId: Int = -1 // ! FOR TESTING, CHANGE THIS FROM CONST VAL
 )
 
