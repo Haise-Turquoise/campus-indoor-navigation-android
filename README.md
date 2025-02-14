@@ -18,3 +18,6 @@ LAB 102-18
 [Project Proposal](https://git.uwaterloo.ca/xxx/cs346/-/wikis/Project-Proposal)
 \
 [Design Proposal](https://git.uwaterloo.ca/xxx/cs346/-/wikis/Design-Proposal)
+
+## Releases
+[Version 0.1 Release](https://git.uwaterloo.ca/xxx/cs346/-/wikis/Version-0.1-Release)
