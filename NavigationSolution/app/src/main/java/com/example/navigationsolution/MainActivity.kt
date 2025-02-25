@@ -113,7 +113,7 @@ fun LoadingScreen(navController: NavController) {
                 .clip(shape = RoundedCornerShape(10.dp))
         )
 
-        Text("Pathfinder", fontSize = 30.sp)
+        Text("Pathfinder", style = MaterialTheme.typography.displayLarge)
 
         val buttonText = remember { mutableStateOf("Go") }
         Button(onClick = { navController.navigate(route = IndoorMapScreen()) }) {

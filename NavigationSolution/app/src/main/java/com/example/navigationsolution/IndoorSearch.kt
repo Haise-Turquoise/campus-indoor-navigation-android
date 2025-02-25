@@ -62,9 +62,7 @@ fun IndoorSearch(
         // Title
         Text(
             text = "Indoor Navigation",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
@@ -85,7 +83,8 @@ fun IndoorSearch(
                 OutlinedTextField(
                     value = cur,
                     onValueChange = { cur = it },
-                    label = { Text("Current/Nearby Room") },
+                    label = { Text("Current/Nearby Room",
+                        style = MaterialTheme.typography.labelMedium,) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
@@ -97,7 +96,8 @@ fun IndoorSearch(
                 OutlinedTextField(
                     value = dest,
                     onValueChange = { dest = it },
-                    label = { Text("Target Room") },
+                    label = { Text("Target Room",
+                        style = MaterialTheme.typography.labelMedium,) },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
@@ -132,7 +132,7 @@ fun IndoorSearch(
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Search Route", fontSize = 16.sp)
+                    Text("Search Route", style = MaterialTheme.typography.bodyLarge)
                 }
             }
         }

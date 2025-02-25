@@ -84,7 +84,9 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Text("Show me...", modifier = Modifier.padding(horizontal = sideEdgePadding))
+            Text("Show me...",
+                modifier = Modifier.padding(horizontal = sideEdgePadding),
+                style = MaterialTheme.typography.titleLarge)
 
             IconButton(onClick = {}) {
                 Icon(Icons.Filled.Menu , contentDescription = "")
@@ -118,7 +120,7 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(Icons.Outlined.Search, contentDescription = "")
-                    Text(text = "Swipe up to search")
+                    Text(text = "Swipe up to search", style = MaterialTheme.typography.bodyMedium)
                 }
 
                 Row(
@@ -129,9 +131,9 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     if (from == NO_PATH && to == NO_PATH) {
-                        Text(text = "Building Name")
+                        Text(text = "Building Name", style = MaterialTheme.typography.titleLarge)
                     } else {
-                        Text(text = "$from to $to")
+                        Text(text = "$from to $to", style = MaterialTheme.typography.titleLarge)
                     }
 
                     Button(onClick = { }) {
