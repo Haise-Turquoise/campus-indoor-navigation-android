@@ -52,83 +52,98 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import com.example.navigationsolution.ui.theme.AppTheme
+
 const val NO_PATH = -1
 
+// top and bottom bars
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PATH,
                buildingId: Int = -1) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Show me...") },
-                actions = {
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Filled.Menu , contentDescription = "")
+    Box (
+        modifier = Modifier
+        .fillMaxSize(),
+        ) {
+
+        IndoorBox(from, to, buildingId)
+
+        val topEdgePadding = 50.dp
+        val sideEdgePadding = 10.dp
+
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = topEdgePadding, horizontal = sideEdgePadding)
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .align(Alignment.TopCenter),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Text("Show me...", modifier = Modifier.padding(horizontal = sideEdgePadding))
+
+            IconButton(onClick = {}) {
+                Icon(Icons.Filled.Menu , contentDescription = "")
+            }
+        }
+
+
+        Row (
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .pointerInput(Unit) {
+                    detectDragGestures { _, _ ->
+                        navController.navigate(
+                            route = IndoorSearchScreen(from, to, buildingId)
+                        )
                     }
                 },
-                colors =
-                    TopAppBarColors(
-                        containerColor = Color(red = 0xFF, green = 0xFF, blue = 0xFF, alpha = 0xC9),
-                        scrolledContainerColor = Color.Transparent,
-                        navigationIconContentColor = Color(android.graphics.Color.BLACK),
-                        titleContentColor = Color(android.graphics.Color.BLACK),
-                        actionIconContentColor = Color(android.graphics.Color.BLACK),
-
-                    )
-            )
-        },
-
-        content = {  IndoorBox(from, to, buildingId) },
-
-        bottomBar = {
-            BottomAppBar(modifier = Modifier
-                .pointerInput(Unit) {
-                    detectDragGestures { _, _ ->  navController.navigate(
-                        route = IndoorSearchScreen(from, to, buildingId))}
-                }) {
-
-                Column (
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Column (
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                Row(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ){
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(Icons.Outlined.Search, contentDescription = "")
-                        Text(text = "Swipe up to search")
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(Icons.Outlined.Search, contentDescription = "")
+                    Text(text = "Swipe up to search")
+                }
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = sideEdgePadding),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    if (from == NO_PATH && to == NO_PATH) {
+                        Text(text = "Building Name")
+                    } else {
+                        Text(text = "$from to $to")
                     }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        if (from == NO_PATH && to == NO_PATH) {
-                            Text(text = "Building Name")
-                        } else {
-                            Text(text = "$from to $to")
-                        }
-
-                        Button(onClick = { }) {
-                            Text(text = "View Outside")
-                        }
+                    Button(onClick = { }) {
+                        Text(text = "View Outside")
                     }
                 }
             }
         }
-
-        )
-
+    }
 }
 
-
+// draws the map and the side buttons
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun IndoorBox(from: Int = NO_PATH, to: Int = NO_PATH,
@@ -200,6 +215,7 @@ fun IndoorBox(from: Int = NO_PATH, to: Int = NO_PATH,
     }
 }
 
+// displays the map
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun IndoorMap(from: Int = NO_PATH, to: Int = NO_PATH,

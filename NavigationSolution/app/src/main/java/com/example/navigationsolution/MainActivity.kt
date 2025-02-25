@@ -32,6 +32,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.navigationsolution.ui.theme.AppTheme
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -57,7 +58,7 @@ class MainActivity : ComponentActivity() {
         MapRepository.initialize(this.applicationContext)
 
         setContent {
-            MaterialTheme {
+            AppTheme {
                 Surface() {
                     val navController = rememberNavController()
                     NavHost(
