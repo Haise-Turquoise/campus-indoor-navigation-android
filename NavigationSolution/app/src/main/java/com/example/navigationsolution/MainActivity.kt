@@ -18,8 +18,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,19 +39,29 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 object OpeningScreen
+
 @Serializable
 data class IndoorMapScreen(
     val from: Int = NO_PATH,
     val to: Int = NO_PATH,
-    val buildingId: Int = -1 // ! FOR TESTING, CHANGE THIS FROM CONST VAL
+    val buildingId: Int = -1
     )
+
 @Serializable
 data class IndoorSearchScreen(
     val from: Int = NO_PATH,
     val to: Int = NO_PATH,
-    val buildingId: Int = -1 // ! FOR TESTING, CHANGE THIS FROM CONST VAL
+    val buildingId: Int = -1
 )
 
+@Serializable
+data class SettingsScreen(
+    val from: Int = NO_PATH,
+    val to: Int = NO_PATH,
+    val buildingId: Int = -1
+)
+
+var altColours = false
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,7 +70,8 @@ class MainActivity : ComponentActivity() {
         MapRepository.initialize(this.applicationContext)
 
         setContent {
-            AppTheme {
+            // var altColours by remember { mutableStateOf(false) }
+            AppTheme(altColours) {
                 Surface() {
                     val navController = rememberNavController()
                     NavHost(
@@ -82,6 +95,16 @@ class MainActivity : ComponentActivity() {
                         composable<IndoorSearchScreen> { backStackEntry ->
                             val dir: IndoorSearchScreen = backStackEntry.toRoute()
                             IndoorSearch(
+                                navController,
+                                dir.from,
+                                dir.to,
+                                dir.buildingId
+                            )
+                        }
+
+                        composable<SettingsScreen> { backStackEntry ->
+                            val dir: SettingsScreen = backStackEntry.toRoute()
+                            Settings(
                                 navController,
                                 dir.from,
                                 dir.to,

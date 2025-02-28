@@ -69,7 +69,7 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
         .fillMaxSize(),
         ) {
 
-        IndoorBox(from, to, buildingId)
+        IndoorBox(navController, from, to, buildingId)
 
         val topEdgePadding = 50.dp
         val sideEdgePadding = 10.dp
@@ -148,7 +148,7 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
 // draws the map and the side buttons
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
-fun IndoorBox(from: Int = NO_PATH, to: Int = NO_PATH,
+fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PATH,
               buildingId: Int = -1) {
     Box(Modifier
         .fillMaxSize()
@@ -184,7 +184,9 @@ fun IndoorBox(from: Int = NO_PATH, to: Int = NO_PATH,
             }
 
             FloatingActionButton(
-                onClick = {},
+                onClick = {navController.navigate(
+                    route = SettingsScreen(from, to, buildingId)
+                )},
                 shape = CircleShape,
                 modifier = Modifier
                     .size(width = buttonSize, height = buttonSize)

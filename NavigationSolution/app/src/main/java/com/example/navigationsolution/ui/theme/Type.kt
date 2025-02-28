@@ -6,12 +6,15 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+// from a tutorial at app/src/main/java/com/example/navigationsolution/ui/theme/Type.kt
+
 internal var textScale: Double = 1.2
 
 fun updateTextScale(scale: Double) {
     textScale = scale
 }
 
+// textScale will only modify the styles listed below
 val AppTypography = Typography(
     displayLarge = TextStyle(
         fontWeight = FontWeight.SemiBold,
@@ -29,6 +32,12 @@ val AppTypography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = (18 * textScale).sp,
         lineHeight = (28 * textScale).sp,
+        letterSpacing = (0 * textScale).sp
+    ),
+    titleSmall = TextStyle(
+        fontWeight = FontWeight.Medium,
+        fontSize = (14 * textScale).sp,
+        lineHeight = (20 * textScale).sp,
         letterSpacing = (0 * textScale).sp
     ),
     bodyLarge = TextStyle(
