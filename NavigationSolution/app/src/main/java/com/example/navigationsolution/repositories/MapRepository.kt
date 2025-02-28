@@ -11,8 +11,11 @@ import androidx.annotation.RequiresApi
 import com.example.navigationsolution.R
 import java.io.File
 import java.io.FileOutputStream
+import java.util.LinkedList
 import java.util.Objects
+import java.util.Queue
 import java.util.TreeSet
+import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -100,7 +103,7 @@ object MapRepository{
         val canvas = Canvas(copy)
         val paint = Paint()
 
-        paint.strokeWidth = 10f
+        paint.strokeWidth = 2f
         paint.color = LINE_COLOR
 
         for(n in buildings[-1]!!.plans[1]!!.nodes.values)
@@ -122,7 +125,7 @@ object MapRepository{
             canvas.drawCircle(
                 n.x.toFloat(),
                 n.y.toFloat(),
-                15f,
+                2f,
                 paint
             )
 
@@ -153,41 +156,114 @@ object MapRepository{
             R.drawable.e7f1
         )
 
-        val f = buildings[-1]!!.plans[1]!!
+        val f1 = buildings[-1]!!.plans[1]!!
 
-        f.nodes[1331] = MapNode(1114,   1016,   NodeType.ROOM, 1331,    HashMap(), f)
-        f.nodes[1339] = MapNode(1114,   813,    NodeType.ROOM, 1339,    HashMap(), f)
-        f.nodes[1327] = MapNode(1114,   694,    NodeType.ROOM, 1327,    HashMap(), f)
-        f.nodes[1343] = MapNode(1114,   710,    NodeType.ROOM, 1343,    HashMap(), f)
-        f.nodes[1302] = MapNode(1114,   638,    NodeType.ROOM, 1302,    HashMap(), f)
-        f.nodes[1324] = MapNode(750,    638,    NodeType.ROOM, 1324,    HashMap(), f)
-        f.nodes[1326] = MapNode(750,    820,    NodeType.ROOM, 1326,    HashMap(), f)
-        f.nodes[-1] =   MapNode(750,    1085,   NodeType.NONE, -1,      HashMap(), f)
-        f.nodes[-2] =   MapNode(1114,   1085,   NodeType.NONE, -2,      HashMap(), f)
-        f.nodes[-3] =   MapNode(1520,   1085,   NodeType.NONE, -3,      HashMap(), f)
-        f.nodes[-4] =   MapNode(1520,   638,    NodeType.NONE, -4,      HashMap(), f)
+        // ROOMS HAVE NUMBERS -- 1324, 1326
+        // PORTS HAVE NEGATIVE 10XX
+        // WC HAVE NEGATIVE 11XX
+        // STAIRS HAVE NEGATIVE 12XX
+        // WATER HAVE NEGATIVE 13XX
+        // NONE IS ALL ELSE 1XXX
 
-        f.nodes[1419] = MapNode(1960,   1085,   NodeType.ROOM,  1419,   HashMap(), f)
-        f.nodes[1416] = MapNode(1960,   1085,   NodeType.ROOM,  1416,   HashMap(), f)
-        f.nodes[1427] = MapNode(2060,   1085,   NodeType.ROOM,  1427,   HashMap(), f)
+        // TODO: SERIALIZE THIS DATA SOMEHOW TO STORE IN DB
 
-        addEdge(f, 1331, 1339)
-        addEdge(f, 1339, 1327)
-        addEdge(f, 1327, 1343)
-        addEdge(f, 1343, 1302)
-        addEdge(f, 1302, 1324)
-        addEdge(f, 1324, 1326)
-        addEdge(f, 1326, -1)
-        addEdge(f, -1, -2)
-        addEdge(f, -2, -3)
-        addEdge(f, -3, -4)
+        // F1 INIT
+        run {
+            // COLUMN 1
+            f1.nodes[-1000] = MapNode(222, 90, NodeType.PORT, -1000, HashMap(), f1)
+            f1.nodes[-1200] = MapNode(222, 102, NodeType.STAIR, -1200, HashMap(), f1)
+            f1.nodes[1324] = MapNode(222, 185, NodeType.ROOM, 1324, HashMap(), f1)
+            f1.nodes[1326] = MapNode(222, 240, NodeType.ROOM, 1326, HashMap(), f1)
+            f1.nodes[1327] = MapNode(222, 240, NodeType.ROOM, 1327, HashMap(), f1)
+            f1.nodes[-1500] = MapNode(222, 316, NodeType.NONE, -1500, HashMap(), f1)
+            f1.nodes[-1501] = MapNode(222, 343, NodeType.PORT, -1501, HashMap(), f1)
+            addEdge(f1, -1000, -1200)
+            addEdge(f1, -1200, 1324)
+            addEdge(f1, 1324, 1326)
+            addEdge(f1, 1326, 1327)
+            addEdge(f1, 1327, -1500)
+            addEdge(f1, -1500, -1501)
 
-        addEdge(f, 1419, 1416)
-        addEdge(f, 1416, 1427)
+            // COLUMN 2
+            f1.nodes[1302] = MapNode(327, 185, NodeType.ROOM, 1302, HashMap(), f1)
+            f1.nodes[1327] = MapNode(327, 204, NodeType.ROOM, 1327, HashMap(), f1)
+            f1.nodes[1343] = MapNode(327, 211, NodeType.ROOM, 1343, HashMap(), f1)
+            f1.nodes[1339] = MapNode(327, 236, NodeType.ROOM, 1339, HashMap(), f1)
+            f1.nodes[1331] = MapNode(327, 297, NodeType.ROOM, 1331, HashMap(), f1)
+            f1.nodes[-1502] = MapNode(327, 316, NodeType.NONE, -1502, HashMap(), f1)
+            f1.nodes[-1503] = MapNode(327, 343, NodeType.NONE, -1503, HashMap(), f1)
+            f1.nodes[-1504] = MapNode(327, 373, NodeType.NONE, -1504, HashMap(), f1)
+            addEdge(f1, 1302, 1327)
+            addEdge(f1, 1327, 1343)
+            addEdge(f1, 1343, 1339)
+            addEdge(f1, 1339, 1331)
+            addEdge(f1, 1331, -1502)
+            addEdge(f1, -1502, -1503)
+            addEdge(f1, -1503, -1504)
 
-        addEdge(f, 1331, -2)
-        addEdge(f, 1302, -4)
-        addEdge(f, 1419, -3)
+            // COLUMN 1 X 2
+            addEdge(f1, 1324, 1302)
+            addEdge(f1, -1500, -1502)
+            addEdge(f1, -1501, -1503)
+
+            // COLUMN 3
+            f1.nodes[-1201] = MapNode(345, 373, NodeType.STAIR, -1201, HashMap(), f1)
+
+            // COLUMN 2 X 3
+            addEdge(f1, -1504, -1201)
+
+            // COLUMN 4
+            f1.nodes[-1505] = MapNode(447, 185, NodeType.NONE, -1505, HashMap(), f1)
+            f1.nodes[-1506] = MapNode(447, 316, NodeType.NONE, -1506, HashMap(), f1)
+            f1.nodes[-1002] = MapNode(447, 445, NodeType.PORT, -1002, HashMap(), f1)
+            addEdge(f1, -1505, -1506)
+            addEdge(f1, -1506, -1002)
+
+            // COLUMN 3 X 4
+            addEdge(f1, 1302, -1505)
+            addEdge(f1, -1502, -1506)
+
+            // COLUMN 5
+            f1.nodes[-1003] = MapNode(472, 154, NodeType.PORT, -1003, HashMap(), f1)
+            f1.nodes[-1507] = MapNode(472, 185, NodeType.NONE, -1507, HashMap(), f1)
+            addEdge(f1, -1003, -1507)
+
+            // COLUMN 4 X 5
+            addEdge(f1, -1505, -1507)
+
+            // COLUMN 6
+            f1.nodes[-1100] = MapNode(502, 185, NodeType.WC, -1100, HashMap(), f1)
+            f1.nodes[-1300] = MapNode(502, 281, NodeType.WATER, -1300, HashMap(), f1)
+            f1.nodes[-1508] = MapNode(502, 316, NodeType.NONE, -1508, HashMap(), f1)
+            addEdge(f1, -1100, -1300)
+            addEdge(f1, -1300, -1508)
+
+            // COLUMN 5 X 6
+            addEdge(f1, -1507, -1100)
+            addEdge(f1, -1506, -1508)
+
+            // COLUMN 7
+            f1.nodes[1419] = MapNode(574, 316, NodeType.ROOM, 1419, HashMap(), f1)
+            f1.nodes[1416] = MapNode(574, 316, NodeType.ROOM, 1416, HashMap(), f1)
+            addEdge(f1, 1419, 1416)
+
+            // COLUMN 6 X 7
+            addEdge(f1, -1508, 1419)
+
+            // COLUMN 8
+            f1.nodes[1427] = MapNode(607, 316, NodeType.ROOM, 1427, HashMap(), f1)
+
+            // COLUMN 7 X 8
+            addEdge(f1, 1416, 1427)
+
+            // COLUMN 9
+            f1.nodes[-1004] = MapNode(656, 316, NodeType.PORT, -1004, HashMap(), f1)
+
+            // COLUMN 8 X 9
+            addEdge(f1, 1427, -1004)
+        }
+
+        // F2 INIT
     }
 
     fun getNorthHeading(buildingId: Int): Int {
@@ -287,17 +363,8 @@ object MapRepository{
     private fun getPath(src: MapNode, isTarget: (MapNode) -> Boolean, dest: MapNode? = null): List<MapNode> {
         val parent: MutableMap<MapNode, MapNode> = HashMap()    // Track parents to generate path
         val srcDist: MutableMap<MapNode, Double> = HashMap()    // Track shortest known distance to src
-        val queue: TreeSet<MapNode> = TreeSet(                  // Expand search based on distance and/or heuristic
-            compareBy { n ->
-                // Estimated distance heuristic, used for A* but defaults to 0 if Djikstra's
-                val estDist = dest?.let {
-                    sqrt(
-                        (dest.x - n.x).toDouble().pow(2.0) + (dest.y - n.y).toDouble().pow(2.0)
-                    )
-                } ?: 0.0
-
-                srcDist.getOrDefault(n, .0) + estDist
-            }
+        val queue: TreeSet<MapNode> = TreeSet(                  // Expand search based on distance
+            compareBy { n -> srcDist.getOrDefault(n, .0) }
         )
 
         // Search root
