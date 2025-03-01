@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -18,8 +19,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,27 +31,38 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.navigationsolution.ui.theme.AppTheme
+import com.example.navigationsolution.viewmodels.SettingsViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
 object OpeningScreen
+
 @Serializable
 data class IndoorMapScreen(
     val from: Int = NO_PATH,
     val to: Int = NO_PATH,
-    val buildingId: Int = -1 // ! FOR TESTING, CHANGE THIS FROM CONST VAL
+    val buildingId: Int = -1
     )
+
 @Serializable
 data class IndoorSearchScreen(
     val from: Int = NO_PATH,
     val to: Int = NO_PATH,
-    val buildingId: Int = -1 // ! FOR TESTING, CHANGE THIS FROM CONST VAL
+    val buildingId: Int = -1
+)
+
+@Serializable
+data class SettingsScreen(
+    val from: Int = NO_PATH,
+    val to: Int = NO_PATH,
+    val buildingId: Int = -1
 )
 
 class MainActivity : ComponentActivity() {
@@ -58,7 +73,10 @@ class MainActivity : ComponentActivity() {
         MapRepository.initialize(this.applicationContext)
 
         setContent {
-            AppTheme {
+            val settingsModel: SettingsViewModel by viewModels()
+            val altColours = settingsModel.altColours.observeAsState(initial = false)
+            val textScale = settingsModel.textScale.observeAsState(initial = 1f)
+            AppTheme(darkTheme = altColours.value, textScale = textScale.value) {
                 Surface() {
                     val navController = rememberNavController()
                     NavHost(
@@ -86,6 +104,17 @@ class MainActivity : ComponentActivity() {
                                 dir.from,
                                 dir.to,
                                 dir.buildingId
+                            )
+                        }
+
+                        composable<SettingsScreen> { backStackEntry ->
+                            val dir: SettingsScreen = backStackEntry.toRoute()
+                            Settings(
+                                navController,
+                                dir.from,
+                                dir.to,
+                                dir.buildingId,
+                                settingsModel
                             )
                         }
                     }

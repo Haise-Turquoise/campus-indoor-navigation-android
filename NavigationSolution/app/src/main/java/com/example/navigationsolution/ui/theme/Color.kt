@@ -2,6 +2,8 @@ package com.example.navigationsolution.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
+// from a tutorial at app/src/main/java/com/example/navigationsolution/ui/theme/Type.kt
+
 val primaryLight = Color(0xFF904A4A)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFFFDAD9)
