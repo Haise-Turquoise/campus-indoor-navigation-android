@@ -18,6 +18,7 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,11 +27,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.navigationsolution.ui.theme.updateTextScale
+import com.example.navigationsolution.viewmodels.SettingsViewModel
 
 @Composable
 fun Settings(navController: NavController, from:Int = NO_PATH, to:Int = NO_PATH,
-             imageID: Int = -1) {
+             imageID: Int = -1,
+             settingsViewModel: SettingsViewModel) {
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -81,13 +83,12 @@ fun Settings(navController: NavController, from:Int = NO_PATH, to:Int = NO_PATH,
             )
 
             // based on https://developer.android.com/develop/ui/compose/components/switch
-            var highContrastChecked by remember { mutableStateOf(false) }
+            val altColours = settingsViewModel.altColours.observeAsState(initial = false)
 
             Switch(
-                checked = highContrastChecked,
+                checked = altColours.value,
                 onCheckedChange = {
-                    highContrastChecked = it
-                    altColours = !altColours
+                    settingsViewModel.swapColours()
                 },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.primary,
@@ -112,14 +113,13 @@ fun Settings(navController: NavController, from:Int = NO_PATH, to:Int = NO_PATH,
             )
 
             // from https://developer.android.com/develop/ui/compose/components/slider
-            var sliderPosition by remember { mutableFloatStateOf(0f) }
+            val textScale = settingsViewModel.textScale.observeAsState(initial = 1f)
 
             Slider(
-                value = sliderPosition,
-                valueRange = 0f..1f,
+                value = textScale.value,
+                valueRange = 0.01f..2f,
                 onValueChange = {
-                    sliderPosition = it
-                    updateTextScale(it.toDouble())
+                    settingsViewModel.updateTextScale(it)
                 }
             )
         }

@@ -10,8 +10,16 @@ import androidx.compose.ui.unit.sp
 
 internal var textScale: Double = 1.2
 
-fun updateTextScale(scale: Double) {
-    textScale = scale
+fun getTypography(scale: Double): Typography {
+    return AppTypography.copy(
+        displayLarge = AppTypography.displayLarge.merge(fontSize = AppTypography.displayLarge.fontSize * scale),
+        headlineSmall = AppTypography.headlineSmall.merge(fontSize = AppTypography.headlineSmall.fontSize * scale),
+        titleLarge = AppTypography.titleLarge.merge(fontSize = AppTypography.titleLarge.fontSize * scale),
+        titleSmall = AppTypography.titleSmall.merge(fontSize = AppTypography.titleSmall.fontSize * scale),
+        bodyLarge = AppTypography.bodyLarge.merge(fontSize = AppTypography.bodyLarge.fontSize * scale),
+        bodyMedium = AppTypography.bodyMedium.merge(fontSize = AppTypography.bodyMedium.fontSize * scale),
+        labelMedium = AppTypography.labelMedium.merge(fontSize = AppTypography.labelMedium.fontSize * scale),
+    )
 }
 
 // textScale will only modify the styles listed below

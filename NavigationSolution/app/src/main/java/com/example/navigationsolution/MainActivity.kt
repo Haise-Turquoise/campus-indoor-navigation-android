@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,12 +31,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.navigationsolution.ui.theme.AppTheme
+import com.example.navigationsolution.viewmodels.SettingsViewModel
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -61,7 +65,6 @@ data class SettingsScreen(
     val buildingId: Int = -1
 )
 
-var altColours = false
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,8 +73,10 @@ class MainActivity : ComponentActivity() {
         MapRepository.initialize(this.applicationContext)
 
         setContent {
-            // var altColours by remember { mutableStateOf(false) }
-            AppTheme(altColours) {
+            val settingsModel: SettingsViewModel by viewModels()
+            val altColours = settingsModel.altColours.observeAsState(initial = false)
+            val textScale = settingsModel.textScale.observeAsState(initial = 1f)
+            AppTheme(darkTheme = altColours.value, textScale = textScale.value) {
                 Surface() {
                     val navController = rememberNavController()
                     NavHost(
@@ -108,7 +113,8 @@ class MainActivity : ComponentActivity() {
                                 navController,
                                 dir.from,
                                 dir.to,
-                                dir.buildingId
+                                dir.buildingId,
+                                settingsModel
                             )
                         }
                     }
