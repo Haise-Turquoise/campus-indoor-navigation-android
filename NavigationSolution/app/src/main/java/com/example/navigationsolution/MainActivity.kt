@@ -49,7 +49,7 @@ data class IndoorMapScreen(
     val from: Int = NO_PATH,
     val to: Int = NO_PATH,
     val buildingId: Int = -1
-    )
+)
 
 @Serializable
 data class IndoorSearchScreen(
