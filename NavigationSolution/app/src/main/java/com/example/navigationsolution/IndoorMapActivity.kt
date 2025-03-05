@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.style.TextAlign
 import com.example.navigationsolution.ui.theme.AppTheme
 import com.example.navigationsolution.viewmodels.IndoorViewModel
@@ -143,7 +144,7 @@ fun IndoorBars(navController: NavController, indoorViewModel: IndoorViewModel) {
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     Button(onClick = {
-                        indoorViewModel.updatePath(newFloor = indoorViewModel.floor - 1)
+                        indoorViewModel.decrFloor()
                     }) {
                         Text(text = "Prev.\n Floor", textAlign = TextAlign.Center)
                     }
@@ -155,7 +156,7 @@ fun IndoorBars(navController: NavController, indoorViewModel: IndoorViewModel) {
                     }
 
                     Button(onClick = {
-                        indoorViewModel.updatePath(newFloor = indoorViewModel.floor - 1)
+                        indoorViewModel.incrFloor()
                     }) {
                         Text(text = "Next\n Floor", textAlign = TextAlign.Center)
                     }
@@ -263,12 +264,12 @@ fun IndoorMap(indoorViewModel: IndoorViewModel
 
 
     val markedPlan = MapRepository.getMarkedPlan(buildingId, from, to)
-    indoorViewModel.updatePath(newFloor = 0, newMaxFloor = markedPlan.size)
-    var floor = indoorViewModel.floor
+    indoorViewModel.updatePath(newMaxFloor = markedPlan.size)
+    val floor = indoorViewModel.liveFloor.observeAsState(initial = 1)
 
     Image(
 //        painter = painterResource(id = buildingId),
-        bitmap = markedPlan[floor].asImageBitmap(),
+        bitmap = markedPlan[floor.value].asImageBitmap(),
         contentDescription = null,
         contentScale = ContentScale.Fit,
         modifier = Modifier

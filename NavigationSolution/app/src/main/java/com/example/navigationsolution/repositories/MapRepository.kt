@@ -97,7 +97,7 @@ object MapRepository{
     // TODO: Delete this function, it's used only for verification of graph models
     private fun drawGraph() {
         // Load floor plan copy
-        val img = (applicationContext.resources.getDrawable(R.drawable.e7f1, null) as BitmapDrawable).bitmap
+        val img = (applicationContext.resources.getDrawable(R.drawable.e7f2, null) as BitmapDrawable).bitmap
         val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
 
         val canvas = Canvas(copy)
@@ -106,7 +106,7 @@ object MapRepository{
         paint.strokeWidth = 2f
         paint.color = LINE_COLOR
 
-        for(n in buildings[-1]!!.plans[1]!!.nodes.values)
+        for(n in buildings[-1]!!.plans[2]!!.nodes.values)
             for(nn in n.adj.keys)
                 canvas.drawLine(
                     n.x.toFloat(),
@@ -118,7 +118,7 @@ object MapRepository{
 
         paint.color = NODE_COLOR
 
-        for(n in buildings[-1]!!.plans[1]!!.nodes.values) {
+        for(n in buildings[-1]!!.plans[2]!!.nodes.values) {
             if(n.type == NodeType.NONE)
                 paint.color = LINE_COLOR
 
@@ -510,6 +510,18 @@ object MapRepository{
     // ? May return a list in case of routes spanning floors
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int): List<Bitmap> {
+
+        // Code for testing floor switching
+//        return listOf(
+//            (applicationContext.resources.getDrawable(R.drawable.e7f1) as BitmapDrawable).bitmap,
+//            (applicationContext.resources.getDrawable(R.drawable.e7f1) as BitmapDrawable).bitmap,
+//            (applicationContext.resources.getDrawable(R.drawable.e7f2) as BitmapDrawable).bitmap,
+//            (applicationContext.resources.getDrawable(R.drawable.e7f3) as BitmapDrawable).bitmap,
+//            (applicationContext.resources.getDrawable(R.drawable.e7f4) as BitmapDrawable).bitmap,
+//            (applicationContext.resources.getDrawable(R.drawable.e7f5) as BitmapDrawable).bitmap,
+//            (applicationContext.resources.getDrawable(R.drawable.e7f6) as BitmapDrawable).bitmap
+//        )
+
         if(srcId == destId)
             return drawPath(buildingId, listOf())
 
@@ -535,7 +547,9 @@ object MapRepository{
         // TODO: add support for cross-floor routes
 
         // Load floor plan copy
-        val img = (applicationContext.resources.getDrawable(R.drawable.e7f1, null) as BitmapDrawable).bitmap
+        val img = (applicationContext.resources.getDrawable(
+            buildings[buildingId]!!.plans[getFloor(path[0].id)]!!.plan,
+            null) as BitmapDrawable).bitmap
         val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
 
         if(path.isEmpty())

@@ -1,5 +1,7 @@
 package com.example.navigationsolution.viewmodels
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.navigationsolution.NO_PATH
 import kotlin.math.max
@@ -9,19 +11,30 @@ class IndoorViewModel: ViewModel() {
     var from: Int = NO_PATH
     var to: Int = NO_PATH
     var buildingId: Int = -1
-    var floor: Int = 0
-    var maxFloor: Int = 0
+    var floor = MutableLiveData(1)
+    var maxFloor: Int = 1
+
+    var liveFloor: LiveData<Int> = floor
 
     fun updatePath(newFrom: Int = from,
                    newTo: Int = to,
                    newBuildingId: Int = buildingId,
-                   newFloor: Int = floor,
                    newMaxFloor: Int = maxFloor) {
         from = newFrom
         to = newTo
         buildingId = newBuildingId
         maxFloor = newMaxFloor
+    }
 
-        floor = min(0, max(newFloor, newMaxFloor))
+    fun incrFloor() {
+        floor.value = min(maxFloor - 1, floor.value?.plus(1) as Int)
+    }
+
+    fun decrFloor() {
+        floor.value = max(1, floor.value?.minus(1) as Int)
+    }
+
+    fun setFloor(newFloor: Int) {
+        floor.value = newFloor
     }
 }
