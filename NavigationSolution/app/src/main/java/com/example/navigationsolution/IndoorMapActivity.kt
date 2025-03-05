@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Arrangement
@@ -53,7 +54,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.text.style.TextAlign
 import com.example.navigationsolution.ui.theme.AppTheme
+import com.example.navigationsolution.viewmodels.IndoorViewModel
+import kotlin.math.max
+import kotlin.math.min
 
 const val NO_PATH = -1
 
@@ -62,14 +67,17 @@ const val NO_PATH = -1
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PATH,
-               buildingId: Int = -1) {
+fun IndoorBars(navController: NavController, indoorViewModel: IndoorViewModel) {
+    val from = indoorViewModel.from
+    val to = indoorViewModel.to
+    val buildingId = indoorViewModel.buildingId
+
     Box (
         modifier = Modifier
         .fillMaxSize(),
         ) {
 
-        IndoorBox(navController, from, to, buildingId)
+        IndoorBox(navController, indoorViewModel)
 
         val topEdgePadding = 50.dp
         val sideEdgePadding = 10.dp
@@ -93,7 +101,6 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
             }
         }
 
-
         Row (
             modifier = Modifier
                 .fillMaxWidth()
@@ -102,21 +109,26 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
                 .pointerInput(Unit) {
                     detectDragGestures { _, _ ->
                         navController.navigate(
-                            route = IndoorSearchScreen(from, to, buildingId)
+                            route = IndoorSearchScreen
                         )
                     }
                 },
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
+            val bottomBoxPadding = 50.dp
             Column (
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxWidth()
+                    .padding(bottom = bottomBoxPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
             ){
+                val bottomInternalPadding = 10.dp
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(vertical = bottomInternalPadding),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(Icons.Outlined.Search, contentDescription = "")
@@ -126,18 +138,26 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = sideEdgePadding),
+                        .padding(vertical = bottomInternalPadding),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
+                    Button(onClick = {
+                        indoorViewModel.updatePath(newFloor = indoorViewModel.floor - 1)
+                    }) {
+                        Text(text = "Prev.\n Floor", textAlign = TextAlign.Center)
+                    }
+
                     if (from == NO_PATH && to == NO_PATH) {
                         Text(text = "Building Name", style = MaterialTheme.typography.titleLarge)
                     } else {
                         Text(text = "$from to $to", style = MaterialTheme.typography.titleLarge)
                     }
 
-                    Button(onClick = { }) {
-                        Text(text = "View Outside")
+                    Button(onClick = {
+                        indoorViewModel.updatePath(newFloor = indoorViewModel.floor - 1)
+                    }) {
+                        Text(text = "Next\n Floor", textAlign = TextAlign.Center)
                     }
                 }
             }
@@ -148,8 +168,11 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
 // draws the map and the side buttons
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
-fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PATH,
-              buildingId: Int = -1) {
+fun IndoorBox(navController: NavController, indoorViewModel: IndoorViewModel) {
+    val from = indoorViewModel.from
+    val to = indoorViewModel.to
+    val buildingId = indoorViewModel.buildingId
+
     Box(Modifier
         .fillMaxSize()
         .background(Color(red = 0x00, green = 0x00, blue = 0x00, alpha = 0x99))) {
@@ -163,7 +186,7 @@ fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PA
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            IndoorMap(from, to, buildingId)
+            IndoorMap(indoorViewModel)
         }
 
         Column(
@@ -185,7 +208,7 @@ fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PA
 
             FloatingActionButton(
                 onClick = {navController.navigate(
-                    route = SettingsScreen(from, to, buildingId)
+                    route = SettingsScreen
                 )},
                 shape = CircleShape,
                 modifier = Modifier
@@ -222,9 +245,11 @@ fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PA
 // displays the map
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
-fun IndoorMap(from: Int = NO_PATH, to: Int = NO_PATH,
-              buildingId: Int = -1
+fun IndoorMap(indoorViewModel: IndoorViewModel
               ) {
+    val from = indoorViewModel.from
+    val to = indoorViewModel.to
+    val buildingId = indoorViewModel.buildingId
 
     // from https://developer.android.com/develop/ui/compose/touch-input/pointer-input/multi-touch
     var scale by remember { mutableStateOf(1f) }
@@ -236,9 +261,14 @@ fun IndoorMap(from: Int = NO_PATH, to: Int = NO_PATH,
         offset += offsetChange
     }
 
+
+    val markedPlan = MapRepository.getMarkedPlan(buildingId, from, to)
+    indoorViewModel.updatePath(newFloor = 0, newMaxFloor = markedPlan.size)
+    var floor = indoorViewModel.floor
+
     Image(
 //        painter = painterResource(id = buildingId),
-        bitmap = MapRepository.getMarkedPlan(buildingId, from, to)[0].asImageBitmap(), // ! FLOOR CONSTANT FOR TESTING, CHANGE THIS
+        bitmap = markedPlan[floor].asImageBitmap(),
         contentDescription = null,
         contentScale = ContentScale.Fit,
         modifier = Modifier
