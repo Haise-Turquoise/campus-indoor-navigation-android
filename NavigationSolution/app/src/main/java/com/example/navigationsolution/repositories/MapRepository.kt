@@ -158,6 +158,14 @@ object MapRepository{
 
         val f1 = buildings[-1]!!.plans[1]!!
 
+        buildings[-1]!!.plans[2] = FloorMap(
+            2,
+            HashMap(),
+            R.drawable.e7f2
+        )
+
+        val f2 = buildings[-1]!!.plans[2]!!
+
         // ROOMS HAVE NUMBERS -- 1324, 1326
         // PORTS HAVE NEGATIVE 10XX
         // WC HAVE NEGATIVE 11XX
@@ -264,6 +272,234 @@ object MapRepository{
         }
 
         // F2 INIT
+
+        // ROOMS HAVE NUMBERS -- 2324, 2328
+        // PORTS HAVE NEGATIVE 20XX
+        // WC HAVE NEGATIVE 11XX
+        // STAIRS HAVE NEGATIVE 22XX
+        // NONE IS ALL ELSE 2XXX
+
+        run {
+            // COLUMN 1 (LEFTMOST)
+            f2.nodes[-2200] = MapNode(222, 102, NodeType.STAIR, -2200, HashMap(), f2)
+            f2.nodes[2324] = MapNode(222, 128, NodeType.ROOM, 2324, HashMap(), f2)
+            f2.nodes[2328] = MapNode(222, 259, NodeType.ROOM, 2328, HashMap(), f2)
+            f2.nodes[-2201] = MapNode(222, 284, NodeType.STAIR, -2201, HashMap(), f2)
+            f2.nodes[2334] = MapNode(222, 352, NodeType.ROOM, 2334, HashMap(), f2)
+            f2.nodes[-2000] = MapNode(222, 393, NodeType.PORT, -2000, HashMap(), f2)
+            addEdge(f2, -2200, 2324)
+            addEdge(f2, 2324, 2328)
+            addEdge(f2, 2328, -2201)
+            addEdge(f2, -2201, 2334)
+            addEdge(f2, 2334, -2000)
+
+            // ROW 1 (TOPMOST)
+            f2.nodes[2322] = MapNode(250, 128, NodeType.ROOM, 2322, HashMap(), f2)
+            f2.nodes[2318] = MapNode(271, 128, NodeType.ROOM, 2318, HashMap(), f2)
+            f2.nodes[2316] = MapNode(294, 128, NodeType.ROOM, 2316, HashMap(), f2)
+            f2.nodes[2317] = MapNode(310, 128, NodeType.ROOM, 2317, HashMap(), f2)
+            f2.nodes[2314] = MapNode(316, 128, NodeType.ROOM, 2314, HashMap(), f2)
+            f2.nodes[2312] = MapNode(339, 128, NodeType.ROOM, 2312, HashMap(), f2)
+            f2.nodes[2357] = MapNode(356, 128, NodeType.ROOM, 2357, HashMap(), f2)
+            f2.nodes[2308] = MapNode(360, 128, NodeType.ROOM, 2308, HashMap(), f2)
+            f2.nodes[2306] = MapNode(384, 128, NodeType.ROOM, 2306, HashMap(), f2)
+            f2.nodes[2304] = MapNode(395, 128, NodeType.ROOM, 2304, HashMap(), f2)
+            f2.nodes[-2500] = MapNode(446, 128, NodeType.NONE, -2500, HashMap(), f2)
+            f2.nodes[2301] = MapNode(473, 128, NodeType.ROOM, 2301, HashMap(), f2)
+            f2.nodes[-2501] = MapNode(500, 128, NodeType.NONE, -2501, HashMap(), f2)
+            f2.nodes[2402] = MapNode(529, 128, NodeType.ROOM, 2402, HashMap(), f2)
+            f2.nodes[2404] = MapNode(551, 128, NodeType.ROOM, 2404, HashMap(), f2)
+            f2.nodes[2911] = MapNode(564, 128, NodeType.ROOM, 2911, HashMap(), f2)
+            f2.nodes[2406] = MapNode(574, 128, NodeType.ROOM, 2406, HashMap(), f2)
+            f2.nodes[2408] = MapNode(596, 128, NodeType.ROOM, 2408, HashMap(), f2)
+            f2.nodes[2409] = MapNode(596, 128, NodeType.ROOM, 2409, HashMap(), f2)
+            f2.nodes[2412] = MapNode(619, 128, NodeType.ROOM, 2412, HashMap(), f2)
+            f2.nodes[2414] = MapNode(641, 128, NodeType.ROOM, 2414, HashMap(), f2)
+            f2.nodes[2416] = MapNode(664, 128, NodeType.ROOM, 2416, HashMap(), f2)
+            f2.nodes[2418] = MapNode(686, 128, NodeType.ROOM, 2418, HashMap(), f2)
+            f2.nodes[2422] = MapNode(708, 128, NodeType.ROOM, 2422, HashMap(), f2)
+            f2.nodes[2423] = MapNode(725, 128, NodeType.ROOM, 2423, HashMap(), f2)
+            f2.nodes[2424] = MapNode(730, 128, NodeType.ROOM, 2424, HashMap(), f2)
+            f2.nodes[2426] = MapNode(753, 128, NodeType.ROOM, 2426, HashMap(), f2)
+            f2.nodes[2428] = MapNode(775, 128, NodeType.ROOM, 2428, HashMap(), f2)
+            f2.nodes[2432] = MapNode(786, 128, NodeType.ROOM, 2432, HashMap(), f2)
+
+            addEdge(f2, 2322, 2318)
+            addEdge(f2, 2318, 2316)
+            addEdge(f2, 2316, 2317)
+            addEdge(f2, 2317, 2314)
+            addEdge(f2, 2314, 2312)
+            addEdge(f2, 2312, 2357)
+            addEdge(f2, 2357, 2308)
+            addEdge(f2, 2308, 2306)
+            addEdge(f2, 2306, 2304)
+            addEdge(f2, 2304, -2500)
+            addEdge(f2, -2500, 2301)
+            addEdge(f2, 2301, -2501)
+            addEdge(f2, -2501, 2402)
+            addEdge(f2, 2402, 2404)
+            addEdge(f2, 2404, 2911)
+            addEdge(f2, 2911, 2406)
+            addEdge(f2, 2406, 2408)
+            addEdge(f2, 2408, 2409)
+            addEdge(f2, 2409, 2412)
+            addEdge(f2, 2412, 2414)
+            addEdge(f2, 2414, 2416)
+            addEdge(f2, 2416, 2418)
+            addEdge(f2, 2418, 2422)
+            addEdge(f2, 2422, 2423)
+            addEdge(f2, 2423, 2424)
+            addEdge(f2, 2424, 2426)
+            addEdge(f2, 2426, 2428)
+            addEdge(f2, 2428, 2432)
+
+            // ROW 1 X 2302
+            f2.nodes[2302] = MapNode(395, 105, NodeType.ROOM, 2302, HashMap(), f2)
+            addEdge(f2, 2304, 2302)
+
+            // COLUMN 1 X ROW 1
+            addEdge(f2, 2324, 2322)
+
+            // INNER 1
+            f2.nodes[2342] = MapNode(249, 259, NodeType.ROOM, 2342, HashMap(), f2)
+            f2.nodes[2344] = MapNode(271, 259, NodeType.ROOM, 2344, HashMap(), f2)
+            f2.nodes[2343] = MapNode(279, 259, NodeType.ROOM, 2343, HashMap(), f2)
+            f2.nodes[2346] = MapNode(294, 259, NodeType.ROOM, 2346, HashMap(), f2)
+            f2.nodes[2348] = MapNode(319, 259, NodeType.ROOM, 2348, HashMap(), f2)
+            f2.nodes[2349] = MapNode(324, 259, NodeType.ROOM, 2349, HashMap(), f2)
+            f2.nodes[2352] = MapNode(334, 259, NodeType.ROOM, 2352, HashMap(), f2)
+            f2.nodes[2317] = MapNode(334, 218, NodeType.ROOM, 2317, HashMap(), f2)
+            f2.nodes[2357] = MapNode(346, 218, NodeType.ROOM, 2357, HashMap(), f2)
+            addEdge(f2, 2342, 2344)
+            addEdge(f2, 2344, 2343)
+            addEdge(f2, 2343, 2346)
+            addEdge(f2, 2346, 2348)
+            addEdge(f2, 2348, 2349)
+            addEdge(f2, 2349, 2352)
+            addEdge(f2, 2352, 2317)
+            addEdge(f2, 2317, 2357)
+
+            // COLUMN 1 X INNER 1
+            addEdge(f2, 2328, 2342)
+
+            // COLUMN 2
+            f2.nodes[-2502] = MapNode(446, 218, NodeType.NONE, -2502, HashMap(), f2)
+            f2.nodes[-2202] = MapNode(446, 373, NodeType.STAIR, -2202, HashMap(), f2)
+            f2.nodes[-2503] = MapNode(446, 393, NodeType.NONE, -2503, HashMap(), f2)
+            addEdge(f2, -2502, -2202)
+            addEdge(f2, -2202, -2503)
+
+            // ROW 1 X COLUMN 2
+            addEdge(f2, -2500, -2502)
+            // INNER 1 X COLUMN 2
+            addEdge(f2, 2357, -2502)
+            // COLUMN 1 X COLUMN 2
+            addEdge(f2, -2000, -2503)
+
+            // COLUMN 3
+            f2.nodes[-2203] = MapNode(500, 150, NodeType.STAIR, -2203, HashMap(), f2)
+            f2.nodes[-2100] = MapNode(500, 185, NodeType.WC, -2100, HashMap(), f2)
+            f2.nodes[-2101] = MapNode(500, 195, NodeType.WC, -2101, HashMap(), f2)
+            f2.nodes[-2504] = MapNode(500, 260, NodeType.NONE, -2504, HashMap(), f2)
+            f2.nodes[-2505] = MapNode(500, 314, NodeType.NONE, -2505, HashMap(), f2)
+            f2.nodes[-2506] = MapNode(500, 393, NodeType.NONE, -2506, HashMap(), f2)
+            addEdge(f2, -2203, -2100)
+            addEdge(f2, -2100, -2101)
+            addEdge(f2, -2101, -2504)
+            addEdge(f2, -2504, -2505)
+            addEdge(f2, -2505, -2506)
+
+            // ROW 1 X COLUMN 3
+            addEdge(f2, -2501, -2203)
+
+            // ROW 2
+            f2.nodes[2466] = MapNode(530, 260, NodeType.ROOM, 2466, HashMap(), f2)
+            f2.nodes[-2102] = MapNode(538, 260, NodeType.WC, -2102, HashMap(), f2)
+            f2.nodes[2464] = MapNode(551, 260, NodeType.ROOM, 2464, HashMap(), f2)
+            f2.nodes[2466] = MapNode(530, 260, NodeType.ROOM, 2466, HashMap(), f2)
+            f2.nodes[2462] = MapNode(563, 260, NodeType.ROOM, 2462, HashMap(), f2)
+            f2.nodes[2916] = MapNode(572, 260, NodeType.ROOM, 2916, HashMap(), f2)
+            f2.nodes[2458] = MapNode(597, 260, NodeType.ROOM, 2458, HashMap(), f2)
+            f2.nodes[2456] = MapNode(641, 260, NodeType.ROOM, 2456, HashMap(), f2)
+            f2.nodes[2454] = MapNode(663, 260, NodeType.ROOM, 2454, HashMap(), f2)
+            f2.nodes[2409] = MapNode(679, 260, NodeType.ROOM, 2409, HashMap(), f2)
+            f2.nodes[2453] = MapNode(736, 260, NodeType.ROOM, 2453, HashMap(), f2)
+            f2.nodes[2452] = MapNode(767, 260, NodeType.ROOM, 2452, HashMap(), f2)
+            f2.nodes[2448] = MapNode(786, 260, NodeType.ROOM, 2448, HashMap(), f2)
+            f2.nodes[2917] = MapNode(803, 260, NodeType.ROOM, 2917, HashMap(), f2)
+            f2.nodes[2446] = MapNode(814, 260, NodeType.ROOM, 2446, HashMap(), f2)
+            addEdge(f2, 2466, -2102)
+            addEdge(f2, -2102, 2464)
+            addEdge(f2, 2464, 2466)
+            addEdge(f2, 2466, 2462)
+            addEdge(f2, 2462, 2916)
+            addEdge(f2, 2916, 2458)
+            addEdge(f2, 2458, 2456)
+            addEdge(f2, 2456, 2454)
+            addEdge(f2, 2454, 2409)
+            addEdge(f2, 2409, 2453)
+            addEdge(f2, 2453, 2452)
+            addEdge(f2, 2452, 2448)
+            addEdge(f2, 2448, 2917)
+            addEdge(f2, 2917, 2446)
+
+            // COLUMN 3 X ROW 2
+            addEdge(f2, -2504, 2466)
+
+            // COLUMN 4 (TOP RIGHT)
+            f2.nodes[2429] = MapNode(786, 141, NodeType.ROOM, 2429, HashMap(), f2)
+            f2.nodes[2434] = MapNode(786, 141, NodeType.ROOM, 2434, HashMap(), f2)
+            f2.nodes[2433] = MapNode(786, 164, NodeType.ROOM, 2433, HashMap(), f2)
+            f2.nodes[2436] = MapNode(786, 164, NodeType.ROOM, 2436, HashMap(), f2)
+            f2.nodes[2437] = MapNode(786, 188, NodeType.ROOM, 2437, HashMap(), f2)
+            f2.nodes[2438] = MapNode(786, 188, NodeType.ROOM, 2438, HashMap(), f2)
+            f2.nodes[2439] = MapNode(786, 211, NodeType.ROOM, 2439, HashMap(), f2)
+            f2.nodes[2442] = MapNode(786, 211, NodeType.ROOM, 2442, HashMap(), f2)
+            f2.nodes[2441] = MapNode(786, 234, NodeType.ROOM, 2441, HashMap(), f2)
+            f2.nodes[2444] = MapNode(786, 234, NodeType.ROOM, 2444, HashMap(), f2)
+            addEdge(f2, 2429, 2434)
+            addEdge(f2, 2434, 2433)
+            addEdge(f2, 2433, 2436)
+            addEdge(f2, 2436, 2437)
+            addEdge(f2, 2437, 2438)
+            addEdge(f2, 2438, 2439)
+            addEdge(f2, 2439, 2442)
+            addEdge(f2, 2442, 2441)
+            addEdge(f2, 2441, 2444)
+
+            // ROW 1 X COLUMN 4
+            addEdge(f2, 2432, 2429)
+            // COLUMN 4 X ROW 2
+            addEdge(f2, 2444, 2448)
+
+            // ROW 3
+            f2.nodes[2472] = MapNode(595, 314, NodeType.ROOM, 2472, HashMap(), f2)
+            f2.nodes[2456] = MapNode(641, 314, NodeType.ROOM, 2456, HashMap(), f2)
+            f2.nodes[2454] = MapNode(652, 314, NodeType.ROOM, 2454, HashMap(), f2)
+            addEdge(f2, 2472, 2456)
+            addEdge(f2, 2456, 2454)
+
+            // COLUMN 3 X ROW 3
+            addEdge(f2, -2505, 2472)
+
+            // ROW 4
+            f2.nodes[-2001] = MapNode(473, 393, NodeType.PORT, -2001, HashMap(), f2)
+            // COLUMN 2 X ROW 4
+            addEdge(f2, -2503, -2001)
+            // ROW 4 X COLUMN 3
+            addEdge(f2, -2001, -2506)
+
+            // COLUMN 5
+            f2.nodes[-2204] = MapNode(679, 260, NodeType.STAIR, -2204, HashMap(), f2)
+            f2.nodes[-2002] = MapNode(679, 393, NodeType.PORT, -2002, HashMap(), f2)
+            addEdge(f2, -2204, -2002)
+            // ROW 2 X COLUMN 5
+            addEdge(f2, 2409, -2204)
+            // COLUMN 3 X COLUMN 5
+            addEdge(f2, -2506, -2002)
+
+        }
+
     }
 
     fun getNorthHeading(buildingId: Int): Int {
