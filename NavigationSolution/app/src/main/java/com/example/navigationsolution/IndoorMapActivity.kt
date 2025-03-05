@@ -61,6 +61,8 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
 
 const val NO_PATH = -1
 
@@ -157,6 +159,9 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
 @Composable
 fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PATH,
               buildingId: Int = -1) {
+    // Add state for compass toggle
+    var compassEnabled by remember { mutableStateOf(false) }
+
     Box(Modifier
         .fillMaxSize()
         .background(Color(red = 0x00, green = 0x00, blue = 0x00, alpha = 0x99))) {
@@ -170,7 +175,8 @@ fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PA
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            IndoorMap(from, to, buildingId)
+            // Pass compassEnabled state to IndoorMap
+            IndoorMap(from, to, buildingId, compassEnabled)
         }
 
         Column(
@@ -201,15 +207,26 @@ fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PA
                 Icon(Icons.Outlined.Settings, contentDescription = "")
             }
 
+            // Modified compass button to toggle rotation
             FloatingActionButton(
-                onClick = { },
+                onClick = { compassEnabled = !compassEnabled },  // Toggle compass mode
                 shape = CircleShape,
+                // Change color based on toggle state
+                containerColor = if (compassEnabled)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.surfaceVariant,
                 modifier = Modifier
                     .size(width = buttonSize, height = buttonSize)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.navigation),
-                    contentDescription = "Compass",
+                    contentDescription = "Toggle Compass Mode",
+                    // Change icon color based on toggle state
+                    tint = if (compassEnabled)
+                        MaterialTheme.colorScheme.onPrimary
+                    else
+                        MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -226,13 +243,10 @@ fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PA
     }
 }
 
-
-
-
-// Sensor-based map rotation
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
-fun IndoorMap(from: Int = NO_PATH, to: Int = NO_PATH, buildingId: Int = -1) {
+fun IndoorMap(from: Int = NO_PATH, to: Int = NO_PATH,
+              buildingId: Int = -1, compassEnabled: Boolean = false) {
     // Get context for sensor access
     val context = LocalContext.current
 
@@ -242,123 +256,143 @@ fun IndoorMap(from: Int = NO_PATH, to: Int = NO_PATH, buildingId: Int = -1) {
     var offset by remember { mutableStateOf(Offset.Zero) }
 
     // Debug text state
-    var sensorStatus by remember { mutableStateOf("Initializing sensors...") }
+    var sensorStatus by remember { mutableStateOf("Compass mode: OFF") }
 
-    // Transformable state for zoom and pan (but not rotation)
-    val state = rememberTransformableState { zoomChange, offsetChange, _ ->
-        scale *= zoomChange
-        offset += offsetChange
-        // Ignore rotation from gestures since we're using sensor rotation
+    // Reset rotation when toggling compass mode off
+    LaunchedEffect(compassEnabled) {
+        if (!compassEnabled) {
+            // Reset rotation to 0 when compass mode is turned off
+            mapRotation = 0f
+        }
     }
 
-    // Set up sensor for rotation
-    DisposableEffect(Unit) {
-        val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    // Transformable state for zoom, pan, and manual rotation (if compass disabled)
+    val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
+        scale *= zoomChange
+        // Only allow manual rotation when compass is disabled
+        if (!compassEnabled) {
+            mapRotation += rotationChange
+        }
+        offset += offsetChange
+    }
 
-        // Try to get rotation vector sensor (most accurate)
-        val rotationVectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+    // Set up sensor for rotation only when compass is enabled
+    DisposableEffect(compassEnabled) {
+        // Only set up sensors if compass is enabled
+        if (compassEnabled) {
+            val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
-        // Fallback sensors
-        val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        val magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+            // Try to get rotation vector sensor (most accurate)
+            val rotationVectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
 
-        // Arrays for sensor readings
-        val accelerometerReading = FloatArray(3)
-        val magnetometerReading = FloatArray(3)
-        val rotationMatrix = FloatArray(9)
-        val orientationAngles = FloatArray(3)
+            // Fallback sensors
+            val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+            val magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
 
-        // Create sensor listener
-        val sensorListener = object : SensorEventListener {
-            override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-                // Not needed for this implementation
-            }
+            // Arrays for sensor readings
+            val accelerometerReading = FloatArray(3)
+            val magnetometerReading = FloatArray(3)
+            val rotationMatrix = FloatArray(9)
+            val orientationAngles = FloatArray(3)
 
-            override fun onSensorChanged(event: SensorEvent) {
-                when (event.sensor.type) {
-                    Sensor.TYPE_ROTATION_VECTOR -> {
-                        // Process rotation vector data
-                        SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
-                        SensorManager.getOrientation(rotationMatrix, orientationAngles)
+            // Create sensor listener
+            val sensorListener = object : SensorEventListener {
+                override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+                    // Not needed for this implementation
+                }
 
-                        // Convert radians to degrees (azimuth is orientationAngles[0])
-                        val azimuthInDegrees = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
-                        val normalizedAzimuth = (azimuthInDegrees + 360) % 360
+                override fun onSensorChanged(event: SensorEvent) {
+                    when (event.sensor.type) {
+                        Sensor.TYPE_ROTATION_VECTOR -> {
+                            // Process rotation vector data
+                            SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
+                            SensorManager.getOrientation(rotationMatrix, orientationAngles)
 
-                        // Update map rotation (negate to rotate map correctly)
-                        mapRotation = -normalizedAzimuth
-                        sensorStatus = "Rotation vector: ${normalizedAzimuth.toInt()}°"
-                    }
-                    Sensor.TYPE_ACCELEROMETER -> {
-                        // Store accelerometer data
-                        System.arraycopy(event.values, 0, accelerometerReading, 0, 3)
-                    }
-                    Sensor.TYPE_MAGNETIC_FIELD -> {
-                        // Store magnetic field data
-                        System.arraycopy(event.values, 0, magnetometerReading, 0, 3)
+                            // Convert radians to degrees (azimuth is orientationAngles[0])
+                            val azimuthInDegrees = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
+                            val normalizedAzimuth = (azimuthInDegrees + 360) % 360
 
-                        // Check if we have both sensor readings
-                        if (accelerometerReading[0] != 0f || accelerometerReading[1] != 0f ||
-                            accelerometerReading[2] != 0f) {
+                            // Update map rotation (negate to rotate map correctly)
+                            mapRotation = -normalizedAzimuth
+                            sensorStatus = "Compass: ${normalizedAzimuth.toInt()}°"
+                        }
+                        Sensor.TYPE_ACCELEROMETER -> {
+                            // Store accelerometer data
+                            System.arraycopy(event.values, 0, accelerometerReading, 0, 3)
+                        }
+                        Sensor.TYPE_MAGNETIC_FIELD -> {
+                            // Store magnetic field data
+                            System.arraycopy(event.values, 0, magnetometerReading, 0, 3)
 
-                            // Calculate rotation matrix
-                            val success = SensorManager.getRotationMatrix(
-                                rotationMatrix, null, accelerometerReading, magnetometerReading
-                            )
+                            // Check if we have both sensor readings
+                            if (accelerometerReading[0] != 0f || accelerometerReading[1] != 0f ||
+                                accelerometerReading[2] != 0f) {
 
-                            if (success) {
-                                // Get orientation
-                                SensorManager.getOrientation(rotationMatrix, orientationAngles)
+                                // Calculate rotation matrix
+                                val success = SensorManager.getRotationMatrix(
+                                    rotationMatrix, null, accelerometerReading, magnetometerReading
+                                )
 
-                                // Convert to degrees
-                                val azimuthInDegrees = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
-                                val normalizedAzimuth = (azimuthInDegrees + 360) % 360
+                                if (success) {
+                                    // Get orientation
+                                    SensorManager.getOrientation(rotationMatrix, orientationAngles)
 
-                                // Update map rotation
-                                mapRotation = -normalizedAzimuth
-                                sensorStatus = "Accel/Mag: ${normalizedAzimuth.toInt()}°"
+                                    // Convert to degrees
+                                    val azimuthInDegrees = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
+                                    val normalizedAzimuth = (azimuthInDegrees + 360) % 360
+
+                                    // Update map rotation
+                                    mapRotation = -normalizedAzimuth
+                                    sensorStatus = "Compass: ${normalizedAzimuth.toInt()}°"
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
-        // Register sensors
-        if (rotationVectorSensor != null) {
-            sensorManager.registerListener(
-                sensorListener,
-                rotationVectorSensor,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
-            sensorStatus = "Using rotation vector sensor"
-        } else if (accelerometer != null && magnetometer != null) {
-            // Register accelerometer
-            sensorManager.registerListener(
-                sensorListener,
-                accelerometer,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
+            // Register sensors
+            if (rotationVectorSensor != null) {
+                sensorManager.registerListener(
+                    sensorListener,
+                    rotationVectorSensor,
+                    SensorManager.SENSOR_DELAY_NORMAL
+                )
+                sensorStatus = "Compass mode: ON"
+            } else if (accelerometer != null && magnetometer != null) {
+                // Register accelerometer
+                sensorManager.registerListener(
+                    sensorListener,
+                    accelerometer,
+                    SensorManager.SENSOR_DELAY_NORMAL
+                )
 
-            // Register magnetometer
-            sensorManager.registerListener(
-                sensorListener,
-                magnetometer,
-                SensorManager.SENSOR_DELAY_NORMAL
-            )
+                // Register magnetometer
+                sensorManager.registerListener(
+                    sensorListener,
+                    magnetometer,
+                    SensorManager.SENSOR_DELAY_NORMAL
+                )
 
-            sensorStatus = "Using accelerometer and magnetometer"
+                sensorStatus = "Compass mode: ON"
+            } else {
+                sensorStatus = "Compass mode: NO SENSORS"
+            }
+
+            // Cleanup when component is disposed or compass is disabled
+            onDispose {
+                sensorManager.unregisterListener(sensorListener)
+            }
         } else {
-            sensorStatus = "No orientation sensors available"
-        }
+            // Update status when compass is disabled
+            sensorStatus = "Compass mode: OFF"
 
-        // Cleanup when component is disposed
-        onDispose {
-            sensorManager.unregisterListener(sensorListener)
+            // No cleanup needed when compass is disabled
+            onDispose { }
         }
     }
 
-    // Display the map with sensor-based rotation
+    // Display the map with rotation
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             bitmap = MapRepository.getMarkedPlan(buildingId, from, to)[0].asImageBitmap(),
@@ -375,5 +409,6 @@ fun IndoorMap(from: Int = NO_PATH, to: Int = NO_PATH, buildingId: Int = -1) {
                 .transformable(state = state)
                 .fillMaxSize()
         )
+
     }
 }
