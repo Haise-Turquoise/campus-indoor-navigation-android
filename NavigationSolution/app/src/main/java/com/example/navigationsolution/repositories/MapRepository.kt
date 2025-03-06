@@ -512,15 +512,15 @@ object MapRepository{
     fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int): List<Bitmap> {
 
         // Code for testing floor switching
-//        return listOf(
-//            (applicationContext.resources.getDrawable(R.drawable.e7f1) as BitmapDrawable).bitmap,
-//            (applicationContext.resources.getDrawable(R.drawable.e7f1) as BitmapDrawable).bitmap,
-//            (applicationContext.resources.getDrawable(R.drawable.e7f2) as BitmapDrawable).bitmap,
-//            (applicationContext.resources.getDrawable(R.drawable.e7f3) as BitmapDrawable).bitmap,
-//            (applicationContext.resources.getDrawable(R.drawable.e7f4) as BitmapDrawable).bitmap,
-//            (applicationContext.resources.getDrawable(R.drawable.e7f5) as BitmapDrawable).bitmap,
-//            (applicationContext.resources.getDrawable(R.drawable.e7f6) as BitmapDrawable).bitmap
-//        )
+        return listOf(
+            (applicationContext.resources.getDrawable(R.drawable.e7f1) as BitmapDrawable).bitmap,
+            (applicationContext.resources.getDrawable(R.drawable.e7f1) as BitmapDrawable).bitmap,
+            (applicationContext.resources.getDrawable(R.drawable.e7f2) as BitmapDrawable).bitmap,
+            (applicationContext.resources.getDrawable(R.drawable.e7f3) as BitmapDrawable).bitmap,
+            (applicationContext.resources.getDrawable(R.drawable.e7f4) as BitmapDrawable).bitmap,
+            (applicationContext.resources.getDrawable(R.drawable.e7f5) as BitmapDrawable).bitmap,
+            (applicationContext.resources.getDrawable(R.drawable.e7f6) as BitmapDrawable).bitmap
+        )
 
         if(srcId == destId)
             return drawPath(buildingId, listOf())

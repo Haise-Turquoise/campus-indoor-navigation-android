@@ -116,7 +116,7 @@ fun IndoorSearch(
                                 )
                             )
                             indoorViewModel.updatePath(cur.toInt(), dest.toInt())
-                            indoorViewModel.setFloor(cur.toInt() / 1000)
+                            indoorViewModel.setFloor(getFloor(cur.toInt()))
                             navController.navigate(IndoorMapScreen)
                         }
                     },
@@ -138,4 +138,10 @@ fun IndoorSearch(
             }
         }
     }
+}
+
+// ? Returns the floor number given a room ID
+fun getFloor(roomId: Int): Int {
+    // ! REPLACE THIS IF NOT ALL BUILDINGS FOLLOW THIS PATTERN
+    return roomId / 1000;
 }
