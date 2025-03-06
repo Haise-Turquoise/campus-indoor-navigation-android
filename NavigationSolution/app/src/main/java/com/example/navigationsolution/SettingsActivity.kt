@@ -27,11 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.navigationsolution.viewmodels.IndoorViewModel
 import com.example.navigationsolution.viewmodels.SettingsViewModel
 
 @Composable
-fun Settings(navController: NavController, from:Int = NO_PATH, to:Int = NO_PATH,
-             imageID: Int = -1,
+fun Settings(navController: NavController,
              settingsViewModel: SettingsViewModel) {
     Column(
         modifier = Modifier
@@ -50,7 +50,7 @@ fun Settings(navController: NavController, from:Int = NO_PATH, to:Int = NO_PATH,
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = { navController.navigate(IndoorMapScreen(from, to, imageID)) }
+                onClick = { navController.navigate(IndoorMapScreen) }
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,

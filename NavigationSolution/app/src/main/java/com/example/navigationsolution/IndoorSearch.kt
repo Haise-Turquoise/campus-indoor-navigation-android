@@ -16,14 +16,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.navigationsolution.viewmodels.IndoorViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun IndoorSearch(
     navController: NavController,
-    from: Int = NO_PATH,
-    to: Int = NO_PATH,
-    imageID: Int = R.drawable.uwlogo
+    indoorViewModel: IndoorViewModel
 ) {
     var cur by remember { mutableStateOf("") }
     var dest by remember { mutableStateOf("") }
@@ -49,7 +48,7 @@ fun IndoorSearch(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = { navController.navigate(IndoorMapScreen(from, to, imageID)) }
+                onClick = { navController.navigate(IndoorMapScreen) }
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,
@@ -116,7 +115,9 @@ fun IndoorSearch(
                                     easing = FastOutSlowInEasing
                                 )
                             )
-                            navController.navigate(IndoorMapScreen(cur.toInt(), dest.toInt(), imageID))
+                            indoorViewModel.updatePath(cur.toInt(), dest.toInt())
+                            indoorViewModel.setFloor(getFloor(cur.toInt()))
+                            navController.navigate(IndoorMapScreen)
                         }
                     },
                     modifier = Modifier
@@ -137,4 +138,10 @@ fun IndoorSearch(
             }
         }
     }
+}
+
+// ? Returns the floor number given a room ID
+fun getFloor(roomId: Int): Int {
+    // ! REPLACE THIS IF NOT ALL BUILDINGS FOLLOW THIS PATTERN
+    return roomId / 1000;
 }

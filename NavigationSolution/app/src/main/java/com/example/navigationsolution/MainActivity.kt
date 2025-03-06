@@ -38,6 +38,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.navigationsolution.ui.theme.AppTheme
+import com.example.navigationsolution.viewmodels.IndoorViewModel
 import com.example.navigationsolution.viewmodels.SettingsViewModel
 import kotlinx.serialization.Serializable
 
@@ -45,25 +46,13 @@ import kotlinx.serialization.Serializable
 object OpeningScreen
 
 @Serializable
-data class IndoorMapScreen(
-    val from: Int = NO_PATH,
-    val to: Int = NO_PATH,
-    val buildingId: Int = -1
-)
+object IndoorMapScreen
 
 @Serializable
-data class IndoorSearchScreen(
-    val from: Int = NO_PATH,
-    val to: Int = NO_PATH,
-    val buildingId: Int = -1
-)
+object IndoorSearchScreen
 
 @Serializable
-data class SettingsScreen(
-    val from: Int = NO_PATH,
-    val to: Int = NO_PATH,
-    val buildingId: Int = -1
-)
+object SettingsScreen
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
@@ -76,6 +65,8 @@ class MainActivity : ComponentActivity() {
             val settingsModel: SettingsViewModel by viewModels()
             val altColours = settingsModel.altColours.observeAsState(initial = false)
             val textScale = settingsModel.textScale.observeAsState(initial = 1f)
+
+            val indoorModel: IndoorViewModel by viewModels()
             AppTheme(darkTheme = altColours.value, textScale = textScale.value) {
                 Surface() {
                     val navController = rememberNavController()
@@ -91,9 +82,7 @@ class MainActivity : ComponentActivity() {
                             val dir: IndoorMapScreen = backStackEntry.toRoute()
                             IndoorBars(
                                 navController,
-                                dir.from,
-                                dir.to,
-                                dir.buildingId
+                                indoorModel
                             )
                         }
 
@@ -101,9 +90,7 @@ class MainActivity : ComponentActivity() {
                             val dir: IndoorSearchScreen = backStackEntry.toRoute()
                             IndoorSearch(
                                 navController,
-                                dir.from,
-                                dir.to,
-                                dir.buildingId
+                                indoorModel
                             )
                         }
 
@@ -111,9 +98,6 @@ class MainActivity : ComponentActivity() {
                             val dir: SettingsScreen = backStackEntry.toRoute()
                             Settings(
                                 navController,
-                                dir.from,
-                                dir.to,
-                                dir.buildingId,
                                 settingsModel
                             )
                         }
@@ -145,7 +129,7 @@ fun LoadingScreen(navController: NavController) {
         Text("Pathfinder", style = MaterialTheme.typography.displayLarge)
 
         val buttonText = remember { mutableStateOf("Go") }
-        Button(onClick = { navController.navigate(route = IndoorMapScreen()) }) {
+        Button(onClick = { navController.navigate(route = IndoorMapScreen) }) {
             Text(text = buttonText.value)
         }
     }

@@ -2,11 +2,17 @@ package com.example.navigationsolution
 
 import MapRepository
 import android.annotation.SuppressLint
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Arrangement
@@ -53,16 +59,15 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import com.example.navigationsolution.ui.theme.AppTheme
-import android.content.Context
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.LaunchedEffect
-import kotlinx.coroutines.delay
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
+import com.example.navigationsolution.ui.theme.AppTheme
+import com.example.navigationsolution.viewmodels.IndoorViewModel
+import kotlin.math.max
+import kotlin.math.min
 
 const val NO_PATH = -1
 
@@ -71,14 +76,17 @@ const val NO_PATH = -1
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PATH,
-               buildingId: Int = -1) {
+fun IndoorBars(navController: NavController, indoorViewModel: IndoorViewModel) {
+    val from = indoorViewModel.from
+    val to = indoorViewModel.to
+    val buildingId = indoorViewModel.buildingId
+
     Box (
         modifier = Modifier
         .fillMaxSize(),
         ) {
 
-        IndoorBox(navController, from, to, buildingId)
+        IndoorBox(navController, indoorViewModel)
 
         val topEdgePadding = 50.dp
         val sideEdgePadding = 10.dp
@@ -102,7 +110,6 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
             }
         }
 
-
         Row (
             modifier = Modifier
                 .fillMaxWidth()
@@ -111,21 +118,26 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
                 .pointerInput(Unit) {
                     detectDragGestures { _, _ ->
                         navController.navigate(
-                            route = IndoorSearchScreen(from, to, buildingId)
+                            route = IndoorSearchScreen
                         )
                     }
                 },
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
+            val bottomBoxPadding = 50.dp
             Column (
                 modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxWidth()
+                    .padding(bottom = bottomBoxPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
             ){
+                val bottomInternalPadding = 10.dp
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(vertical = bottomInternalPadding),
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Icon(Icons.Outlined.Search, contentDescription = "")
@@ -135,18 +147,26 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = sideEdgePadding),
+                        .padding(vertical = bottomInternalPadding),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
+                    Button(onClick = {
+                        indoorViewModel.decrFloor()
+                    }) {
+                        Text(text = "Prev.\n Floor", textAlign = TextAlign.Center)
+                    }
+
                     if (from == NO_PATH && to == NO_PATH) {
                         Text(text = "Building Name", style = MaterialTheme.typography.titleLarge)
                     } else {
                         Text(text = "$from to $to", style = MaterialTheme.typography.titleLarge)
                     }
 
-                    Button(onClick = { }) {
-                        Text(text = "View Outside")
+                    Button(onClick = {
+                        indoorViewModel.incrFloor()
+                    }) {
+                        Text(text = "Next\n Floor", textAlign = TextAlign.Center)
                     }
                 }
             }
@@ -157,10 +177,10 @@ fun IndoorBars(navController: NavController, from:Int = NO_PATH, to:Int = NO_PAT
 // draws the map and the side buttons
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
-fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PATH,
-              buildingId: Int = -1) {
-    // Add state for compass toggle
-    var compassEnabled by remember { mutableStateOf(false) }
+fun IndoorBox(navController: NavController, indoorViewModel: IndoorViewModel) {
+    val from = indoorViewModel.from
+    val to = indoorViewModel.to
+    val buildingId = indoorViewModel.buildingId
 
     Box(Modifier
         .fillMaxSize()
@@ -175,8 +195,7 @@ fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PA
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ){
-            // Pass compassEnabled state to IndoorMap
-            IndoorMap(from, to, buildingId, compassEnabled)
+            IndoorMap(indoorViewModel)
         }
 
         Column(
@@ -198,7 +217,7 @@ fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PA
 
             FloatingActionButton(
                 onClick = {navController.navigate(
-                    route = SettingsScreen(from, to, buildingId)
+                    route = SettingsScreen
                 )},
                 shape = CircleShape,
                 modifier = Modifier
@@ -208,11 +227,12 @@ fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PA
             }
 
             // Modified compass button to toggle rotation
+            val compassEnabled = indoorViewModel.compassEnabled.observeAsState(initial = true)
             FloatingActionButton(
-                onClick = { compassEnabled = !compassEnabled },  // Toggle compass mode
+                onClick = { indoorViewModel.toggleCompass() },  // Toggle compass mode
                 shape = CircleShape,
                 // Change color based on toggle state
-                containerColor = if (compassEnabled)
+                containerColor = if (compassEnabled.value)
                     MaterialTheme.colorScheme.primary
                 else
                     MaterialTheme.colorScheme.surfaceVariant,
@@ -223,13 +243,14 @@ fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PA
                     painter = painterResource(id = R.drawable.navigation),
                     contentDescription = "Toggle Compass Mode",
                     // Change icon color based on toggle state
-                    tint = if (compassEnabled)
+                    tint = if (compassEnabled.value)
                         MaterialTheme.colorScheme.onPrimary
                     else
                         MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.size(24.dp)
                 )
             }
+
 
             FloatingActionButton(
                 onClick = {},
@@ -245,8 +266,14 @@ fun IndoorBox(navController: NavController, from: Int = NO_PATH, to: Int = NO_PA
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
-fun IndoorMap(from: Int = NO_PATH, to: Int = NO_PATH,
-              buildingId: Int = -1, compassEnabled: Boolean = false) {
+fun IndoorMap(indoorViewModel: IndoorViewModel
+              ) {
+    val from = indoorViewModel.from
+    val to = indoorViewModel.to
+    val buildingId = indoorViewModel.buildingId
+    val compassEnabled = indoorViewModel.compassEnabled.observeAsState(initial = true)
+
+    // from https://developer.android.com/develop/ui/compose/touch-input/pointer-input/multi-touch
     // Get context for sensor access
     val context = LocalContext.current
 
@@ -259,8 +286,8 @@ fun IndoorMap(from: Int = NO_PATH, to: Int = NO_PATH,
     var sensorStatus by remember { mutableStateOf("Compass mode: OFF") }
 
     // Reset rotation when toggling compass mode off
-    LaunchedEffect(compassEnabled) {
-        if (!compassEnabled) {
+    LaunchedEffect(compassEnabled.value) {
+        if (!compassEnabled.value) {
             // Reset rotation to 0 when compass mode is turned off
             mapRotation = 0f
         }
@@ -270,17 +297,154 @@ fun IndoorMap(from: Int = NO_PATH, to: Int = NO_PATH,
     val state = rememberTransformableState { zoomChange, offsetChange, rotationChange ->
         scale *= zoomChange
         // Only allow manual rotation when compass is disabled
-        if (!compassEnabled) {
+        if (!compassEnabled.value) {
             mapRotation += rotationChange
         }
         offset += offsetChange
     }
 
     // Set up sensor for rotation only when compass is enabled
-    DisposableEffect(compassEnabled) {
+    DisposableEffect(compassEnabled.value) {
         // Only set up sensors if compass is enabled
-        if (compassEnabled) {
+        if (compassEnabled.value) {
             val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+
+            // Try to get rotation vector sensor (most accurate)
+            val rotationVectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
+
+            // Fallback sensors
+            val accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+            val magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+
+            // Arrays for sensor readings
+            val accelerometerReading = FloatArray(3)
+            val magnetometerReading = FloatArray(3)
+            val rotationMatrix = FloatArray(9)
+            val orientationAngles = FloatArray(3)
+
+            // Create sensor listener
+            val sensorListener = object : SensorEventListener {
+                override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
+                    // Not needed for this implementation
+                }
+
+                override fun onSensorChanged(event: SensorEvent) {
+                    when (event.sensor.type) {
+                        Sensor.TYPE_ROTATION_VECTOR -> {
+                            // Process rotation vector data
+                            SensorManager.getRotationMatrixFromVector(rotationMatrix, event.values)
+                            SensorManager.getOrientation(rotationMatrix, orientationAngles)
+
+                            // Convert radians to degrees (azimuth is orientationAngles[0])
+                            val azimuthInDegrees = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
+                            val normalizedAzimuth = (azimuthInDegrees + 360) % 360
+
+                            // Update map rotation (negate to rotate map correctly)
+                            mapRotation = -normalizedAzimuth
+                            sensorStatus = "Compass: ${normalizedAzimuth.toInt()}°"
+                        }
+                        Sensor.TYPE_ACCELEROMETER -> {
+                            // Store accelerometer data
+                            System.arraycopy(event.values, 0, accelerometerReading, 0, 3)
+                        }
+                        Sensor.TYPE_MAGNETIC_FIELD -> {
+                            // Store magnetic field data
+                            System.arraycopy(event.values, 0, magnetometerReading, 0, 3)
+
+                            // Check if we have both sensor readings
+                            if (accelerometerReading[0] != 0f || accelerometerReading[1] != 0f ||
+                                accelerometerReading[2] != 0f) {
+
+                                // Calculate rotation matrix
+                                val success = SensorManager.getRotationMatrix(
+                                    rotationMatrix, null, accelerometerReading, magnetometerReading
+                                )
+
+                                if (success) {
+                                    // Get orientation
+                                    SensorManager.getOrientation(rotationMatrix, orientationAngles)
+
+                                    // Convert to degrees
+                                    val azimuthInDegrees = Math.toDegrees(orientationAngles[0].toDouble()).toFloat()
+                                    val normalizedAzimuth = (azimuthInDegrees + 360) % 360
+
+                                    // Update map rotation
+                                    mapRotation = -normalizedAzimuth
+                                    sensorStatus = "Compass: ${normalizedAzimuth.toInt()}°"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Register sensors
+            if (rotationVectorSensor != null) {
+                sensorManager.registerListener(
+                    sensorListener,
+                    rotationVectorSensor,
+                    SensorManager.SENSOR_DELAY_NORMAL
+                )
+                sensorStatus = "Compass mode: ON"
+            } else if (accelerometer != null && magnetometer != null) {
+                // Register accelerometer
+                sensorManager.registerListener(
+                    sensorListener,
+                    accelerometer,
+                    SensorManager.SENSOR_DELAY_NORMAL
+                )
+
+                // Register magnetometer
+                sensorManager.registerListener(
+                    sensorListener,
+                    magnetometer,
+                    SensorManager.SENSOR_DELAY_NORMAL
+                )
+
+                sensorStatus = "Compass mode: ON"
+            } else {
+                sensorStatus = "Compass mode: NO SENSORS"
+            }
+
+            // Cleanup when component is disposed or compass is disabled
+            onDispose {
+                sensorManager.unregisterListener(sensorListener)
+            }
+        } else {
+            // Update status when compass is disabled
+            sensorStatus = "Compass mode: OFF"
+
+            // No cleanup needed when compass is disabled
+            onDispose { }
+        }
+    }
+
+
+
+
+    val markedPlan = MapRepository.getMarkedPlan(buildingId, from, to)
+    indoorViewModel.updatePath(newMaxFloor = markedPlan.size)
+    val floor = indoorViewModel.liveFloor.observeAsState(initial = 1)
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+//        painter = painterResource(id = buildingId),
+            bitmap = markedPlan[floor.value].asImageBitmap(),
+            contentDescription = null,
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .graphicsLayer(
+                    scaleX = scale,
+                    scaleY = scale,
+                    rotationZ = mapRotation,
+                    translationX = offset.x,
+                    translationY = offset.y
+                )
+                .transformable(state = state)
+                .fillMaxSize()
+        )
+    }
+
 
             // Try to get rotation vector sensor (most accurate)
             val rotationVectorSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR)
