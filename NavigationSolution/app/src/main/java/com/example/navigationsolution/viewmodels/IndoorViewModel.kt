@@ -13,8 +13,11 @@ class IndoorViewModel: ViewModel() {
     var buildingId: Int = -1
     var floor = MutableLiveData(1)
     var maxFloor: Int = 1
+    var compassEnabled = MutableLiveData(true)
 
     var liveFloor: LiveData<Int> = floor
+    var liveCompassEnabled: LiveData<Boolean> = compassEnabled
+
 
     fun updatePath(newFrom: Int = from,
                    newTo: Int = to,
@@ -36,5 +39,9 @@ class IndoorViewModel: ViewModel() {
 
     fun setFloor(newFloor: Int) {
         floor.value = newFloor
+    }
+
+    fun toggleCompass() {
+        compassEnabled.value = !compassEnabled.value!!
     }
 }
