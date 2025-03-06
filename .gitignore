@@ -4,3 +4,4 @@ out/
 .idea
 .gradle
 .vscode
+NavigationSolution/build.gradle.kts

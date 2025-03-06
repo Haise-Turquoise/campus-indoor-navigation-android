@@ -42,8 +42,47 @@ import com.example.navigationsolution.viewmodels.IndoorViewModel
 import com.example.navigationsolution.viewmodels.SettingsViewModel
 import kotlinx.serialization.Serializable
 
+
+import android.util.Log
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Button
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.example.navigationsolution.R
+import com.example.navigationsolution.service.SupabaseService
+import com.example.navigationsolution.ui.theme.AppTheme
+import kotlinx.coroutines.launch
+import com.example.navigationsolution.ui.mode.ModeScreen
+import com.example.navigationsolution.ui.auth.LoginScreen
+
+
 @Serializable
 object OpeningScreen
+
+@Serializable
+object ModeSelectionScreen
+
+@Serializable
+object LoginScreenRoute
 
 @Serializable
 object IndoorMapScreen
@@ -61,6 +100,17 @@ class MainActivity : ComponentActivity() {
 
         MapRepository.initialize(this.applicationContext)
 
+        // 连通性测试：调用 SupabaseService.fetchAllUsers() 并在 Logcat 输出结果【Connectivity test: Call SupabaseService.fetchAllUsers() and output results in Logcat】
+        lifecycleScope.launch {
+            try {
+                val users = SupabaseService.fetchAllUsers()
+                Log.d("SupabaseTest", "Users Fetched: $users")
+            } catch (e: Exception) {
+                Log.e("SupabaseTest", "Error fetching users: ${e.message}", e)
+            }
+        }
+
+
         setContent {
             val settingsModel: SettingsViewModel by viewModels()
             val altColours = settingsModel.altColours.observeAsState(initial = false)
@@ -72,8 +122,16 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     NavHost(
                         navController = navController,
-                        startDestination = OpeningScreen
+                        startDestination = ModeSelectionScreen
                     ){
+                        composable<ModeSelectionScreen> {
+                            ModeScreen(navController)
+                        }
+
+                        composable<LoginScreenRoute> {
+                            LoginScreen(navController)
+                        }
+
                         composable<OpeningScreen> {
                             LoadingScreen(navController)
                         }

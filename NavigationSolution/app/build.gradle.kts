@@ -5,6 +5,9 @@ plugins {
     kotlin("plugin.serialization") version "2.0.21"
 }
 
+val supabaseVersion = "3.1.2"
+val ktorVersion = "3.1.1" // 或更高
+
 android {
     namespace = "com.example.navigationsolution"
     compileSdk = 35
@@ -28,13 +31,16 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         compose = true
     }
@@ -59,4 +65,17 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Material Design 组件库
+    implementation("com.google.android.material:material:1.10.0")
+    
+    // 使用 BOM 对齐所有 supabase 模块版本（引用变量）
+    implementation(platform("io.github.jan-tennert.supabase:bom:$supabaseVersion"))
+
+    // Postgrest 模块
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+
+    // Android 平台下的 Ktor 客户端
+    implementation("io.ktor:ktor-client-android:$ktorVersion")
+
 }
