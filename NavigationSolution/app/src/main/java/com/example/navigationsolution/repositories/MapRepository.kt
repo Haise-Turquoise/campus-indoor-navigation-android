@@ -1,6 +1,6 @@
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -11,9 +11,7 @@ import androidx.annotation.RequiresApi
 import com.example.navigationsolution.R
 import java.io.File
 import java.io.FileOutputStream
-import java.util.LinkedList
 import java.util.Objects
-import java.util.Queue
 import java.util.TreeSet
 import kotlin.math.abs
 import kotlin.math.pow
@@ -35,11 +33,11 @@ object MapRepository{
 
         drawGraph()
 
-        val file = File(applicationContext.cacheDir, "temp_path.png")
-        val outStream = FileOutputStream(file)
-        getMarkedPlan(-1, 1326, 1427)[0].compress(Bitmap.CompressFormat.PNG, 100, outStream)
-        outStream.flush()
-        outStream.close()
+//        val file = File(applicationContext.cacheDir, "temp_path.png")
+//        val outStream = FileOutputStream(file)
+//        getMarkedPlan(-1, 1326, 1427)[2]!!.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+//        outStream.flush()
+//        outStream.close()
     }
 
     // ? Types of PoIs
@@ -92,6 +90,14 @@ object MapRepository{
 
         n1.adj[n2] = dist;
         n2.adj[n1] = dist;
+    }
+
+    private fun addEdge(buildingId: Int, r1: Int, r2: Int) {
+        val n1 = buildings[buildingId]!!.plans[getFloor(r1)]!!.nodes[r1]!!
+        val n2 = buildings[buildingId]!!.plans[getFloor(r2)]!!.nodes[r2]!!
+
+        n1.adj[n2] = .0;
+        n2.adj[n1] = .0;
     }
 
     // TODO: Delete this function, it's used only for verification of graph models
@@ -166,16 +172,16 @@ object MapRepository{
 
         val f2 = buildings[-1]!!.plans[2]!!
 
+        // TODO: SERIALIZE THIS DATA SOMEHOW TO STORE IN DB
+
+        // F1 INIT
+
         // ROOMS HAVE NUMBERS -- 1324, 1326
         // PORTS HAVE NEGATIVE 10XX
         // WC HAVE NEGATIVE 11XX
         // STAIRS HAVE NEGATIVE 12XX
         // WATER HAVE NEGATIVE 13XX
         // NONE IS ALL ELSE 1XXX
-
-        // TODO: SERIALIZE THIS DATA SOMEHOW TO STORE IN DB
-
-        // F1 INIT
         run {
             // COLUMN 1
             f1.nodes[-1000] = MapNode(222, 90, NodeType.PORT, -1000, HashMap(), f1)
@@ -183,13 +189,15 @@ object MapRepository{
             f1.nodes[1324] = MapNode(222, 185, NodeType.ROOM, 1324, HashMap(), f1)
             f1.nodes[1326] = MapNode(222, 240, NodeType.ROOM, 1326, HashMap(), f1)
             f1.nodes[1327] = MapNode(222, 240, NodeType.ROOM, 1327, HashMap(), f1)
+            f1.nodes[-1201] = MapNode(222, 284, NodeType.STAIR, -1201, HashMap(), f1)
             f1.nodes[-1500] = MapNode(222, 316, NodeType.NONE, -1500, HashMap(), f1)
             f1.nodes[-1501] = MapNode(222, 343, NodeType.PORT, -1501, HashMap(), f1)
             addEdge(f1, -1000, -1200)
             addEdge(f1, -1200, 1324)
             addEdge(f1, 1324, 1326)
             addEdge(f1, 1326, 1327)
-            addEdge(f1, 1327, -1500)
+            addEdge(f1, 1327, -1201)
+            addEdge(f1, -1201, -1500)
             addEdge(f1, -1500, -1501)
 
             // COLUMN 2
@@ -215,10 +223,10 @@ object MapRepository{
             addEdge(f1, -1501, -1503)
 
             // COLUMN 3
-            f1.nodes[-1201] = MapNode(345, 373, NodeType.STAIR, -1201, HashMap(), f1)
+            f1.nodes[-1202] = MapNode(345, 373, NodeType.STAIR, -1202, HashMap(), f1)
 
             // COLUMN 2 X 3
-            addEdge(f1, -1504, -1201)
+            addEdge(f1, -1504, -1202)
 
             // COLUMN 4
             f1.nodes[-1505] = MapNode(447, 185, NodeType.NONE, -1505, HashMap(), f1)
@@ -265,7 +273,9 @@ object MapRepository{
             addEdge(f1, 1416, 1427)
 
             // COLUMN 9
-            f1.nodes[-1004] = MapNode(656, 316, NodeType.PORT, -1004, HashMap(), f1)
+            f1.nodes[-1004] = MapNode(680, 316, NodeType.PORT, -1004, HashMap(), f1)
+            f1.nodes[-1203] = MapNode(680, 282, NodeType.STAIR, -1202, HashMap(), f1)
+            addEdge(f1, -1004, -1203)
 
             // COLUMN 8 X 9
             addEdge(f1, 1427, -1004)
@@ -278,7 +288,6 @@ object MapRepository{
         // WC HAVE NEGATIVE 11XX
         // STAIRS HAVE NEGATIVE 22XX
         // NONE IS ALL ELSE 2XXX
-
         run {
             // COLUMN 1 (LEFTMOST)
             f2.nodes[-2200] = MapNode(222, 102, NodeType.STAIR, -2200, HashMap(), f2)
@@ -420,8 +429,6 @@ object MapRepository{
             f2.nodes[2462] = MapNode(563, 260, NodeType.ROOM, 2462, HashMap(), f2)
             f2.nodes[2916] = MapNode(572, 260, NodeType.ROOM, 2916, HashMap(), f2)
             f2.nodes[2458] = MapNode(597, 260, NodeType.ROOM, 2458, HashMap(), f2)
-            f2.nodes[2456] = MapNode(641, 260, NodeType.ROOM, 2456, HashMap(), f2)
-            f2.nodes[2454] = MapNode(663, 260, NodeType.ROOM, 2454, HashMap(), f2)
             f2.nodes[2409] = MapNode(679, 260, NodeType.ROOM, 2409, HashMap(), f2)
             f2.nodes[2453] = MapNode(736, 260, NodeType.ROOM, 2453, HashMap(), f2)
             f2.nodes[2452] = MapNode(767, 260, NodeType.ROOM, 2452, HashMap(), f2)
@@ -434,9 +441,7 @@ object MapRepository{
             addEdge(f2, 2466, 2462)
             addEdge(f2, 2462, 2916)
             addEdge(f2, 2916, 2458)
-            addEdge(f2, 2458, 2456)
-            addEdge(f2, 2456, 2454)
-            addEdge(f2, 2454, 2409)
+            addEdge(f2, 2458, 2409)
             addEdge(f2, 2409, 2453)
             addEdge(f2, 2453, 2452)
             addEdge(f2, 2452, 2448)
@@ -500,6 +505,14 @@ object MapRepository{
 
         }
 
+        // F1 X F2
+        run {
+            addEdge(-1, -1200, -2200)
+            addEdge(-1, -1201, -2201)
+            addEdge(-1, -1202, -2202)
+            addEdge(-1, -1203, -2204)
+        }
+
     }
 
     fun getNorthHeading(buildingId: Int): Int {
@@ -509,18 +522,18 @@ object MapRepository{
     // ? Returns marked floor plan for a given building ID and start/end room IDs
     // ? May return a list in case of routes spanning floors
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-    fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int): List<Bitmap> {
+    fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int): Map<Int, Bitmap> {
 
-        // Code for testing floor switching
-        return listOf(
-            (applicationContext.resources.getDrawable(R.drawable.e7f1) as BitmapDrawable).bitmap,
-            (applicationContext.resources.getDrawable(R.drawable.e7f1) as BitmapDrawable).bitmap,
-            (applicationContext.resources.getDrawable(R.drawable.e7f2) as BitmapDrawable).bitmap,
-            (applicationContext.resources.getDrawable(R.drawable.e7f3) as BitmapDrawable).bitmap,
-            (applicationContext.resources.getDrawable(R.drawable.e7f4) as BitmapDrawable).bitmap,
-            (applicationContext.resources.getDrawable(R.drawable.e7f5) as BitmapDrawable).bitmap,
-            (applicationContext.resources.getDrawable(R.drawable.e7f6) as BitmapDrawable).bitmap
-        )
+//        // Code for testing floor switching
+//        return listOf(
+//            (applicationContext.resources.getDrawable(R.drawable.e7f1) as BitmapDrawable).bitmap,
+//            (applicationContext.resources.getDrawable(R.drawable.e7f1) as BitmapDrawable).bitmap,
+//            (applicationContext.resources.getDrawable(R.drawable.e7f2) as BitmapDrawable).bitmap,
+//            (applicationContext.resources.getDrawable(R.drawable.e7f3) as BitmapDrawable).bitmap,
+//            (applicationContext.resources.getDrawable(R.drawable.e7f4) as BitmapDrawable).bitmap,
+//            (applicationContext.resources.getDrawable(R.drawable.e7f5) as BitmapDrawable).bitmap,
+//            (applicationContext.resources.getDrawable(R.drawable.e7f6) as BitmapDrawable).bitmap
+//        )
 
         if(srcId == destId)
             return drawPath(buildingId, listOf())
@@ -535,7 +548,7 @@ object MapRepository{
     // ? Returns marked floor plan for a given building ID, start ID, and PoI type
     // ? May return a list in case of routes spanning floors
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-    fun getMarkedPlan(buildingId: Int, srcId: Int, destType: NodeType): List<Bitmap> {
+    fun getMarkedPlan(buildingId: Int, srcId: Int, destType: NodeType): Map<Int, Bitmap> {
         // Get node corresponding to src
         val sNode = buildings[buildingId]!!.plans[getFloor(srcId)]!!.nodes[srcId]
 
@@ -543,42 +556,61 @@ object MapRepository{
     }
 
     // ? Draws a line on floor plan(s) given the path
-    private fun drawPath(buildingId: Int, path: List<MapNode>): List<Bitmap> {
-        // TODO: add support for cross-floor routes
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private fun drawPath(buildingId: Int, path: List<MapNode>): Map<Int, Bitmap> {
+        // Load and copy list of floor plans
+        val copy = buildings[buildingId]!!.plans.entries
+            .associate { e ->
+                val img = (applicationContext.resources.getDrawable(
+                    e.value.plan,
+                    null
+                ) as BitmapDrawable).bitmap
 
-        // Load floor plan copy
-        val img = (applicationContext.resources.getDrawable(
-            buildings[buildingId]!!.plans[getFloor(path[0].id)]!!.plan,
-            null) as BitmapDrawable).bitmap
-        val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
+                e.key to img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
+            }
 
         if(path.isEmpty())
-            return listOf(copy);
+            return copy
 
-        val canvas = Canvas(copy)
         val paint = Paint()
         paint.color = LINE_COLOR
-        paint.strokeWidth = 10f
+        paint.strokeWidth = 2f
+
+        // Start location
+        var cur = path[0]
+
+        var canvas = Canvas(copy[getFloor(cur.id)]!!)
 
         // Draw path
-        for(i in 1..<path.size)
-            canvas.drawLine(
-                path[i - 1].x.toFloat(),
-                path[i - 1].y.toFloat(),
-                path[i].x.toFloat(),
-                path[i].y.toFloat(),
-                paint
-            )
+        for(i in 1..<path.size) {
+            val next = path[i]
+
+            // Draw line if both connected nodes are on same floor
+            if(getFloor(cur.id) == getFloor(next.id))
+                canvas.drawLine(
+                    cur.x.toFloat(),
+                    cur.y.toFloat(),
+                    next.x.toFloat(),
+                    next.y.toFloat(),
+                    paint
+                )
+
+            // Cross-floor edge; mark up and down nodes and switch canvas
+            else
+                canvas = Canvas(copy[getFloor(next.id)]!!)
+
+            cur = next
+        }
 
         // TODO: remove the following section; used only for testing
-        val file = File(applicationContext.cacheDir, "temp.png")
-        val outStream = FileOutputStream(file)
-        copy.compress(Bitmap.CompressFormat.PNG, 100, outStream)
-        outStream.flush()
-        outStream.close()
+//        val file = File(applicationContext.cacheDir, "temp.png")
+//        val outStream = FileOutputStream(file)
+//        copy.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+//        outStream.flush()
+//        outStream.close()
         // TODO: end of section
 
-        return listOf(copy)
+        return copy
     }
 
     // ? For pathing to a specific room
@@ -653,6 +685,6 @@ object MapRepository{
     // ? Returns the floor number given a room ID
     private fun getFloor(roomId: Int): Int {
         // ! REPLACE THIS IF NOT ALL BUILDINGS FOLLOW THIS PATTERN
-        return roomId / 1000;
+        return abs(roomId) / 1000;
     }
 }
