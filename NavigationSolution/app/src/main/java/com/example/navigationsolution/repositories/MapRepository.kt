@@ -166,6 +166,10 @@ object MapRepository{
 
         val f2 = buildings[-1]!!.plans[2]!!
 
+        // TODO: SERIALIZE THIS DATA SOMEHOW TO STORE IN DB
+
+        // F1 INIT
+
         // ROOMS HAVE NUMBERS -- 1324, 1326
         // PORTS HAVE NEGATIVE 10XX
         // WC HAVE NEGATIVE 11XX
@@ -173,9 +177,6 @@ object MapRepository{
         // WATER HAVE NEGATIVE 13XX
         // NONE IS ALL ELSE 1XXX
 
-        // TODO: SERIALIZE THIS DATA SOMEHOW TO STORE IN DB
-
-        // F1 INIT
         run {
             // COLUMN 1
             f1.nodes[-1000] = MapNode(222, 90, NodeType.PORT, -1000, HashMap(), f1)
