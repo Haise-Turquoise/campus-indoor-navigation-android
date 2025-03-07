@@ -21,8 +21,14 @@ import kotlin.math.sqrt
 // Might be replaced by getting data from API later on, but context is required for accessing resources
 @Suppress("StaticFieldLeak")
 object MapRepository{
-    private const val LINE_COLOR = Color.RED
-    private const val NODE_COLOR = Color.GREEN
+    private const val COLOR_LINE = Color.CYAN
+    private const val COLOR_START = COLOR_LINE
+    private const val COLOR_END = Color.RED
+    private const val COLOR_STAIRS_UP = Color.MAGENTA
+    private const val COLOR_STAIRS_DOWN = Color.MAGENTA
+
+    private const val RADIUS_NODE = 3f
+    private const val WIDTH_PATH = 2f
 
     private lateinit var applicationContext: Context
 
@@ -109,8 +115,8 @@ object MapRepository{
         val canvas = Canvas(copy)
         val paint = Paint()
 
-        paint.strokeWidth = 2f
-        paint.color = LINE_COLOR
+        paint.strokeWidth = WIDTH_PATH
+        paint.color = COLOR_LINE
 
         for(n in buildings[-1]!!.plans[2]!!.nodes.values)
             for(nn in n.adj.keys)
@@ -122,20 +128,23 @@ object MapRepository{
                     paint
                 )
 
-        paint.color = NODE_COLOR
-
         for(n in buildings[-1]!!.plans[2]!!.nodes.values) {
-            if(n.type == NodeType.NONE)
-                paint.color = LINE_COLOR
+            // TODO: this is kind of gross, maybe add more const colors with names that make sense
+
+            paint.color = when(n.type) {
+                NodeType.NONE -> COLOR_LINE
+                NodeType.STAIR -> COLOR_START
+                NodeType.PORT -> COLOR_END
+                NodeType.ROOM -> COLOR_STAIRS_UP
+                else -> COLOR_STAIRS_DOWN
+            }
 
             canvas.drawCircle(
                 n.x.toFloat(),
                 n.y.toFloat(),
-                2f,
+                RADIUS_NODE,
                 paint
             )
-
-            paint.color = NODE_COLOR
         }
 
         val file = File(applicationContext.cacheDir, "temp_full_graph.png")
@@ -573,13 +582,22 @@ object MapRepository{
             return copy
 
         val paint = Paint()
-        paint.color = LINE_COLOR
-        paint.strokeWidth = 2f
+        paint.strokeWidth = WIDTH_PATH
 
         // Start location
         var cur = path[0]
 
         var canvas = Canvas(copy[getFloor(cur.id)]!!)
+
+        // Draw start node
+        paint.color = COLOR_START
+        canvas.drawCircle(
+            cur.x.toFloat(),
+            cur.y.toFloat(),
+            RADIUS_NODE,
+            paint
+        )
+        paint.color = COLOR_LINE
 
         // Draw path
         for(i in 1..<path.size) {
@@ -596,11 +614,45 @@ object MapRepository{
                 )
 
             // Cross-floor edge; mark up and down nodes and switch canvas
-            else
+            else {
+                // Draw stair up node
+                paint.color =
+                    if(getFloor(cur.id) < getFloor(next.id)) COLOR_STAIRS_UP
+                    else COLOR_STAIRS_DOWN
+                canvas.drawCircle(
+                    cur.x.toFloat(),
+                    cur.y.toFloat(),
+                    RADIUS_NODE,
+                    paint
+                )
+
+                // Switch canvas
                 canvas = Canvas(copy[getFloor(next.id)]!!)
+
+                // Draw floor start node
+                paint.color = COLOR_START
+                canvas.drawCircle(
+                    next.x.toFloat(),
+                    next.y.toFloat(),
+                    RADIUS_NODE,
+                    paint
+                )
+
+                // Reset color
+                paint.color = COLOR_LINE
+            }
 
             cur = next
         }
+
+        // Draw destination node
+        paint.color = COLOR_END
+        canvas.drawCircle(
+            cur.x.toFloat(),
+            cur.y.toFloat(),
+            RADIUS_NODE,
+            paint
+        )
 
         // TODO: remove the following section; used only for testing
 //        val file = File(applicationContext.cacheDir, "temp.png")
