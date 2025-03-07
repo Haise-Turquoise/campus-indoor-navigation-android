@@ -21,3 +21,5 @@ LAB 102-18
 
 ## Releases
 [Version 0.1 Release](https://git.uwaterloo.ca/xxx/cs346/-/wikis/Version-0.1-Release)
+\
+[Version 0.2 Release](https://git.uwaterloo.ca/xxx/cs346/-/wikis/Version-0.2-Release)
