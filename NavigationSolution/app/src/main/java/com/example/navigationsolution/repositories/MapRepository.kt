@@ -109,7 +109,7 @@ object MapRepository{
     // TODO: Delete this function, it's used only for verification of graph models
     private fun drawGraph() {
         // Load floor plan copy
-        val img = (applicationContext.resources.getDrawable(R.drawable.e7f2, null) as BitmapDrawable).bitmap
+        val img = (applicationContext.resources.getDrawable(R.drawable.e7f3, null) as BitmapDrawable).bitmap
         val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
 
         val canvas = Canvas(copy)
@@ -118,7 +118,7 @@ object MapRepository{
         paint.strokeWidth = WIDTH_PATH
         paint.color = COLOR_LINE
 
-        for(n in buildings[-1]!!.plans[2]!!.nodes.values)
+        for(n in buildings[-1]!!.plans[3]!!.nodes.values)
             for(nn in n.adj.keys)
                 canvas.drawLine(
                     n.x.toFloat(),
@@ -128,7 +128,7 @@ object MapRepository{
                     paint
                 )
 
-        for(n in buildings[-1]!!.plans[2]!!.nodes.values) {
+        for(n in buildings[-1]!!.plans[3]!!.nodes.values) {
             // TODO: this is kind of gross, maybe add more const colors with names that make sense
 
             paint.color = when(n.type) {
@@ -631,7 +631,7 @@ object MapRepository{
             addEdge(f3, 3433, 3434)
 
             // COLUMN 1 X ROW 1
-            addEdge(f3, 3224, 3921)
+            addEdge(f3, 3324, 3921)
 
             // Offshoots from Row 1
             f3.nodes[3921] = MapNode(221, 104, NodeType.ROOM, 3921, HashMap(), f3)
@@ -672,6 +672,9 @@ object MapRepository{
             addEdge(f3, -3506, 3353)
             addEdge(f3, 3343, 3353)
 
+            // Bottom left x Column 1
+            addEdge(f3, -3503, 3338)
+
             // COLUMN 2
             f3.nodes[-3203] = MapNode(501, 151, NodeType.STAIR, -3203, HashMap(), f3)
             f3.nodes[-3100] = MapNode(501, 190, NodeType.WC, -3100, HashMap(), f3) // combined both "rooms" into one node
@@ -691,7 +694,7 @@ object MapRepository{
             addEdge(f3, -3203, -3502)
             
             // COLUMN 2 X Bottom Left
-            addEdge(f3, -3508, -3354)
+            addEdge(f3, -3508, 3354)
 
             // ROW 2 (Bottom Right)
             f3.nodes[3458] = MapNode(529, 259, NodeType.ROOM, 3458, HashMap(), f3)
