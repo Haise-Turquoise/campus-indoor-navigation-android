@@ -689,13 +689,11 @@ object MapRepository{
             f3.nodes[-3507] = MapNode(501, 259, NodeType.NONE, -3507, HashMap(), f3)
             f3.nodes[-3508] = MapNode(501, 272, NodeType.NONE, -3508, HashMap(), f3)
             f3.nodes[-3204] = MapNode(501, 372, NodeType.STAIR, -3204, HashMap(), f3)
-            f3.nodes[-3205] = MapNode(475, 372, NodeType.STAIR, -3205, HashMap(), f3)
             f3.nodes[-3002] = MapNode(501, 392, NodeType.PORT, -3002, HashMap(), f3)
             addEdge(f3, -3203, -3100)
             addEdge(f3, -3100, -3507)
             addEdge(f3, -3507, -3508)
             addEdge(f3, -3508, -3204)
-            addEdge(f3, -3204, -3205)
             addEdge(f3, -3204, -3002)
 
             // COLUMN 2 X ROW 1
@@ -873,6 +871,7 @@ object MapRepository{
 
             // ROW 1 X ROW 2
             addEdge(f4, 4324, 4338)
+            addEdge(f4, 4334, 4336)
 
             // Left and right offshoots from Row 2
             f4.nodes[-4201] = Mapnode(755, 967, NodeType.STIAR, -4201, HashMap(), f4)
@@ -885,7 +884,19 @@ object MapRepository{
             addEdge(f4, 4417, -4202)
             addEdge(f4, -4001, -4202)
         
-        
+            // Middle Column
+            f4.nodes[-4002] = Mapnode(1703, 365, NodeType.PORT, -4002, HashMap(), f4)
+            f4.nodes[-4203] = Mapnode(1703, 515, NodeType.STAIR, -4203, HashMap(), f4)
+            f4.nodes[-4101] = Mapnode(1703, 651, NodeType.WC, -4101, HashMap(), f4)
+            f4.nodes[-4204] = Mapnode(1703, 1267, NodeType.STAIR, -4204, HashMap(), f4)
+            f4.nodes[-4003] = Mapnode(1703, 1337, NodeType.PORT, -4003, HashMap(), f4)
+            addEdge(f4, -4002, 4301)
+            addEdge(f4, 4301, -4203)
+            addEdge(f4, -4203, -4101)
+            addEdge(f4, -4101, -4501)
+            addEdge(f4, -4501, -4204)
+            addEdge(f4, -4204, -4003)
+            
 
         }
 
