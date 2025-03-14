@@ -1465,7 +1465,7 @@ object MapRepository{
             addEdge(f7, 7444, 7442)
             addEdge(f7, 7442, 7917)
             addEdge(f7, 7917, 7438)
-            f7.nodes[-7200] = MapNode(752, 965, NodeType.STIAR, -7200, HashMap(), f7)
+            f7.nodes[-7200] = MapNode(752, 965, NodeType.STAIR, -7200, HashMap(), f7)
             addEdge(f7, 7339, -7200)
 
             // COLUMNS
