@@ -102,8 +102,8 @@ object MapRepository{
         val n1 = buildings[buildingId]!!.plans[getFloor(r1)]!!.nodes[r1]!!
         val n2 = buildings[buildingId]!!.plans[getFloor(r2)]!!.nodes[r2]!!
 
-        n1.adj[n2] = .0;
-        n2.adj[n1] = .0;
+        n1.adj[n2] = 50.0;
+        n2.adj[n1] = 50.0;
     }
 
     // TODO: Delete this function, it's used only for verification of graph models
@@ -118,7 +118,7 @@ object MapRepository{
         paint.strokeWidth = WIDTH_PATH
         paint.color = COLOR_LINE
 
-        for(n in buildings[-1]!!.plans[7]!!.nodes.values)
+        for(n in buildings[1]!!.plans[7]!!.nodes.values)
             for(nn in n.adj.keys)
                 canvas.drawLine(
                     n.x.toFloat(),
@@ -128,7 +128,7 @@ object MapRepository{
                     paint
                 )
 
-        for(n in buildings[-1]!!.plans[7]!!.nodes.values) {
+        for(n in buildings[1]!!.plans[7]!!.nodes.values) {
             // TODO: this is kind of gross, maybe add more const colors with names that make sense
 
             paint.color = when(n.type) {
@@ -158,68 +158,83 @@ object MapRepository{
         // TODO: Add logic for retrieving and/or loading serialized map data
         // ? Will hardcode points for now
 
+        // Fallback
         buildings[-1] = BuildingMap(
-            -1,
+            1,
             HashMap(),
             HashMap(),
-            305
+            0
         )
 
         buildings[-1]!!.plans[1] = FloorMap(
             1,
             HashMap(),
+            R.drawable.uwlogo
+        )
+
+        // E7
+        buildings[1] = BuildingMap(
+            1,
+            HashMap(),
+            HashMap(),
+            305
+        )
+
+        buildings[1]!!.plans[1] = FloorMap(
+            1,
+            HashMap(),
             R.drawable.e7f1
         )
 
-        val f1 = buildings[-1]!!.plans[1]!!
+        val f1 = buildings[1]!!.plans[1]!!
 
-        buildings[-1]!!.plans[2] = FloorMap(
+        buildings[1]!!.plans[2] = FloorMap(
             2,
             HashMap(),
             R.drawable.e7f2
         )
 
-        val f2 = buildings[-1]!!.plans[2]!!
+        val f2 = buildings[1]!!.plans[2]!!
 
-        buildings[-1]!!.plans[3] = FloorMap(
+        buildings[1]!!.plans[3] = FloorMap(
             3,
             HashMap(),
             R.drawable.e7f3
         )
 
-        val f3 = buildings[-1]!!.plans[3]!!
+        val f3 = buildings[1]!!.plans[3]!!
 
-        buildings[-1]!!.plans[4] = FloorMap(
+        buildings[1]!!.plans[4] = FloorMap(
             4,
             HashMap(),
             R.drawable.e7f4hi
         )
 
-        val f4 = buildings[-1]!!.plans[4]!!
+        val f4 = buildings[1]!!.plans[4]!!
 
-        buildings[-1]!!.plans[5] = FloorMap(
+        buildings[1]!!.plans[5] = FloorMap(
             5,
             HashMap(),
             R.drawable.e7f5hi
         )
 
-        val f5 = buildings[-1]!!.plans[5]!!
+        val f5 = buildings[1]!!.plans[5]!!
 
-        buildings[-1]!!.plans[6] = FloorMap(
+        buildings[1]!!.plans[6] = FloorMap(
             6,
             HashMap(),
             R.drawable.e7f6hi
         )
 
-        val f6 = buildings[-1]!!.plans[6]!!
+        val f6 = buildings[1]!!.plans[6]!!
 
-        buildings[-1]!!.plans[7] = FloorMap(
+        buildings[1]!!.plans[7] = FloorMap(
             7,
             HashMap(),
             R.drawable.e7f7hi
         )
 
-        val f7 = buildings[-1]!!.plans[7]!!
+        val f7 = buildings[1]!!.plans[7]!!
 
         // TODO: SERIALIZE THIS DATA SOMEHOW TO STORE IN DB
 
@@ -556,10 +571,10 @@ object MapRepository{
 
         // F1 X F2
         run {
-            addEdge(-1, -1200, -2200)
-            addEdge(-1, -1201, -2201)
-            addEdge(-1, -1202, -2202)
-            addEdge(-1, -1203, -2204)
+            addEdge(1, -1200, -2200)
+            addEdge(1, -1201, -2201)
+            addEdge(1, -1202, -2202)
+            addEdge(1, -1203, -2204)
         }
 
         // F3 INIT
@@ -776,6 +791,15 @@ object MapRepository{
 
         }
 
+        // F2 X F3
+        run {
+            addEdge(1, -3200, -2200) // J
+            addEdge(1, -3201, -2201) // H
+            addEdge(1, -3203, -2203) // F
+            addEdge(1, -3204, -2202) // Bottom centre
+            addEdge(1, -3206, -2204) // G
+        }
+
         // F4 INIT
 
         // ROOMS HAVE NUMBERS -- 4322, 4318
@@ -922,6 +946,15 @@ object MapRepository{
             addEdge(f4, -4204, -4003)
             
 
+        }
+
+        // F3 X F4
+        run {
+            addEdge(1, -3200, -4200) // J
+            addEdge(1, -3201, -4201) // H
+            addEdge(1, -3203, -4203) // F
+            addEdge(1, -3204, -4204) // Bottom centre
+            addEdge(1, -3206, -4202) // G
         }
 
         // F5 INIT
@@ -1091,6 +1124,15 @@ object MapRepository{
             addEdge(f5, -5501, -5204)
             addEdge(f5, -5204, -5003)
 
+        }
+
+        // F5 X F4
+        run {
+            addEdge(1, -5200, -4200) // J
+            addEdge(1, -5201, -4201) // H
+            addEdge(1, -5203, -4203) // F
+            addEdge(1, -5204, -4204) // Bottom centre
+            addEdge(1, -5202, -4202) // G
         }
 
         // F6 INIT
@@ -1313,6 +1355,15 @@ object MapRepository{
             
         }
 
+        // F5 X F6
+        run {
+            addEdge(1, -5200, -6200) // J
+            addEdge(1, -5201, -6201) // H
+            addEdge(1, -5203, -6203) // F
+            addEdge(1, -5204, -6204) // Bottom centre
+            addEdge(1, -5202, -6202) // G
+        }
+
         // F7 INIT
 
         // ROOMS HAVE NUMBERS -- 7316, 7318
@@ -1526,6 +1577,14 @@ object MapRepository{
             addEdge(f7, 7433, 7436)
             addEdge(f7, 7436, 7442)
             
+        }
+
+        // F7 X F6
+        run {
+            addEdge(1, -7200, -6201) // H
+            addEdge(1, -7201, -6203) // F
+            addEdge(1, -7202, -6204) // Bottom centre
+            addEdge(1, -7203, -6202) // G
         }
     }
 
