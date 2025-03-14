@@ -109,7 +109,7 @@ object MapRepository{
     // TODO: Delete this function, it's used only for verification of graph models
     private fun drawGraph() {
         // Load floor plan copy
-        val img = (applicationContext.resources.getDrawable(R.drawable.e7f5hi, null) as BitmapDrawable).bitmap
+        val img = (applicationContext.resources.getDrawable(R.drawable.e7f6hi, null) as BitmapDrawable).bitmap
         val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
 
         val canvas = Canvas(copy)
@@ -118,7 +118,7 @@ object MapRepository{
         paint.strokeWidth = WIDTH_PATH
         paint.color = COLOR_LINE
 
-        for(n in buildings[-1]!!.plans[5]!!.nodes.values)
+        for(n in buildings[-1]!!.plans[6]!!.nodes.values)
             for(nn in n.adj.keys)
                 canvas.drawLine(
                     n.x.toFloat(),
@@ -128,7 +128,7 @@ object MapRepository{
                     paint
                 )
 
-        for(n in buildings[-1]!!.plans[5]!!.nodes.values) {
+        for(n in buildings[-1]!!.plans[6]!!.nodes.values) {
             // TODO: this is kind of gross, maybe add more const colors with names that make sense
 
             paint.color = when(n.type) {
@@ -1220,7 +1220,7 @@ object MapRepository{
             f6.nodes[6459] = MapNode(2041, 876, NodeType.ROOM, 6459, HashMap(), f6)
             f6.nodes[6462] = MapNode(2104, 876, NodeType.ROOM, 6462, HashMap(), f6)
             f6.nodes[6457] = MapNode(2173, 876, NodeType.ROOM, 6457, HashMap(), f6)
-            f6.nodes[6458] = MapNode(3275, 876, NodeType.ROOM, 6458, HashMap(), f6)
+            f6.nodes[6458] = MapNode(2375, 876, NodeType.ROOM, 6458, HashMap(), f6)
             f6.nodes[6456] = MapNode(2260, 876, NodeType.ROOM, 6456, HashMap(), f6)
             f6.nodes[6453] = MapNode(2313, 876, NodeType.ROOM, 6453, HashMap(), f6)
             f6.nodes[6447] = MapNode(2527, 876, NodeType.ROOM, 6447, HashMap(), f6)
@@ -1245,9 +1245,7 @@ object MapRepository{
             addEdge(f6, 6472, 6914)
             addEdge(f6, 6914, 6468)
             addEdge(f6, 6468, 6916)
-            addEdge(f6, 6916, 6404)
-            addEdge(f6, 6404, 6911)
-            addEdge(f6, 6911, 6466)
+            addEdge(f6, 6916, 6466)
             addEdge(f6, 6466, 6464)
             addEdge(f6, 6464, 6459)
             addEdge(f6, 6459, 6462)
@@ -1260,8 +1258,8 @@ object MapRepository{
             addEdge(f6, 6454, 6452)
             addEdge(f6, 6452, 6448)
             
-            // COLUMN 2 X ROW 1
-            addEdge(f6, 6388, 6339)
+            // COLUMN 1 X ROW 2
+            addEdge(f6, 6338, 6339)
 
             // Left and right offshoots from Row 2
             f6.nodes[-6201] = MapNode(757, 967, NodeType.STAIR, -6201, HashMap(), f6)
@@ -1295,13 +1293,11 @@ object MapRepository{
             f6.nodes[6443] = MapNode(2675, 742, NodeType.ROOM, 6443, HashMap(), f6)
             f6.nodes[6444] = MapNode(2675, 759, NodeType.ROOM, 6444, HashMap(), f6)
             f6.nodes[6446] = MapNode(2675, 840, NodeType.ROOM, 6446, HashMap(), f6)
-            f6.nodes[6448] = MapNode(2675, 876, NodeType.ROOM, 6448, HashMap(), f6)
             addEdge(f6, 6436, 6438)
             addEdge(f6, 6438, 6442)
             addEdge(f6, 6442, 6443)
             addEdge(f6, 6443, 6444)
             addEdge(f6, 6444, 6446)
-            addEdge(f6, 6446, 6448)
 
             // Join with rows
             addEdge(f6, 6432, 6436)
