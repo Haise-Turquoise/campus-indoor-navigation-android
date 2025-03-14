@@ -213,6 +213,14 @@ object MapRepository{
 
         val f6 = buildings[-1]!!.plans[6]!!
 
+        buildings[-1]!!.plans[7] = FloorMap(
+            7,
+            HashMap(),
+            R.drawable.e7f7hi
+        )
+
+        val f7 = buildings[-1]!!.plans[7]!!
+
         // TODO: SERIALIZE THIS DATA SOMEHOW TO STORE IN DB
 
         // F1 INIT
@@ -1303,6 +1311,79 @@ object MapRepository{
             addEdge(f6, 6432, 6436)
             addEdge(f6, 6446, 6452)
             
+        }
+
+        // F7 INIT
+
+        // ROOMS HAVE NUMBERS -- 7316, 7318
+        // PORTS HAVE NEGATIVE 70XX
+        // WC HAVE NEGATIVE 71XX
+        // STAIRS HAVE NEGATIVE 72XX
+        // NONE IS ALL ELSE 7XXX (USUALLY 75XX)
+
+        run {
+            // ROW 1
+
+            f7.nodes[7921] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7318] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7321] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7316] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7319] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7314] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7317] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7312] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7308] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7306] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7919] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7304] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7302] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7301] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7402] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7404] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7911] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7406] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7408] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7409] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7414] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7416] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[-7500] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7418] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7419] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7421] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7422] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7424] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7423] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            f7.nodes[7426] = MapNode(2675, 433, NodeType.ROOM, 7318, HashMap(), f7)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7318, 7321)
+            addEdge(f7, 7321, 7318)
+            addEdge(f7, 7921, 7316)
+            addEdge(f7, 7316, 7319)
+            addEdge(f7, 7319, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
+            addEdge(f7, 7921, 7318)
         }
     }
 
