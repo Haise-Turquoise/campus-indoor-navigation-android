@@ -1595,6 +1595,637 @@ object MapRepository{
             addEdge(1, -7203, -6202) // G
         }
 
+        // E6
+
+        buildings[2] = BuildingMap(
+            2,
+            HashMap(),
+            HashMap(),
+            305 // TODO: Update this
+        )
+
+        buildings[2]!!.plans[1] = FloorMap(
+            1,
+            HashMap(),
+            R.drawable.e6f1
+        )
+
+        val e6f1 = buildings[2]!!.plans[1]!!
+
+        buildings[2]!!.plans[2] = FloorMap(
+            2,
+            HashMap(),
+            R.drawable.e6f2
+        )
+
+        val e6f2 = buildings[2]!!.plans[2]!!
+
+        buildings[2]!!.plans[3] = FloorMap(
+            3,
+            HashMap(),
+            R.drawable.e6f3
+        )
+
+        val e6f3 = buildings[2]!!.plans[3]!!
+
+        buildings[2]!!.plans[4] = FloorMap(
+            4,
+            HashMap(),
+            R.drawable.e6f4
+        )
+
+        val e6f4 = buildings[2]!!.plans[4]!!
+
+        buildings[2]!!.plans[5] = FloorMap(
+            5,
+            HashMap(),
+            R.drawable.e6f5
+        )
+
+        val e6f5 = buildings[2]!!.plans[5]!!
+
+        // F1 INIT
+
+        // ROOMS HAVE NUMBERS -- 1002, 1004
+        // PORTS HAVE NEGATIVE 10XX
+        // WC HAVE NEGATIVE 11XX
+        // STAIRS HAVE NEGATIVE 12XX
+        // NONE IS ALL ELSE 1XXX (USUALLY 15XX)
+
+        run {
+            // ROW 1 (TOPMOST)
+
+            e6f1.nodes[-1000] = MapNode(907, 389, NodeType.PORT, -1000, HashMap(), e6f1)
+            e6f1.nodes[-1200] = MapNode(1034, 389, NodeType.STAIR, -1200, HashMap(), e6f1)
+            e6f1.nodes[1907] = MapNode(1045, 389, NodeType.ROOM, 1907, HashMap(), e6f1)
+            e6f1.nodes[-1100] = MapNode(1115, 389, NodeType.ROOM, -1100, HashMap(), e6f1)
+            e6f1.nodes[1102] = MapNode(1244, 389, NodeType.ROOM, 1102, HashMap(), e6f1)
+            e6f1.nodes[1103] = MapNode(1318, 389, NodeType.ROOM, 1103, HashMap(), e6f1)
+            e6f1.nodes[1104] = MapNode(1355, 389, NodeType.ROOM, 1104, HashMap(), e6f1)
+            e6f1.nodes[1106] = MapNode(1462, 389, NodeType.ROOM, 1106, HashMap(), e6f1)
+            e6f1.nodes[1108] = MapNode(1570, 389, NodeType.ROOM, 1108, HashMap(), e6f1)
+            e6f1.nodes[1110] = MapNode(1675, 389, NodeType.ROOM, 1110, HashMap(), e6f1)
+            e6f1.nodes[1112] = MapNode(1718, 389, NodeType.ROOM, 1112, HashMap(), e6f1)
+            e6f1.nodes[1109] = MapNode(1748, 389, NodeType.ROOM, 1109, HashMap(), e6f1)
+            e6f1.nodes[1114] = MapNode(1826, 389, NodeType.ROOM, 1114, HashMap(), e6f1)
+            e6f1.nodes[1116] = MapNode(1936, 389, NodeType.ROOM, 1116, HashMap(), e6f1)
+            e6f1.nodes[1113] = MapNode(1968, 389, NodeType.ROOM, 1113, HashMap(), e6f1)
+            e6f1.nodes[1118] = MapNode(2043, 389, NodeType.ROOM, 1118, HashMap(), e6f1)
+            e6f1.nodes[1119] = MapNode(2075, 389, NodeType.ROOM, 1119, HashMap(), e6f1)
+            e6f1.nodes[1120] = MapNode(2152, 389, NodeType.ROOM, 1120, HashMap(), e6f1)
+            e6f1.nodes[-1201] = MapNode(2272, 389, NodeType.STAIR, -1201, HashMap(), e6f1)
+            addEdge(e6f1, -1000, -1200)
+            addEdge(e6f1, -1200, 1907)
+            addEdge(e6f1, 1907, -1100)
+            addEdge(e6f1, -1100, 1102)
+            addEdge(e6f1, 1102, 1103)
+            addEdge(e6f1, 1103, 1104)
+            addEdge(e6f1, 1104, 1106)
+            addEdge(e6f1, 1106, 1108)
+            addEdge(e6f1, 1108, 1110)
+            addEdge(e6f1, 1110, 1112)
+            addEdge(e6f1, 1112, 1109)
+            addEdge(e6f1, 1109, 1114)
+            addEdge(e6f1, 1114, 1116)
+            addEdge(e6f1, 1116, 1113)
+            addEdge(e6f1, 1113, 1118)
+            addEdge(e6f1, 1118, 1119)
+            addEdge(e6f1, 1119, 1120)
+            addEdge(e6f1, 1120, -1201)
+            e6f1.nodes[-1001] = MapNode(1034, 243, NodeType.PORT, -1001, HashMap(), e6f1)
+            addEdge(e6f1, -1001, -1200)
+            e6f1.nodes[-1002] = MapNode(2272, 243, NodeType.PORT, -1002, HashMap(), e6f1)
+            addEdge(e6f1, -1002, -1201)
+
+            // ROW 2
+            e6f1.nodes[-1003] = MapNode(907, 1213, NodeType.PORT, -1003, HashMap(), e6f1)
+            e6f1.nodes[-1202] = MapNode(1034, 1213, NodeType.STAIR, -1202, HashMap(), e6f1)
+            e6f1.nodes[1901] = MapNode(1045, 1213, NodeType.ROOM, 1901, HashMap(), e6f1)
+            e6f1.nodes[-1101] = MapNode(1115, 1213, NodeType.ROOM, -1101, HashMap(), e6f1)
+            e6f1.nodes[1903] = MapNode(1244, 1213, NodeType.ROOM, 1903, HashMap(), e6f1)
+            e6f1.nodes[1003] = MapNode(1318, 1213, NodeType.ROOM, 1003, HashMap(), e6f1)
+            e6f1.nodes[1002] = MapNode(1355, 1213, NodeType.ROOM, 1002, HashMap(), e6f1)
+            e6f1.nodes[1004] = MapNode(1462, 1213, NodeType.ROOM, 1004, HashMap(), e6f1)
+            e6f1.nodes[1006] = MapNode(1570, 1213, NodeType.ROOM, 1006, HashMap(), e6f1)
+            e6f1.nodes[1008] = MapNode(1675, 1213, NodeType.ROOM, 1008, HashMap(), e6f1)
+            e6f1.nodes[1009] = MapNode(1748, 1213, NodeType.ROOM, 1009, HashMap(), e6f1)
+            e6f1.nodes[1010] = MapNode(1786, 1213, NodeType.ROOM, 1010, HashMap(), e6f1)
+            e6f1.nodes[1012] = MapNode(1894, 1213, NodeType.ROOM, 1012, HashMap(), e6f1)
+            e6f1.nodes[1013] = MapNode(1973, 1213, NodeType.ROOM, 1013, HashMap(), e6f1)
+            e6f1.nodes[1909] = MapNode(2154, 1213, NodeType.ROOM, 1909, HashMap(), e6f1)
+            e6f1.nodes[1017] = MapNode(2182, 1213, NodeType.ROOM, 1017, HashMap(), e6f1)
+            e6f1.nodes[-1203] = MapNode(2272, 1213, NodeType.STAIR, -1203, HashMap(), e6f1)
+            addEdge(e6f1, -1003, -1202)
+            addEdge(e6f1, -1202, 1901)
+            addEdge(e6f1, 1901, -1101)
+            addEdge(e6f1, -1101, 1903)
+            addEdge(e6f1, 1903, 1003)
+            addEdge(e6f1, 1003, 1002)
+            addEdge(e6f1, 1002, 1004)
+            addEdge(e6f1, 1004, 1008)
+            addEdge(e6f1, 1008, 1009)
+            addEdge(e6f1, 1009, 1010)
+            addEdge(e6f1, 1010, 1012)
+            addEdge(e6f1, 1012, 1013)
+            addEdge(e6f1, 1013, 1909)
+            addEdge(e6f1, 1909, 1017)
+            addEdge(e6f1, 1017, -1203)
+            e6f1.nodes[-1004] = MapNode(1034, 1361, NodeType.PORT, -1004, HashMap(), e6f1)
+            addEdge(e6f1, -1004, -1202)
+            e6f1.nodes[-1005] = MapNode(2272, 1361, NodeType.PORT, -1005, HashMap(), e6f1)
+            addEdge(e6f1, -1005, -1203)
+
+            // Rightmost section
+
+            e6f1.nodes[1122] = MapNode(2272, 531, NodeType.ROOM, 1122, HashMap(), e6f1)
+            e6f1.nodes[-1500] = MapNode(2272, 911, NodeType.NONE, -1500, HashMap(), e6f1)
+            e6f1.nodes[1021] = MapNode(2388, 911, NodeType.ROOM, 1021, HashMap(), e6f1)
+            addEdge(e6f1, 1122, -1500)
+            addEdge(e6f1, -1500, 1021)
+
+            e6f1.nodes[-1006] = MapNode(2460, 816, NodeType.PORT, -1006, HashMap(), e6f1)
+            e6f1.nodes[1022] = MapNode(2460, 816, NodeType.ROOM, 1022, HashMap(), e6f1)
+            e6f1.nodes[1911] = MapNode(2460, 911, NodeType.ROOM, 1911, HashMap(), e6f1)
+            e6f1.nodes[1024] = MapNode(2460, 1060, NodeType.ROOM, 1024, HashMap(), e6f1)
+            e6f1.nodes[1026] = MapNode(2460, 1155, NodeType.ROOM, 1026, HashMap(), e6f1)
+            e6f1.nodes[-1007] = MapNode(2460, 1155, NodeType.PORT, -1006, HashMap(), e6f1)
+            addEdge(e6f1, -1006, 1022)
+            addEdge(e6f1, 1022, 1911)
+            addEdge(e6f1, 1911, 1024)
+            addEdge(e6f1, 1024, 1026)
+            addEdge(e6f1, 1026, -1007)
+
+            addEdge(e6f1, 1021, 1911)
+
+            // Connect components
+
+            addEdge(e6f1, -1000, -1003)
+            addEdge(e6f1, -1002, 1122)
+            addEdge(e6f1, -1005, -1500)
+
+        }
+
+        // F2 INIT
+
+        // ROOMS HAVE NUMBERS -- 2002, 2004
+        // PORTS HAVE NEGATIVE 20XX
+        // WC HAVE NEGATIVE 21XX
+        // STAIRS HAVE NEGATIVE 22XX
+        // NONE IS ALL ELSE 1XXX (USUALLY 25XX)
+
+        run {
+            // ROW 1 (TOPMOST)
+
+            e6f2.nodes[-2500] = MapNode(965, 494, NodeType.NONE, -2500, HashMap(), e6f2)
+            e6f2.nodes[-2200] = MapNode(1040, 494, NodeType.STAIR, -2200, HashMap(), e6f2)
+            e6f2.nodes[2907] = MapNode(1046, 494, NodeType.ROOM, 2907, HashMap(), e6f2)
+            e6f2.nodes[-2100] = MapNode(1118, 494, NodeType.WC, -2100, HashMap(), e6f2)
+            e6f2.nodes[2909] = MapNode(1196, 494, NodeType.ROOM, 2909, HashMap(), e6f2)
+            e6f2.nodes[2102] = MapNode(1249, 494, NodeType.ROOM, 2102, HashMap(), e6f2)
+            e6f2.nodes[2104] = MapNode(1353, 494, NodeType.ROOM, 2104, HashMap(), e6f2)
+            e6f2.nodes[2107] = MapNode(1435, 494, NodeType.ROOM, 2107, HashMap(), e6f2)
+            e6f2.nodes[2106] = MapNode(1459, 494, NodeType.ROOM, 2106, HashMap(), e6f2)
+            e6f2.nodes[2108] = MapNode(1566, 494, NodeType.ROOM, 2108, HashMap(), e6f2)
+            e6f2.nodes[2109] = MapNode(1640, 494, NodeType.ROOM, 2109, HashMap(), e6f2)
+            e6f2.nodes[2110] = MapNode(1671, 494, NodeType.ROOM, 2110, HashMap(), e6f2)
+            e6f2.nodes[2112] = MapNode(1711, 494, NodeType.ROOM, 2112, HashMap(), e6f2)
+            e6f2.nodes[2113] = MapNode(1736, 494, NodeType.ROOM, 2113, HashMap(), e6f2)
+            e6f2.nodes[2114] = MapNode(1817, 494, NodeType.ROOM, 2114, HashMap(), e6f2)
+            e6f2.nodes[2116] = MapNode(1922, 494, NodeType.ROOM, 2116, HashMap(), e6f2)
+            e6f2.nodes[2118] = MapNode(2030, 494, NodeType.ROOM, 2118, HashMap(), e6f2)
+            e6f2.nodes[2119] = MapNode(2060, 494, NodeType.ROOM, 2119, HashMap(), e6f2)
+            e6f2.nodes[2120] = MapNode(2134, 494, NodeType.ROOM, 2120, HashMap(), e6f2)
+            e6f2.nodes[-2201] = MapNode(2249, 494, NodeType.STAIR, -2201, HashMap(), e6f2)
+            addEdge(e6f2, -2500, -2200)
+            addEdge(e6f2, -2200, 2907)
+            addEdge(e6f2, 2907, -2100)
+            addEdge(e6f2, -2100, 2909)
+            addEdge(e6f2, 2909, 2102)
+            addEdge(e6f2, 2102, 2104)
+            addEdge(e6f2, 2104, 2107)
+            addEdge(e6f2, 2107, 2106)
+            addEdge(e6f2, 2106, 2108)
+            addEdge(e6f2, 2108, 2109)
+            addEdge(e6f2, 2109, 2110)
+            addEdge(e6f2, 2110, 2112)
+            addEdge(e6f2, 2112, 2113)
+            addEdge(e6f2, 2113, 2114)
+            addEdge(e6f2, 2114, 2116)
+            addEdge(e6f2, 2116, 2118)
+            addEdge(e6f2, 2118, 2119)
+            addEdge(e6f2, 2119, 2120)
+            addEdge(e6f2, 2120, -2201)
+
+            // ROW 2
+
+            e6f2.nodes[-2501] = MapNode(965, 1302, NodeType.NONE, -2501, HashMap(), e6f2)
+            e6f2.nodes[-2202] = MapNode(1040, 1302, NodeType.STAIR, -2202, HashMap(), e6f2)
+            e6f2.nodes[2901] = MapNode(1046, 1302, NodeType.ROOM, 2901, HashMap(), e6f2)
+            e6f2.nodes[-2101] = MapNode(1118, 1302, NodeType.WC, -2101, HashMap(), e6f2)
+            e6f2.nodes[2002] = MapNode(1249, 1302, NodeType.ROOM, 2002, HashMap(), e6f2)
+            e6f2.nodes[2003] = MapNode(1320, 1302, NodeType.ROOM, 2003, HashMap(), e6f2)
+            e6f2.nodes[2004] = MapNode(1353, 1302, NodeType.ROOM, 2004, HashMap(), e6f2)
+            e6f2.nodes[2006] = MapNode(1459, 1302, NodeType.ROOM, 2006, HashMap(), e6f2)
+            e6f2.nodes[2008] = MapNode(1566, 1302, NodeType.ROOM, 2008, HashMap(), e6f2)
+            e6f2.nodes[2009] = MapNode(1638, 1302, NodeType.ROOM, 2009, HashMap(), e6f2)
+            e6f2.nodes[2010] = MapNode(1671, 1302, NodeType.ROOM, 2010, HashMap(), e6f2)
+            e6f2.nodes[2012] = MapNode(1711, 1302, NodeType.ROOM, 2012, HashMap(), e6f2)
+            e6f2.nodes[2014] = MapNode(1817, 1302, NodeType.ROOM, 2014, HashMap(), e6f2)
+            e6f2.nodes[2016] = MapNode(1922, 1302, NodeType.ROOM, 2016, HashMap(), e6f2)
+            e6f2.nodes[2018] = MapNode(2030, 1302, NodeType.ROOM, 2018, HashMap(), e6f2)
+            e6f2.nodes[2020] = MapNode(2134, 1302, NodeType.ROOM, 2020, HashMap(), e6f2)
+            e6f2.nodes[-2203] = MapNode(2249, 1302, NodeType.STAIR, -2203, HashMap(), e6f2)
+            addEdge(e6f2, -2501, -2202)
+            addEdge(e6f2, -2202, 2901)
+            addEdge(e6f2, 2901, -2101)
+            addEdge(e6f2, -2101, 2002)
+            addEdge(e6f2, 2002, 2003)
+            addEdge(e6f2, 2003, 2004)
+            addEdge(e6f2, 2004, 2006)
+            addEdge(e6f2, 2006, 2008)
+            addEdge(e6f2, 2008, 2009)
+            addEdge(e6f2, 2009, 2010)
+            addEdge(e6f2, 2010, 2012)
+            addEdge(e6f2, 2012, 2014)
+            addEdge(e6f2, 2014, 2016)
+            addEdge(e6f2, 2016, 2018)
+            addEdge(e6f2, 2018, 2020)
+            addEdge(e6f2, 2020, -2203)
+
+            // Right column
+
+            e6f2.nodes[2024] = MapNode(2249, 797, NodeType.ROOM, 2024, HashMap(), e6f2)
+            e6f2.nodes[2023] = MapNode(2249, 1068, NodeType.ROOM, 2023, HashMap(), e6f2)
+            e6f2.nodes[2021] = MapNode(2249, 1154, NodeType.ROOM, 2021, HashMap(), e6f2)
+            e6f2.nodes[2022] = MapNode(2249, 1165, NodeType.ROOM, 2022, HashMap(), e6f2)
+            addEdge(e6f2, 2024, 2023)
+            addEdge(e6f2, 2023, 2021)
+            addEdge(e6f2, 2021, 2022)
+
+            // Join components
+            addEdge(e6f2, -2500, -2501)
+            addEdge(e6f2, -2201, 2024)
+            addEdge(e6f2, -2203, 2022)
+
+        }
+
+        // F3 INIT
+
+        // ROOMS HAVE NUMBERS -- 3002, 3004
+        // PORTS HAVE NEGATIVE 30XX
+        // WC HAVE NEGATIVE 31XX
+        // STAIRS HAVE NEGATIVE 32XX
+        // NONE IS ALL ELSE 3XXX (USUALLY 35XX)
+
+        run {
+
+            // ROW 1 (TOPMOST)
+
+            val e6F2F3RowXDiff = 100
+
+            e6f3.nodes[-3500] = MapNode(980, 494, NodeType.NONE, -3500, HashMap(), e6f3)
+            e6f3.nodes[-3200] = MapNode(1040 + e6F2F3RowXDiff, 494, NodeType.STAIR, -3200, HashMap(), e6f3)
+            e6f3.nodes[3907] = MapNode(1046 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3907, HashMap(), e6f3)
+            e6f3.nodes[-3100] = MapNode(1118 + e6F2F3RowXDiff, 494, NodeType.WC, -3100, HashMap(), e6f3)
+            e6f3.nodes[3102] = MapNode(1249 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3102, HashMap(), e6f3)
+            e6f3.nodes[3104] = MapNode(1353 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3104, HashMap(), e6f3)
+            e6f3.nodes[3103] = MapNode(1353 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3103, HashMap(), e6f3)
+            e6f3.nodes[3107] = MapNode(1527, 494, NodeType.ROOM, 3107, HashMap(), e6f3)
+            e6f3.nodes[3106] = MapNode(1459 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3106, HashMap(), e6f3)
+            e6f3.nodes[3109] = MapNode(1632, 494, NodeType.ROOM, 3109, HashMap(), e6f3)
+            e6f3.nodes[3108] = MapNode(1566 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3108, HashMap(), e6f3)
+            e6f3.nodes[3110] = MapNode(1671 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3110, HashMap(), e6f3)
+            e6f3.nodes[3112] = MapNode(1711 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3112, HashMap(), e6f3)
+            e6f3.nodes[3113] = MapNode(1736 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3113, HashMap(), e6f3)
+            e6f3.nodes[3114] = MapNode(1817 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3114, HashMap(), e6f3)
+            e6f3.nodes[3116] = MapNode(1922 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3116, HashMap(), e6f3)
+            e6f3.nodes[3117] = MapNode(2050, 494, NodeType.ROOM, 3117, HashMap(), e6f3)
+            e6f3.nodes[3118] = MapNode(2030 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3118, HashMap(), e6f3)
+            e6f3.nodes[3120] = MapNode(2134 + e6F2F3RowXDiff, 494, NodeType.ROOM, 3120, HashMap(), e6f3)
+            e6f3.nodes[3121] = MapNode(2267, 494, NodeType.ROOM, 3121, HashMap(), e6f3)
+            e6f3.nodes[-3201] = MapNode(2249 + e6F2F3RowXDiff, 494, NodeType.STAIR, -3201, HashMap(), e6f3)
+            addEdge(e6f3, -3500, -3200)
+            addEdge(e6f3, -3200, 3907)
+            addEdge(e6f3, 3907, -3100)
+            addEdge(e6f3, -3100, 3102)
+            addEdge(e6f3, 3102, 3104)
+            addEdge(e6f3, 3104, 3103)
+            addEdge(e6f3, 3103, 3107)
+            addEdge(e6f3, 3107, 3106)
+            addEdge(e6f3, 3106, 3109)
+            addEdge(e6f3, 3109, 3108)
+            addEdge(e6f3, 3108, 3110)
+            addEdge(e6f3, 3110, 3112)
+            addEdge(e6f3, 3112, 3113)
+            addEdge(e6f3, 3113, 3114)
+            addEdge(e6f3, 3114, 3116)
+            addEdge(e6f3, 3116, 3117)
+            addEdge(e6f3, 3117, 3118)
+            addEdge(e6f3, 3118, 3120)
+            addEdge(e6f3, 3120, 3121)
+            addEdge(e6f3, 3121, -3201)
+
+            // ROW 2
+
+            e6f3.nodes[-3000] = MapNode(980, 1302, NodeType.PORT, -3000, HashMap(), e6f3)
+            e6f3.nodes[-3202] = MapNode(1040 + e6F2F3RowXDiff, 1302, NodeType.STAIR, -3202, HashMap(), e6f3)
+            e6f3.nodes[3901] = MapNode(1046 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3901, HashMap(), e6f3)
+            e6f3.nodes[-3101] = MapNode(1118 + e6F2F3RowXDiff, 1302, NodeType.WC, -3101, HashMap(), e6f3)
+            e6f3.nodes[3002] = MapNode(1249 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3002, HashMap(), e6f3)
+            e6f3.nodes[3003] = MapNode(1320 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3003, HashMap(), e6f3)
+            e6f3.nodes[3004] = MapNode(1353 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3004, HashMap(), e6f3)
+            e6f3.nodes[3006] = MapNode(1459 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3006, HashMap(), e6f3)
+            e6f3.nodes[3008] = MapNode(1566 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3008, HashMap(), e6f3)
+            e6f3.nodes[3009] = MapNode(1638 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3009, HashMap(), e6f3)
+            e6f3.nodes[3010] = MapNode(1671 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3010, HashMap(), e6f3)
+            e6f3.nodes[3012] = MapNode(1711 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3012, HashMap(), e6f3)
+            e6f3.nodes[3013] = MapNode(1952, 1302, NodeType.ROOM, 3013, HashMap(), e6f3)
+            e6f3.nodes[3014] = MapNode(1817 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3014, HashMap(), e6f3)
+            e6f3.nodes[3016] = MapNode(1922 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3016, HashMap(), e6f3)
+            e6f3.nodes[3018] = MapNode(2030 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3018, HashMap(), e6f3)
+            e6f3.nodes[3020] = MapNode(2134 + e6F2F3RowXDiff, 1302, NodeType.ROOM, 3020, HashMap(), e6f3)
+            e6f3.nodes[-3203] = MapNode(2249 + e6F2F3RowXDiff, 1302, NodeType.STAIR, -2203, HashMap(), e6f3)
+            addEdge(e6f3, -3000, -3202)
+            addEdge(e6f3, -3202, 3901)
+            addEdge(e6f3, 3901, -3101)
+            addEdge(e6f3, -3101, 3002)
+            addEdge(e6f3, 3002, 3003)
+            addEdge(e6f3, 3003, 3004)
+            addEdge(e6f3, 3004, 3006)
+            addEdge(e6f3, 3006, 3008)
+            addEdge(e6f3, 3008, 3009)
+            addEdge(e6f3, 3009, 3010)
+            addEdge(e6f3, 3010, 3012)
+            addEdge(e6f3, 3012, 3013)
+            addEdge(e6f3, 3013, 3014)
+            addEdge(e6f3, 3014, 3016)
+            addEdge(e6f3, 3016, 3018)
+            addEdge(e6f3, 3018, 3020)
+            addEdge(e6f3, 3020, -3203)
+
+            // Right column
+
+            e6f3.nodes[3038] = MapNode(2465, 692, NodeType.ROOM, 3038, HashMap(), e6f3)
+            e6f3.nodes[3036] = MapNode(2523, 692, NodeType.ROOM, 3036, HashMap(), e6f3)
+            e6f3.nodes[3034] = MapNode(2523, 710, NodeType.ROOM, 3034, HashMap(), e6f3)
+            e6f3.nodes[3032] = MapNode(2523, 814, NodeType.ROOM, 3032, HashMap(), e6f3)
+            e6f3.nodes[3029] = MapNode(2523, 834, NodeType.ROOM, 3029, HashMap(), e6f3)
+            e6f3.nodes[3028] = MapNode(2523, 857, NodeType.ROOM, 3028, HashMap(), e6f3)
+            e6f3.nodes[3026] = MapNode(2523, 1024, NodeType.ROOM, 3026, HashMap(), e6f3)
+            e6f3.nodes[3024] = MapNode(2523, 1057, NodeType.ROOM, 3024, HashMap(), e6f3)
+            e6f3.nodes[3027] = MapNode(2443, 1057, NodeType.ROOM, 3027, HashMap(), e6f3)
+            e6f3.nodes[3023] = MapNode(2348, 1057, NodeType.ROOM, 3023, HashMap(), e6f3)
+            e6f3.nodes[3021] = MapNode(2348, 1135, NodeType.ROOM, 3021, HashMap(), e6f3)
+            addEdge(e6f3, 3038, 3036)
+            addEdge(e6f3, 3036, 3034)
+            addEdge(e6f3, 3034, 3032)
+            addEdge(e6f3, 3032, 3029)
+            addEdge(e6f3, 3029, 3028)
+            addEdge(e6f3, 3028, 3026)
+            addEdge(e6f3, 3026, 3024)
+            addEdge(e6f3, 3024, 3027)
+            addEdge(e6f3, 3027, 3023)
+            addEdge(e6f3, 3023, 3021)
+            e6f3.nodes[3029] = MapNode(2348, 763, NodeType.ROOM, 3029, HashMap(), e6f3)
+            addEdge(e6f3, 3023, 3029)
+
+            // Join components
+            addEdge(e6f3, -3203, 3021)
+            addEdge(e6f3, -3201, 3029)
+            addEdge(e6f3, -3500, -3000)
+
+        }
+
+        // F4 INIT
+
+        // ROOMS HAVE NUMBERS -- 4002, 4004
+        // PORTS HAVE NEGATIVE 40XX
+        // WC HAVE NEGATIVE 41XX
+        // STAIRS HAVE NEGATIVE 42XX
+        // NONE IS ALL ELSE 4XXX (USUALLY 45XX)
+
+        run {
+            // ROW 1 (TOPMOST)
+
+            val e6F2F4RowXDiff = 100
+
+            e6f4.nodes[-4500] = MapNode(1000, 494, NodeType.NONE, -4500, HashMap(), e6f4)
+            e6f4.nodes[4101] = MapNode(1086, 494, NodeType.ROOM, 4101, HashMap(), e6f4)
+            e6f4.nodes[-4200] = MapNode(1040 + e6F2F4RowXDiff, 494, NodeType.STAIR, -4200, HashMap(), e6f4)
+            e6f4.nodes[4907] = MapNode(1046 + e6F2F4RowXDiff, 494, NodeType.ROOM, 4907, HashMap(), e6f4)
+            e6f4.nodes[-4100] = MapNode(1118 + e6F2F4RowXDiff, 494, NodeType.WC, -4100, HashMap(), e6f4)
+            e6f4.nodes[4909] = MapNode(1196 + e6F2F4RowXDiff, 494, NodeType.ROOM, 4909, HashMap(), e6f4)
+            e6f4.nodes[4102] = MapNode(1249 + e6F2F4RowXDiff, 494, NodeType.ROOM, 4102, HashMap(), e6f4)
+            e6f4.nodes[4107] = MapNode(1427, 494, NodeType.ROOM, 4107, HashMap(), e6f4)
+            e6f4.nodes[4104] = MapNode(1353 + e6F2F4RowXDiff, 494, NodeType.ROOM, 4104, HashMap(), e6f4)
+            e6f4.nodes[4106] = MapNode(1459 + e6F2F4RowXDiff, 494, NodeType.ROOM, 4106, HashMap(), e6f4)
+            e6f4.nodes[4109] = MapNode(1637, 494, NodeType.ROOM, 4109, HashMap(), e6f4)
+            e6f4.nodes[4108] = MapNode(1566 + e6F2F4RowXDiff, 494, NodeType.ROOM, 4108, HashMap(), e6f4)
+            e6f4.nodes[4110] = MapNode(1671 + e6F2F4RowXDiff, 494, NodeType.ROOM, 4110, HashMap(), e6f4)
+            e6f4.nodes[4112] = MapNode(1711 + e6F2F4RowXDiff, 494, NodeType.ROOM, 4112, HashMap(), e6f4)
+            e6f4.nodes[4114] = MapNode(1817 + e6F2F4RowXDiff, 494, NodeType.ROOM, 4114, HashMap(), e6f4)
+            e6f4.nodes[4116] = MapNode(1922 + e6F2F4RowXDiff, 494, NodeType.ROOM, 4116, HashMap(), e6f4)
+            e6f4.nodes[4113] = MapNode(2062, 494, NodeType.ROOM, 4113, HashMap(), e6f4)
+            e6f4.nodes[4118] = MapNode(2030 + e6F2F4RowXDiff, 494, NodeType.ROOM, 4118, HashMap(), e6f4)
+            e6f4.nodes[4120] = MapNode(2134 + e6F2F4RowXDiff, 494, NodeType.ROOM, 4120, HashMap(), e6f4)
+            e6f4.nodes[4119] = MapNode(2269, 494, NodeType.ROOM, 4119, HashMap(), e6f4)
+            e6f4.nodes[-4201] = MapNode(2249 + e6F2F4RowXDiff, 494, NodeType.STAIR, -4201, HashMap(), e6f4)
+            addEdge(e6f4, -4500, 4101)
+            addEdge(e6f4, 4101, -4200)
+            addEdge(e6f4, -4200, 4907)
+            addEdge(e6f4, 4907, -4100)
+            addEdge(e6f4, -4100, 4909)
+            addEdge(e6f4, 4909, 4102)
+            addEdge(e6f4, 4102, 4107)
+            addEdge(e6f4, 4107, 4104)
+            addEdge(e6f4, 4104, 4106)
+            addEdge(e6f4, 4106, 4109)
+            addEdge(e6f4, 4109, 4108)
+            addEdge(e6f4, 4108, 4110)
+            addEdge(e6f4, 4110, 4112)
+            addEdge(e6f4, 4112, 4114)
+            addEdge(e6f4, 4114, 4116)
+            addEdge(e6f4, 4116, 4113)
+            addEdge(e6f4, 4113, 4118)
+            addEdge(e6f4, 4118, 4120)
+            addEdge(e6f4, 4120, 4119)
+            addEdge(e6f4, 4119, -4201)
+
+            // ROW 2
+
+            e6f4.nodes[-4501] = MapNode(1000, 1302, NodeType.NONE, -4501, HashMap(), e6f4)
+            e6f4.nodes[4001] = MapNode(1086, 1302, NodeType.ROOM, 4001, HashMap(), e6f4)
+            e6f4.nodes[-4202] = MapNode(1040 + e6F2F4RowXDiff, 1302, NodeType.STAIR, -4202, HashMap(), e6f4)
+            e6f4.nodes[4901] = MapNode(1046 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4901, HashMap(), e6f4)
+            e6f4.nodes[-4101] = MapNode(1118 + e6F2F4RowXDiff, 1302, NodeType.WC, -4101, HashMap(), e6f4)
+            e6f4.nodes[4002] = MapNode(1249 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4002, HashMap(), e6f4)
+            e6f4.nodes[4003] = MapNode(1320 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4003, HashMap(), e6f4)
+            e6f4.nodes[4004] = MapNode(1353 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4004, HashMap(), e6f4)
+            e6f4.nodes[4006] = MapNode(1459 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4006, HashMap(), e6f4)
+            e6f4.nodes[4008] = MapNode(1566 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4008, HashMap(), e6f4)
+            e6f4.nodes[4009] = MapNode(1638 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4009, HashMap(), e6f4)
+            e6f4.nodes[4010] = MapNode(1671 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4010, HashMap(), e6f4)
+            e6f4.nodes[4012] = MapNode(1711 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4012, HashMap(), e6f4)
+            e6f4.nodes[4014] = MapNode(1817 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4014, HashMap(), e6f4)
+            e6f4.nodes[4016] = MapNode(1922 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4016, HashMap(), e6f4)
+            e6f4.nodes[4017] = MapNode(2057, 1302, NodeType.ROOM, 4017, HashMap(), e6f4)
+            e6f4.nodes[4018] = MapNode(2030 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4018, HashMap(), e6f4)
+            e6f4.nodes[4020] = MapNode(2134 + e6F2F4RowXDiff, 1302, NodeType.ROOM, 4020, HashMap(), e6f4)
+            e6f4.nodes[-4203] = MapNode(2249 + e6F2F4RowXDiff, 1302, NodeType.STAIR, -4203, HashMap(), e6f4)
+            addEdge(e6f4, -4501, 4001)
+            addEdge(e6f4, 4001, -4202)
+            addEdge(e6f4, -4202, 4901)
+            addEdge(e6f4, 4901, -4101)
+            addEdge(e6f4, -4101, 4002)
+            addEdge(e6f4, 4002, 4003)
+            addEdge(e6f4, 4003, 4004)
+            addEdge(e6f4, 4004, 4006)
+            addEdge(e6f4, 4006, 4008)
+            addEdge(e6f4, 4008, 4009)
+            addEdge(e6f4, 4009, 4010)
+            addEdge(e6f4, 4010, 4012)
+            addEdge(e6f4, 4012, 4014)
+            addEdge(e6f4, 4014, 4016)
+            addEdge(e6f4, 4016, 4017)
+            addEdge(e6f4, 4017, 4018)
+            addEdge(e6f4, 4018, 4020)
+            addEdge(e6f4, 4020, -4203)
+
+            // Right column
+
+            e6f4.nodes[4024] = MapNode(2249 + e6F2F4RowXDiff, 855, NodeType.ROOM, 4024, HashMap(), e6f4)
+            e6f4.nodes[4023] = MapNode(2249 + e6F2F4RowXDiff, 1056, NodeType.ROOM, 4023, HashMap(), e6f4)
+            e6f4.nodes[4021] = MapNode(2249 + e6F2F4RowXDiff, 1096, NodeType.ROOM, 4021, HashMap(), e6f4)
+            e6f4.nodes[4022] = MapNode(2249 + e6F2F4RowXDiff, 1134, NodeType.ROOM, 4022, HashMap(), e6f4)
+            addEdge(e6f4, 4024, 4023)
+            addEdge(e6f4, 4023, 4021)
+            addEdge(e6f4, 4021, 4022)
+
+            // Join components
+            addEdge(e6f4, -4500, -4501)
+            addEdge(e6f4, -4201, 4024)
+            addEdge(e6f4, -4203, 4022)
+
+        }
+
+        // F5 INIT
+
+        // ROOMS HAVE NUMBERS -- 5002, 5004
+        // PORTS HAVE NEGATIVE 50XX
+        // WC HAVE NEGATIVE 51XX
+        // STAIRS HAVE NEGATIVE 52XX
+        // NONE IS ALL ELSE 5XXX (USUALLY 55XX)
+
+        run {
+
+            // ROW 1
+
+            val e6F2F5RowXDiff = 100
+
+            e6f5.nodes[-5500] = MapNode(1000, 494, NodeType.NONE, -5500, HashMap(), e6f5)
+            e6f5.nodes[5101] = MapNode(1086, 494, NodeType.ROOM, 5101, HashMap(), e6f5)
+            e6f5.nodes[-5200] = MapNode(1040 + e6F2F5RowXDiff, 494, NodeType.STAIR, -5200, HashMap(), e6f5)
+            e6f5.nodes[5907] = MapNode(1046 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5907, HashMap(), e6f5)
+            e6f5.nodes[-5100] = MapNode(1118 + e6F2F5RowXDiff, 494, NodeType.WC, -5100, HashMap(), e6f5)
+            e6f5.nodes[5103] = MapNode(1316, 494, NodeType.ROOM, 5103, HashMap(), e6f5)
+            e6f5.nodes[5102] = MapNode(1249 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5102, HashMap(), e6f5)
+            e6f5.nodes[5107] = MapNode(1427, 494, NodeType.ROOM, 5107, HashMap(), e6f5)
+            e6f5.nodes[5104] = MapNode(1353 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5104, HashMap(), e6f5)
+            e6f5.nodes[5106] = MapNode(1459 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5106, HashMap(), e6f5)
+            e6f5.nodes[5108] = MapNode(1566 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5108, HashMap(), e6f5)
+            e6f5.nodes[5110] = MapNode(1671 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5110, HashMap(), e6f5)
+            e6f5.nodes[5112] = MapNode(1711 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5112, HashMap(), e6f5)
+            e6f5.nodes[5113] = MapNode(1840, 494, NodeType.ROOM, 5113, HashMap(), e6f5)
+            e6f5.nodes[5114] = MapNode(1817 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5114, HashMap(), e6f5)
+            e6f5.nodes[5116] = MapNode(1922 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5116, HashMap(), e6f5)
+            // TODO: Another entrance for 5113
+            e6f5.nodes[5118] = MapNode(2030 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5118, HashMap(), e6f5)
+            e6f5.nodes[5119] = MapNode(2169, 494, NodeType.ROOM, 5119, HashMap(), e6f5)
+            e6f5.nodes[5120] = MapNode(2134 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5120, HashMap(), e6f5)
+            e6f5.nodes[-5201] = MapNode(2249 + e6F2F5RowXDiff, 494, NodeType.STAIR, -5201, HashMap(), e6f5)
+            addEdge(e6f5, -5500, 5101)
+            addEdge(e6f5, 5101, -5200)
+            addEdge(e6f5, -5200, 5907)
+            addEdge(e6f5, 5907, -5100)
+            addEdge(e6f5, -5100, 5103)
+            addEdge(e6f5, 5103, 5102)
+            addEdge(e6f5, 5102, 5107)
+            addEdge(e6f5, 5107, 5104)
+            addEdge(e6f5, 5104, 5106)
+            addEdge(e6f5, 5106, 5108)
+            addEdge(e6f5, 5108, 5110)
+            addEdge(e6f5, 5110, 5112)
+            addEdge(e6f5, 5112, 5113)
+            addEdge(e6f5, 5113, 5114)
+            addEdge(e6f5, 5114, 5116)
+            addEdge(e6f5, 5116, 5118)
+            addEdge(e6f5, 5118, 5119)
+            addEdge(e6f5, 5119, 5120)
+            addEdge(e6f5, 5120, -5201)
+
+            // ROW 2
+
+            e6f5.nodes[-5501] = MapNode(1000, 1302, NodeType.NONE, -5501, HashMap(), e6f5)
+            e6f5.nodes[5001] = MapNode(1086, 1302, NodeType.ROOM, 5001, HashMap(), e6f5)
+            e6f5.nodes[-5202] = MapNode(1040 + e6F2F5RowXDiff, 1302, NodeType.STAIR, -5202, HashMap(), e6f5)
+            e6f5.nodes[5901] = MapNode(1046 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5901, HashMap(), e6f5)
+            e6f5.nodes[-5101] = MapNode(1118 + e6F2F5RowXDiff, 1302, NodeType.WC, -5101, HashMap(), e6f5)
+            e6f5.nodes[5002] = MapNode(1249 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5002, HashMap(), e6f5)
+            e6f5.nodes[5007] = MapNode(1330 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5007, HashMap(), e6f5)
+            e6f5.nodes[5004] = MapNode(1353 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5004, HashMap(), e6f5)
+            e6f5.nodes[5006] = MapNode(1459 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5006, HashMap(), e6f5)
+            e6f5.nodes[5008] = MapNode(1566 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5008, HashMap(), e6f5)
+            e6f5.nodes[5009] = MapNode(1638 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5009, HashMap(), e6f5)
+            e6f5.nodes[5010] = MapNode(1671 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5010, HashMap(), e6f5)
+            e6f5.nodes[5012] = MapNode(1711 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5012, HashMap(), e6f5)
+            e6f5.nodes[5014] = MapNode(1817 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5014, HashMap(), e6f5)
+            e6f5.nodes[5016] = MapNode(1922 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5016, HashMap(), e6f5)
+            e6f5.nodes[5013] = MapNode(2057, 1302, NodeType.ROOM, 5013, HashMap(), e6f5)
+            e6f5.nodes[5018] = MapNode(2030 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5018, HashMap(), e6f5)
+            e6f5.nodes[5020] = MapNode(2134 + e6F2F5RowXDiff, 1302, NodeType.ROOM, 5020, HashMap(), e6f5)
+            e6f5.nodes[5019] = MapNode(2268, 1302, NodeType.ROOM, 5019, HashMap(), e6f5)
+            e6f5.nodes[-5203] = MapNode(2249 + e6F2F5RowXDiff, 1302, NodeType.STAIR, -5203, HashMap(), e6f5)
+            addEdge(e6f5, -5501, 5001)
+            addEdge(e6f5, 5001, -5202)
+            addEdge(e6f5, -5202, 5901)
+            addEdge(e6f5, 5901, -5101)
+            addEdge(e6f5, -5101, 5002)
+            addEdge(e6f5, 5002, 5007)
+            addEdge(e6f5, 5007, 5004)
+            addEdge(e6f5, 5004, 5006)
+            addEdge(e6f5, 5006, 5008)
+            addEdge(e6f5, 5008, 5009)
+            addEdge(e6f5, 5009, 5010)
+            addEdge(e6f5, 5010, 5012)
+            addEdge(e6f5, 5012, 5014)
+            addEdge(e6f5, 5014, 5016)
+            addEdge(e6f5, 5016, 5013)
+            addEdge(e6f5, 5013, 5018)
+            addEdge(e6f5, 5018, 5020)
+            addEdge(e6f5, 5020, 5019)
+            addEdge(e6f5, 5019, -5203)
+
+            // Right column
+
+            e6f5.nodes[5028] = MapNode(2249 + e6F2F5RowXDiff, 720, NodeType.ROOM, 5028, HashMap(), e6f5)
+            e6f5.nodes[5024] = MapNode(2249 + e6F2F5RowXDiff, 828, NodeType.ROOM, 5024, HashMap(), e6f5)
+            e6f5.nodes[5022] = MapNode(2249 + e6F2F5RowXDiff, 1221, NodeType.ROOM, 5022, HashMap(), e6f5)
+
+            addEdge(e6f5, 5028, 5024)
+            addEdge(e6f5, 5024, 5022)
+
+
+            // Join components
+            e6f5.nodes[-5502] = MapNode(1000, 1030, NodeType.NONE, -5502, HashMap(), e6f5)
+            e6f5.nodes[5003] = MapNode(1086, 1030, NodeType.ROOM, 5003, HashMap(), e6f5)
+            addEdge(e6f5, -5502, 5003)
+
+            addEdge(e6f5, -5500, -5502)
+            addEdge(e6f5, -5502, -5501)
+            addEdge(e6f5, -5201, 5028)
+            addEdge(e6f5, -5203, 5022)
+        }
+
         val s: MutableSet<MapNode> = HashSet()
         for (f in buildings[1]!!.plans.values)
             for (n in f.nodes.values)
