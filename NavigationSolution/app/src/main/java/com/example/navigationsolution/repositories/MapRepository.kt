@@ -1592,8 +1592,7 @@ object MapRepository{
         if(buildings[buildingId] == null)
             throw Exception("Building ID does not exist");
         return buildings[buildingId]!!.plans[getFloor(roomId)] != null &&
-                buildings[buildingId]!!.plans[getFloor(roomId)]!!.nodes[roomId] != null &&
-                buildings[buildingId]!!.plans[getFloor(roomId)]!!.nodes[roomId].isNotEmpty()
+                buildings[buildingId]!!.plans[getFloor(roomId)]!!.nodes[roomId] != null;
     }
 
     fun getNorthHeading(buildingId: Int): Int {
