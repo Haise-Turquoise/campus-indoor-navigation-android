@@ -11,7 +11,9 @@ import androidx.annotation.RequiresApi
 import com.example.navigationsolution.R
 import java.io.File
 import java.io.FileOutputStream
+import java.util.LinkedList
 import java.util.Objects
+import java.util.Queue
 import java.util.TreeSet
 import kotlin.math.abs
 import kotlin.math.pow
@@ -34,7 +36,6 @@ object MapRepository{
 
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun initialize(applicationContext: Context) {
-        Log.i("i", "INITIALIZED")
         this.applicationContext = applicationContext
 
         drawGraph()
@@ -102,8 +103,13 @@ object MapRepository{
         val n1 = buildings[buildingId]!!.plans[getFloor(r1)]!!.nodes[r1]!!
         val n2 = buildings[buildingId]!!.plans[getFloor(r2)]!!.nodes[r2]!!
 
-        n1.adj[n2] = 50.0;
-        n2.adj[n1] = 50.0;
+        if(getFloor(r1) == getFloor(r2)) {
+            Log.w("MapRepository", "Attempted to add invalid stair edge $r1 -- $r2")
+            return
+        }
+
+        n1.adj[n2] = 1.0;
+        n2.adj[n1] = 1.0;
     }
 
     // TODO: Delete this function, it's used only for verification of graph models
@@ -1586,6 +1592,27 @@ object MapRepository{
             addEdge(1, -7202, -6204) // Bottom centre
             addEdge(1, -7203, -6202) // G
         }
+
+        val s: MutableSet<MapNode> = HashSet()
+        for (f in buildings[1]!!.plans.values)
+            for (n in f.nodes.values)
+                s.add(n)
+
+        val q: Queue<MapNode> = LinkedList()
+        q.offer(buildings[1]!!.plans[1]!!.nodes[1419])
+
+        while(q.isNotEmpty()) {
+            val cur = q.poll()!!
+
+            if(s.remove(cur))
+                for(n in cur.adj.keys)
+                    q.offer(n)
+        }
+
+        if(s.isNotEmpty()) {
+            val ids = s.map { n -> n.id }
+            Log.w("MapRepository", "E7 graph is not connected; unreachable nodes:\n$ids")
+        }
     }
 
     fun roomExists(buildingId: Int, roomId: Int): Boolean {
@@ -1759,6 +1786,10 @@ object MapRepository{
             cur = parent[cur]
         }
 
+        Log.i("MapRepository", "Path found: " + ret.reversed().fold("") {
+            acc, item -> "${acc}\n${item.id}"
+        })
+
         // For graphical purposes, doesn't actually need to be but follows logic
         return ret.reversed()
     }
@@ -1766,6 +1797,8 @@ object MapRepository{
     // ? Actual pathing implementation
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun getPath(src: MapNode, isTarget: (MapNode) -> Boolean, dest: MapNode? = null): List<MapNode> {
+        Log.i("MapRepository", "Pathing started")
+
         val parent: MutableMap<MapNode, MapNode> = HashMap()    // Track parents to generate path
         val srcDist: MutableMap<MapNode, Double> = HashMap()    // Track shortest known distance to src
         val queue: TreeSet<MapNode> = TreeSet(                  // Expand search based on distance
@@ -1779,9 +1812,12 @@ object MapRepository{
         while(queue.isNotEmpty()) {
             val cur = queue.removeFirst()!!
             val curDist = srcDist[cur]!!
+            Log.i("MapRepository", "ID ${cur.id} with dist $curDist polled")
 
-            if(isTarget(cur))
+            if(isTarget(cur)) {
+                Log.i("MapRepository", "Pathing complete")
                 return generatePath(cur, parent)
+            }
 
             // Enqueue neighbors
             for (n in cur.adj.keys) {
@@ -1801,6 +1837,7 @@ object MapRepository{
             }
         }
 
+        Log.e("MapRepository", "Path requested but not found")
         // ! Error state; should never occur
         return mutableListOf()
     }
