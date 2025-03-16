@@ -108,56 +108,108 @@ object MapRepository{
             return
         }
 
-        n1.adj[n2] = 1.0;
-        n2.adj[n1] = 1.0;
+        n1.adj[n2] = 50.0;
+        n2.adj[n1] = 50.0;
     }
 
     // TODO: Delete this function, it's used only for verification of graph models
+    private fun drawSearchPath(map: Map<MapNode, MapNode>) {
+        for(f in buildings[1]!!.plans.values) {
+            // Load floor plan copy
+            val img = (applicationContext.resources.getDrawable(
+                f.plan,
+                null
+            ) as BitmapDrawable).bitmap
+            val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
+
+            val canvas = Canvas(copy)
+            val paint = Paint()
+
+            paint.strokeWidth = WIDTH_PATH
+            paint.color = COLOR_LINE
+
+            for (e in map)
+                if(getFloor(e.key.id) == getFloor(e.value.id) && getFloor(e.key.id) == f.level)
+                    canvas.drawLine(
+                        e.key.x.toFloat(),
+                        e.key.y.toFloat(),
+                        e.value.x.toFloat(),
+                        e.value.y.toFloat(),
+                        paint
+                    )
+                else if(getFloor(e.key.id) == f.level)
+                    canvas.drawCircle(
+                        e.key.x.toFloat(),
+                        e.key.y.toFloat(),
+                        RADIUS_NODE,
+                        paint
+                    )
+                else if(getFloor(e.value.id) == f.level)
+                    canvas.drawCircle(
+                        e.value.x.toFloat(),
+                        e.value.y.toFloat(),
+                        RADIUS_NODE,
+                        paint
+                    )
+
+            val file = File(applicationContext.cacheDir, "temp_path_${f.level}.png")
+            val outStream = FileOutputStream(file)
+            copy.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+            outStream.flush()
+            outStream.close()
+        }
+    }
+
     private fun drawGraph() {
-        // Load floor plan copy
-        val img = (applicationContext.resources.getDrawable(R.drawable.e7f7hi, null) as BitmapDrawable).bitmap
-        val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
+        for(f in buildings[1]!!.plans.values) {
+            // Load floor plan copy
+            val img = (applicationContext.resources.getDrawable(
+                f.plan,
+                null
+            ) as BitmapDrawable).bitmap
+            val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
 
-        val canvas = Canvas(copy)
-        val paint = Paint()
+            val canvas = Canvas(copy)
+            val paint = Paint()
 
-        paint.strokeWidth = WIDTH_PATH
-        paint.color = COLOR_LINE
+            paint.strokeWidth = WIDTH_PATH
+            paint.color = COLOR_LINE
 
-        for(n in buildings[1]!!.plans[7]!!.nodes.values)
-            for(nn in n.adj.keys)
-                canvas.drawLine(
+            for (n in f.nodes.values)
+                for (nn in n.adj.keys)
+                    canvas.drawLine(
+                        n.x.toFloat(),
+                        n.y.toFloat(),
+                        nn.x.toFloat(),
+                        nn.y.toFloat(),
+                        paint
+                    )
+
+            for (n in f.nodes.values) {
+                // TODO: this is kind of gross, maybe add more const colors with names that make sense
+
+                paint.color = when (n.type) {
+                    NodeType.NONE -> COLOR_LINE
+                    NodeType.STAIR -> COLOR_START
+                    NodeType.PORT -> COLOR_END
+                    NodeType.ROOM -> COLOR_STAIRS_UP
+                    else -> COLOR_STAIRS_DOWN
+                }
+
+                canvas.drawCircle(
                     n.x.toFloat(),
                     n.y.toFloat(),
-                    nn.x.toFloat(),
-                    nn.y.toFloat(),
+                    RADIUS_NODE,
                     paint
                 )
-
-        for(n in buildings[1]!!.plans[7]!!.nodes.values) {
-            // TODO: this is kind of gross, maybe add more const colors with names that make sense
-
-            paint.color = when(n.type) {
-                NodeType.NONE -> COLOR_LINE
-                NodeType.STAIR -> COLOR_START
-                NodeType.PORT -> COLOR_END
-                NodeType.ROOM -> COLOR_STAIRS_UP
-                else -> COLOR_STAIRS_DOWN
             }
 
-            canvas.drawCircle(
-                n.x.toFloat(),
-                n.y.toFloat(),
-                RADIUS_NODE,
-                paint
-            )
+            val file = File(applicationContext.cacheDir, "temp_full_graph_${f.level}.png")
+            val outStream = FileOutputStream(file)
+            copy.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+            outStream.flush()
+            outStream.close()
         }
-
-        val file = File(applicationContext.cacheDir, "temp_full_graph.png")
-        val outStream = FileOutputStream(file)
-        copy.compress(Bitmap.CompressFormat.PNG, 100, outStream)
-        outStream.flush()
-        outStream.close()
     }
 
     init {
@@ -2243,7 +2295,7 @@ object MapRepository{
         }
 
         if(s.isNotEmpty()) {
-            val ids = s.map { n -> n.id }
+            val ids = s.map { n -> n.id }.sorted()
             Log.w("MapRepository", "E7 graph is not connected; unreachable nodes:\n$ids")
         }
     }
@@ -2419,10 +2471,6 @@ object MapRepository{
             cur = parent[cur]
         }
 
-        Log.i("MapRepository", "Path found: " + ret.reversed().fold("") {
-            acc, item -> "${acc}\n${item.id}"
-        })
-
         // For graphical purposes, doesn't actually need to be but follows logic
         return ret.reversed()
     }
@@ -2445,10 +2493,11 @@ object MapRepository{
         while(queue.isNotEmpty()) {
             val cur = queue.removeFirst()!!
             val curDist = srcDist[cur]!!
-            Log.i("MapRepository", "ID ${cur.id} with dist $curDist polled")
+            if(getFloor(cur.id) == 2)
+                Log.i("MapRepository", "ID ${cur.id} with dist $curDist polled")
 
             if(isTarget(cur)) {
-                Log.i("MapRepository", "Pathing complete")
+                Log.i("MapRepository", "Pathing complete with total distance $curDist")
                 return generatePath(cur, parent)
             }
 
@@ -2460,9 +2509,9 @@ object MapRepository{
                 if(srcDist.getOrDefault(n, Double.MAX_VALUE) <= newDist)
                     continue
 
-                // Remove if already exists
-                if(queue.contains(n))
-                    queue.remove(n)
+//                // Remove if already exists
+//                if(queue.contains(n))
+//                    queue.remove(n)
 
                 srcDist[n] = newDist
                 parent[n] = cur
@@ -2470,6 +2519,8 @@ object MapRepository{
             }
         }
 
+        // Draw search graph
+        drawSearchPath(parent)
         Log.e("MapRepository", "Path requested but not found")
         // ! Error state; should never occur
         return mutableListOf()
