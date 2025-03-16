@@ -567,6 +567,8 @@ object MapRepository{
             f2.nodes[2462.0] = MapNode(563, 260, NodeType.ROOM, 2462, HashMap(), f2)
             f2.nodes[2916.0] = MapNode(572, 260, NodeType.ROOM, 2916, HashMap(), f2)
             f2.nodes[2458.0] = MapNode(597, 260, NodeType.ROOM, 2458, HashMap(), f2)
+            f2.nodes[2456.0] = MapNode(641, 260, NodeType.ROOM, 2458, HashMap(), f2)
+            f2.nodes[2454.0] = MapNode(663, 260, NodeType.ROOM, 2458, HashMap(), f2)
             f2.nodes[2409.1] = MapNode(679, 260, NodeType.ROOM, 2409, HashMap(), f2)
             f2.nodes[2453.0] = MapNode(736, 260, NodeType.ROOM, 2453, HashMap(), f2)
             f2.nodes[2452.0] = MapNode(767, 260, NodeType.ROOM, 2452, HashMap(), f2)
@@ -617,8 +619,8 @@ object MapRepository{
 
             // ROW 3
             f2.nodes[2472.0] = MapNode(595, 314, NodeType.ROOM, 2472, HashMap(), f2)
-            f2.nodes[2456.0] = MapNode(641, 314, NodeType.ROOM, 2456, HashMap(), f2)
-            f2.nodes[2454.0] = MapNode(652, 314, NodeType.ROOM, 2454, HashMap(), f2)
+            f2.nodes[2456.1] = MapNode(641, 314, NodeType.ROOM, 2456, HashMap(), f2)
+            f2.nodes[2454.1] = MapNode(652, 314, NodeType.ROOM, 2454, HashMap(), f2)
             addEdge(f2, 2472, 2456)
             addEdge(f2, 2456, 2454)
 
@@ -2054,7 +2056,7 @@ object MapRepository{
             addEdge(e6f3, 3024, 3027)
             addEdge(e6f3, 3027, 3023)
             addEdge(e6f3, 3023, 3021)
-            e6f3.nodes[3029.0] = MapNode(2348, 763, NodeType.ROOM, 3029, HashMap(), e6f3)
+            e6f3.nodes[3029.1] = MapNode(2348, 763, NodeType.ROOM, 3029, HashMap(), e6f3)
             addEdge(e6f3, 3023, 3029)
 
             // Join components
@@ -2203,10 +2205,9 @@ object MapRepository{
             e6f5.nodes[5108.0] = MapNode(1566 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5108, HashMap(), e6f5)
             e6f5.nodes[5110.0] = MapNode(1671 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5110, HashMap(), e6f5)
             e6f5.nodes[5112.0] = MapNode(1711 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5112, HashMap(), e6f5)
-            e6f5.nodes[5113.0] = MapNode(1840, 494, NodeType.ROOM, 5113, HashMap(), e6f5)
+            e6f5.nodes[5113.0] = MapNode(1904, 494, NodeType.ROOM, 5113, HashMap(), e6f5)
             e6f5.nodes[5114.0] = MapNode(1817 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5114, HashMap(), e6f5)
             e6f5.nodes[5116.0] = MapNode(1922 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5116, HashMap(), e6f5)
-            // TODO: Another entrance for 5113
             e6f5.nodes[5118.0] = MapNode(2030 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5118, HashMap(), e6f5)
             e6f5.nodes[5119.0] = MapNode(2169, 494, NodeType.ROOM, 5119, HashMap(), e6f5)
             e6f5.nodes[5120.0] = MapNode(2134 + e6F2F5RowXDiff, 494, NodeType.ROOM, 5120, HashMap(), e6f5)
@@ -2292,6 +2293,30 @@ object MapRepository{
             addEdge(e6f5, -5502, -5501)
             addEdge(e6f5, -5201, 5028)
             addEdge(e6f5, -5203, 5022)
+        }
+
+        // STAIRS
+
+        run {
+            addEdge(2, -1200, -2200)
+            addEdge(2, -2200, -3200)
+            addEdge(2, -3200, -4200)
+            addEdge(2, -4200, -5200)
+
+            addEdge(2, -1201, -2201)
+            addEdge(2, -2201, -3201)
+            addEdge(2, -3201, -4201)
+            addEdge(2, -4201, -5201)
+
+            addEdge(2, -1202, -2202)
+            addEdge(2, -2202, -3202)
+            addEdge(2, -3202, -4202)
+            addEdge(2, -4202, -5202)
+
+            addEdge(2, -1203, -2203)
+            addEdge(2, -2203, -3203)
+            addEdge(2, -3203, -4203)
+            addEdge(2, -4203, -5203)
         }
 
         val s: MutableSet<MapNode> = HashSet()
