@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.example.navigationsolution.service.SupabaseService
+import com.example.navigationsolution.service.SessionManager
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.from
 
@@ -27,6 +28,9 @@ sealed class LoginResult {
 class LoginViewModel : ViewModel() {
     
     private val TAG = "LoginViewModel" // 日志标签【Log tag】
+
+    // 获取SessionManager实例
+    private val sessionManager = SessionManager.getInstance()
     
     // 验证结果状态【Validation result state】
     private val _loginResult = MutableStateFlow<LoginResult>(LoginResult.Initial)
@@ -92,9 +96,30 @@ class LoginViewModel : ViewModel() {
                     Log.d(TAG, "Password incorrect for user: $username - Empty credentials data")
                     _loginResult.value = LoginResult.PasswordError()
                 } else {
-                    // 列表非空，表示找到了匹配的用户名和密码【List not empty, found matching username and password】
-                    Log.d(TAG, "Login successful for user: $username")
-                    _loginResult.value = LoginResult.Success
+                    // 列表非空，表示找到了匹配的用户名和密码
+                    Log.d(TAG, "登录成功，用户: $username")
+                    
+                    // 获取用户数据
+                    try {
+                        // 从查询结果中获取第一个用户数据
+                        val userData = usersWithCredentials.decodeList<com.example.navigationsolution.data.UserData>().firstOrNull()
+                        
+                        if (userData != null) {
+                            val email = userData.email
+                            
+                            // 更新session manager，只记录username和email
+                            Log.d(TAG, "设置用户会话数据: $username, $email")
+                            sessionManager.setUserSession(username, email)
+                            
+                            _loginResult.value = LoginResult.Success
+                        } else {
+                            Log.e(TAG, "无法获取用户数据，返回结果为空")
+                            _loginResult.value = LoginResult.GenericError("登录成功但无法获取用户数据")
+                        }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "解析用户数据失败: ${e.message}", e)
+                        _loginResult.value = LoginResult.GenericError("登录成功但无法解析用户数据")
+                    }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Login error: ${e.message}", e)

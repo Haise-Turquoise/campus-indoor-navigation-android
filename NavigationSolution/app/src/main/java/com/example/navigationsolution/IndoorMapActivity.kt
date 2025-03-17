@@ -68,6 +68,8 @@ import com.example.navigationsolution.ui.theme.AppTheme
 import com.example.navigationsolution.viewmodels.IndoorViewModel
 import kotlin.math.max
 import kotlin.math.min
+import kotlinx.serialization.Serializable
+import com.example.navigationsolution.ui.auth.InfoScreen
 
 const val NO_PATH = -1
 
@@ -207,12 +209,15 @@ fun IndoorBox(navController: NavController, indoorViewModel: IndoorViewModel) {
             val buttonSize: Dp = 50.dp
 
             FloatingActionButton(
-                onClick = {},
+                onClick = {
+                    // 导航到信息页面
+                    navController.navigate(route = InfoScreenRoute) // 正确：使用路由对象
+                },
                 shape = CircleShape,
                 modifier = Modifier
                     .size(width = buttonSize, height = buttonSize)
             ) {
-                Icon(Icons.Outlined.Person, contentDescription = "")
+                Icon(Icons.Outlined.Person, contentDescription = "查看账户信息")
             }
 
             FloatingActionButton(

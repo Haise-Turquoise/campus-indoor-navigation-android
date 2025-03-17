@@ -19,9 +19,14 @@ import com.example.navigationsolution.IndoorMapScreen
 import com.example.navigationsolution.LoginScreenRoute
 import com.example.navigationsolution.OpeningScreen
 import com.example.navigationsolution.R
+import com.example.navigationsolution.service.SessionManager
+import android.util.Log
 
 @Composable
 fun ModeScreen(navController: NavController) {
+    // 记录日志标签
+    val TAG = "ModeScreen"
+    
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
@@ -102,6 +107,10 @@ fun ModeScreen(navController: NavController) {
                 // 访客模式按钮【Visitor Mode Button】
                 OutlinedButton(
                     onClick = { 
+                        // 设置访客模式会话数据
+                        Log.d(TAG, "设置visitor用户会话数据")
+                        SessionManager.getInstance().setUserSession("visitor", "visitor")
+                        
                         // 直接导航到地图页面【Navigate directly to map page】
                         navController.navigate(route = IndoorMapScreen)
                     },

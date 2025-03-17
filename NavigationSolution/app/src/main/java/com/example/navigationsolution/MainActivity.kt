@@ -69,10 +69,13 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.navigationsolution.R
 import com.example.navigationsolution.service.SupabaseService
+import com.example.navigationsolution.service.SessionManager
 import com.example.navigationsolution.ui.theme.AppTheme
 import kotlinx.coroutines.launch
 import com.example.navigationsolution.ui.mode.ModeScreen
 import com.example.navigationsolution.ui.auth.LoginScreen
+import com.example.navigationsolution.ui.auth.RegisterScreen
+import com.example.navigationsolution.ui.auth.InfoScreen
 
 
 @Serializable
@@ -83,6 +86,12 @@ object ModeSelectionScreen
 
 @Serializable
 object LoginScreenRoute
+
+@Serializable
+object RegisterScreenRoute
+
+@Serializable
+object InfoScreenRoute
 
 @Serializable
 object IndoorMapScreen
@@ -97,6 +106,11 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // 测试SessionManager
+        val sessionManager = SessionManager.getInstance()
+        Log.d("MainActivity", "sessionManager当前用户登录状态: ${sessionManager.isLoggedIn()}")
+        Log.d("MainActivity", "sessionManager当前用户: ${sessionManager.getCurrentUser()}")
 
         MapRepository.initialize(this.applicationContext)
 
@@ -130,6 +144,15 @@ class MainActivity : ComponentActivity() {
 
                         composable<LoginScreenRoute> {
                             LoginScreen(navController)
+                        }
+
+                        composable<RegisterScreenRoute> {
+                            RegisterScreen(navController)
+                        }
+
+                        // 添加InfoScreenRoute路由注册
+                        composable<InfoScreenRoute> {
+                            InfoScreen(navController)
                         }
 
                         composable<OpeningScreen> {

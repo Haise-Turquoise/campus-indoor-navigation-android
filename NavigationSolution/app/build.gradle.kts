@@ -7,6 +7,7 @@ plugins {
 
 val supabaseVersion = "3.1.2"
 val ktorVersion = "3.1.1" // 或更高
+val navVersion = "2.7.7" // 添加导航组件版本变量
 
 android {
     namespace = "com.example.navigationsolution"
@@ -66,6 +67,12 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    
+    // 添加导航测试依赖
+    androidTestImplementation("androidx.navigation:navigation-testing:$navVersion")
+    
+    // Mockito依赖，用于测试中的模拟
+    androidTestImplementation("org.mockito:mockito-android:5.3.1")
 
     // Material Design 组件库
     implementation("com.google.android.material:material:1.10.0")
