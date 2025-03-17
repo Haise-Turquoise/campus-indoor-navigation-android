@@ -2373,22 +2373,22 @@ object MapRepository{
         return buildings[buildingId]!!.northDeg
     }
 
+    // ? Returns marked floor plans for a given start and end room (cross-building)
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
+    fun getMarkedPlan(srcBuildingId: Int, srcId: Int, destBuildingId: Int, destId: Int): List<Bitmap> {
+        val sNode = buildings[srcBuildingId]!!.plans[getFloor(srcId.toDouble())]!!.nodes[srcId.toDouble()]!!
+        val dNode = buildings[destBuildingId]!!.plans[getFloor(destId.toDouble())]!!.nodes[destId.toDouble()]!!
+
+        if(sNode == dNode)
+            return drawPath(srcBuildingId, listOf())
+
+        return drawPath(srcBuildingId, getPath(sNode, dNode))
+    }
+
     // ? Returns marked floor plan for a given building ID and start/end room IDs
     // ? May return a list in case of routes spanning floors
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int): List<Bitmap> {
-
-//        // Code for testing floor switching
-//        return listOf(
-//            (applicationContext.resources.getDrawable(R.drawable.e7f1) as BitmapDrawable).bitmap,
-//            (applicationContext.resources.getDrawable(R.drawable.e7f1) as BitmapDrawable).bitmap,
-//            (applicationContext.resources.getDrawable(R.drawable.e7f2) as BitmapDrawable).bitmap,
-//            (applicationContext.resources.getDrawable(R.drawable.e7f3) as BitmapDrawable).bitmap,
-//            (applicationContext.resources.getDrawable(R.drawable.e7f4) as BitmapDrawable).bitmap,
-//            (applicationContext.resources.getDrawable(R.drawable.e7f5) as BitmapDrawable).bitmap,
-//            (applicationContext.resources.getDrawable(R.drawable.e7f6) as BitmapDrawable).bitmap
-//        )
-
         if(srcId == destId)
             return drawPath(buildingId, listOf())
 
@@ -2522,7 +2522,7 @@ object MapRepository{
     // ? For pathing to a specific room
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun getPath(src: MapNode, dest: MapNode): List<MapNode> {
-        return getPath(src, { n -> n.id.toInt() == dest.id.toInt() }, dest)
+        return getPath(src, { n -> n.id == dest.id }, dest)
     }
 
     // ? For pathing to a type of PoI
