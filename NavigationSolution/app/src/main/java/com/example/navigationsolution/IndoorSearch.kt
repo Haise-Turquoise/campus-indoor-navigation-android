@@ -116,7 +116,8 @@ fun IndoorSearch(
                                 )
                             )
                             indoorViewModel.updatePath(cur.toInt(), dest.toInt())
-                            indoorViewModel.setFloor(getFloor(cur.toInt()))
+                            // indoorViewModel.setFloor(getFloor(cur.toInt()))
+                            indoorViewModel.setFloor(0)
                             navController.navigate(IndoorMapScreen)
                         }
                     },

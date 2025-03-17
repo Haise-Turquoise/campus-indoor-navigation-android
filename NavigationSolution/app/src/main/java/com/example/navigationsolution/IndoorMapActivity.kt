@@ -419,11 +419,11 @@ fun IndoorMap(indoorViewModel: IndoorViewModel
         }
     }
 
-
-
-
-    val markedPlan = MapRepository.getMarkedPlan(buildingId, from, to)
-    indoorViewModel.updatePath(newMaxFloor = markedPlan.size)
+    var markedPlan = MapRepository.getMarkedPlan(buildingId, from, to)
+    if (from != to) {
+        markedPlan = MapRepository.getMarkedPlan(buildingId, from, buildingId, to)
+    }
+    indoorViewModel.updatePath(newMaxFloor = markedPlan.size - 1)
     val floor = indoorViewModel.liveFloor.observeAsState(initial = 0)
 
     Box(modifier = Modifier.fillMaxSize()) {

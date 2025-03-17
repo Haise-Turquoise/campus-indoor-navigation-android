@@ -11,8 +11,8 @@ class IndoorViewModel: ViewModel() {
     var from: Int = NO_PATH
     var to: Int = NO_PATH
     var buildingId: Int = 1
-    var floor = MutableLiveData(1)
-    var maxFloor: Int = 1
+    var floor = MutableLiveData(0)
+    var maxFloor: Int = 0
     var compassEnabled = MutableLiveData(true)
 
     var liveFloor: LiveData<Int> = floor
@@ -30,7 +30,7 @@ class IndoorViewModel: ViewModel() {
     }
 
     fun incrFloor() {
-        floor.value = min(maxFloor - 1, floor.value?.plus(1) as Int)
+        floor.value = min(maxFloor, floor.value?.plus(1) as Int)
     }
 
     fun decrFloor() {
