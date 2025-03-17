@@ -423,8 +423,8 @@ fun IndoorMap(indoorViewModel: IndoorViewModel
 
 
     val markedPlan = MapRepository.getMarkedPlan(buildingId, from, to)
-    indoorViewModel.updatePath(newMaxFloor = markedPlan.keys.max() + 1)
-    val floor = indoorViewModel.liveFloor.observeAsState(initial = 1)
+    indoorViewModel.updatePath(newMaxFloor = markedPlan.size)
+    val floor = indoorViewModel.liveFloor.observeAsState(initial = 0)
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(

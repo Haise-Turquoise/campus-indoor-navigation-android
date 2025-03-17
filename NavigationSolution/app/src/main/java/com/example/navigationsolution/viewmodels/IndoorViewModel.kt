@@ -34,7 +34,7 @@ class IndoorViewModel: ViewModel() {
     }
 
     fun decrFloor() {
-        floor.value = max(1, floor.value?.minus(1) as Int)
+        floor.value = max(0, floor.value?.minus(1) as Int)
     }
 
     fun setFloor(newFloor: Int) {

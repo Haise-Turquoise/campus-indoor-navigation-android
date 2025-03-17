@@ -74,7 +74,8 @@ object MapRepository{
     private data class FloorMap (
         val level: Int,                             // Which floor the map corresponds to
         val nodes: MutableMap<Double, MapNode>,     // Maps IDs to nodes within floor; fractional for multiple entrances
-        val plan: Int                               // Resource ID of raster floor plan
+        val plan: Int,                              // Resource ID of raster floor plan
+        val building: BuildingMap                   // BuildingMap the floor belongs to
     )
 
     // ? All relevant data about a building
@@ -243,7 +244,8 @@ object MapRepository{
         buildings[-1]!!.plans[1] = FloorMap(
             1,
             HashMap(),
-            R.drawable.uwlogo
+            R.drawable.uwlogo,
+            buildings[-1]!!
         )
 
         // E7
@@ -257,7 +259,8 @@ object MapRepository{
         buildings[1]!!.plans[1] = FloorMap(
             1,
             HashMap(),
-            R.drawable.e7f1
+            R.drawable.e7f1,
+            buildings[1]!!
         )
 
         val f1 = buildings[1]!!.plans[1]!!
@@ -265,7 +268,8 @@ object MapRepository{
         buildings[1]!!.plans[2] = FloorMap(
             2,
             HashMap(),
-            R.drawable.e7f2
+            R.drawable.e7f2,
+            buildings[1]!!
         )
 
         val f2 = buildings[1]!!.plans[2]!!
@@ -273,7 +277,8 @@ object MapRepository{
         buildings[1]!!.plans[3] = FloorMap(
             3,
             HashMap(),
-            R.drawable.e7f3
+            R.drawable.e7f3,
+            buildings[1]!!
         )
 
         val f3 = buildings[1]!!.plans[3]!!
@@ -281,7 +286,8 @@ object MapRepository{
         buildings[1]!!.plans[4] = FloorMap(
             4,
             HashMap(),
-            R.drawable.e7f4hi
+            R.drawable.e7f4hi,
+            buildings[1]!!
         )
 
         val f4 = buildings[1]!!.plans[4]!!
@@ -289,7 +295,8 @@ object MapRepository{
         buildings[1]!!.plans[5] = FloorMap(
             5,
             HashMap(),
-            R.drawable.e7f5hi
+            R.drawable.e7f5hi,
+            buildings[1]!!
         )
 
         val f5 = buildings[1]!!.plans[5]!!
@@ -297,7 +304,8 @@ object MapRepository{
         buildings[1]!!.plans[6] = FloorMap(
             6,
             HashMap(),
-            R.drawable.e7f6hi
+            R.drawable.e7f6hi,
+            buildings[1]!!
         )
 
         val f6 = buildings[1]!!.plans[6]!!
@@ -305,7 +313,8 @@ object MapRepository{
         buildings[1]!!.plans[7] = FloorMap(
             7,
             HashMap(),
-            R.drawable.e7f7hi
+            R.drawable.e7f7hi,
+            buildings[1]!!
         )
 
         val f7 = buildings[1]!!.plans[7]!!
@@ -1684,7 +1693,8 @@ object MapRepository{
         buildings[2]!!.plans[1] = FloorMap(
             1,
             HashMap(),
-            R.drawable.e6f1
+            R.drawable.e6f1,
+            buildings[2]!!
         )
 
         val e6f1 = buildings[2]!!.plans[1]!!
@@ -1692,7 +1702,8 @@ object MapRepository{
         buildings[2]!!.plans[2] = FloorMap(
             2,
             HashMap(),
-            R.drawable.e6f2
+            R.drawable.e6f2,
+            buildings[2]!!
         )
 
         val e6f2 = buildings[2]!!.plans[2]!!
@@ -1700,7 +1711,8 @@ object MapRepository{
         buildings[2]!!.plans[3] = FloorMap(
             3,
             HashMap(),
-            R.drawable.e6f3
+            R.drawable.e6f3,
+            buildings[2]!!
         )
 
         val e6f3 = buildings[2]!!.plans[3]!!
@@ -1708,7 +1720,8 @@ object MapRepository{
         buildings[2]!!.plans[4] = FloorMap(
             4,
             HashMap(),
-            R.drawable.e6f4
+            R.drawable.e6f4,
+            buildings[2]!!
         )
 
         val e6f4 = buildings[2]!!.plans[4]!!
@@ -1716,7 +1729,8 @@ object MapRepository{
         buildings[2]!!.plans[5] = FloorMap(
             5,
             HashMap(),
-            R.drawable.e6f5
+            R.drawable.e6f5,
+            buildings[2]!!
         )
 
         val e6f5 = buildings[2]!!.plans[5]!!
@@ -2362,7 +2376,7 @@ object MapRepository{
     // ? Returns marked floor plan for a given building ID and start/end room IDs
     // ? May return a list in case of routes spanning floors
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-    fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int): Map<Int, Bitmap> {
+    fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int): List<Bitmap> {
 
 //        // Code for testing floor switching
 //        return listOf(
@@ -2388,7 +2402,7 @@ object MapRepository{
     // ? Returns marked floor plan for a given building ID, start ID, and PoI type
     // ? May return a list in case of routes spanning floors
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-    fun getMarkedPlan(buildingId: Int, srcId: Int, destType: NodeType): Map<Int, Bitmap> {
+    fun getMarkedPlan(buildingId: Int, srcId: Int, destType: NodeType): List<Bitmap> {
         // Get node corresponding to src
         val sNode = buildings[buildingId]!!.plans[getFloor(srcId.toDouble())]!!.nodes[srcId.toDouble()]
 
@@ -2397,28 +2411,32 @@ object MapRepository{
 
     // ? Draws a line on floor plan(s) given the path
     @SuppressLint("UseCompatLoadingForDrawables")
-    private fun drawPath(buildingId: Int, path: List<MapNode>): Map<Int, Bitmap> {
-        // Load and copy list of floor plans
-        val copy = buildings[buildingId]!!.plans.entries
-            .associate { e ->
-                val img = (applicationContext.resources.getDrawable(
-                    e.value.plan,
-                    null
-                ) as BitmapDrawable).bitmap
-
-                e.key to img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
-            }
-
+    private fun drawPath(buildingId: Int, path: List<MapNode>): List<Bitmap> {
+        // Return all floor plans for building ID if path empty
         if(path.isEmpty())
-            return copy
+            return buildings[buildingId]!!.plans.entries
+                .sortedBy { e -> e.key }
+                .map { e -> e.value }
+                .map { f ->
+                    val img = (applicationContext.resources.getDrawable(
+                        f.plan,
+                        null
+                    ) as BitmapDrawable).bitmap
+
+                    img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
+                }
 
         val paint = Paint()
         paint.strokeWidth = WIDTH_PATH
 
         // Start location
         var cur = path[0]
+        val startMap = (applicationContext.resources.getDrawable(cur.floor!!.plan, null) as BitmapDrawable).bitmap
+        val ret: MutableList<Bitmap> = mutableListOf(
+            startMap.copy(startMap.config ?: Bitmap.Config.ARGB_8888, true)
+        )
 
-        var canvas = Canvas(copy[getFloor(cur.id.toDouble())]!!)
+        var canvas = Canvas(ret.last())
 
         // Draw start node
         paint.color = COLOR_START
@@ -2435,7 +2453,7 @@ object MapRepository{
             val next = path[i]
 
             // Draw line if both connected nodes are on same floor
-            if(getFloor(cur.id.toDouble()) == getFloor(next.id.toDouble()))
+            if(cur.floor == next.floor)
                 canvas.drawLine(
                     cur.x.toFloat(),
                     cur.y.toFloat(),
@@ -2457,8 +2475,13 @@ object MapRepository{
                     paint
                 )
 
+
                 // Switch canvas
-                canvas = Canvas(copy[getFloor(next.id.toDouble())]!!)
+                val nextMap = (applicationContext.resources.getDrawable(next.floor!!.plan, null) as BitmapDrawable).bitmap
+                ret.add(
+                    nextMap.copy(nextMap.config ?: Bitmap.Config.ARGB_8888, true)
+                )
+                canvas = Canvas(ret.last())
 
                 // Draw floor start node
                 paint.color = COLOR_START
@@ -2493,7 +2516,7 @@ object MapRepository{
 //        outStream.close()
         // TODO: end of section
 
-        return copy
+        return ret
     }
 
     // ? For pathing to a specific room
