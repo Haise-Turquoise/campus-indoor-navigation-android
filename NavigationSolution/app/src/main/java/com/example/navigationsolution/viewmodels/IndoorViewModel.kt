@@ -10,7 +10,7 @@ import kotlin.math.min
 class IndoorViewModel: ViewModel() {
     var from: Int = NO_PATH
     var to: Int = NO_PATH
-    var buildingId: Int = 1
+    var buildingId: Int = 2
     var floor = MutableLiveData(0)
     var maxFloor: Int = 0
     var compassEnabled = MutableLiveData(true)
