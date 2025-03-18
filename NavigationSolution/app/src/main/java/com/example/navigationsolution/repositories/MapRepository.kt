@@ -633,7 +633,7 @@ object MapRepository{
             f2.nodes[2456.1] = MapNode(641, 314, NodeType.ROOM, 2456, HashMap(), f2)
             f2.nodes[2454.1] = MapNode(652, 314, NodeType.ROOM, 2454, HashMap(), f2)
             addEdge(f2, 2472, 2456.1)
-            addEdge(f2, 2456, 2454.1)
+            addEdge(f2, 2456.1, 2454.1)
 
             // COLUMN 3 X ROW 3
             addEdge(f2, -2505, 2472)
@@ -769,10 +769,10 @@ object MapRepository{
             addEdge(f3, 3324, 3921)
 
             // Offshoots from Row 1
-            f3.nodes[3921.0] = MapNode(221, 104, NodeType.ROOM, 3921, HashMap(), f3)
-            addEdge(f3, -3500, 3921)
+            f3.nodes[3919.0] = MapNode(221, 104, NodeType.ROOM, 3919, HashMap(), f3)
+            addEdge(f3, -3500, 3919)
             f3.nodes[-3200.0] = MapNode(221, 104, NodeType.STAIR, -3200, HashMap(), f3)
-            addEdge(f3, 3921, -3200)
+            addEdge(f3, 3919, -3200)
 
             f3.nodes[-3000.0] = MapNode(491, 100, NodeType.PORT, -3000, HashMap(), f3)
             addEdge(f3, -3501, -3000)
