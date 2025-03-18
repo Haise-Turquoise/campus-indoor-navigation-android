@@ -51,7 +51,7 @@ object MapRepository{
     enum class NodeType { ROOM, PORT, STAIR, WC, WATER, CAFE, NONE }
 
     // ? Represents a location, both indoors and outdoors
-    private data class MapNode (
+    data class MapNode (
         val x: Int,                                 // x-coordinate of node on floor plan image
         val y: Int,                                 // y-coordinate of node on floor plan image
         val type: NodeType,                         // Type of node
@@ -71,7 +71,7 @@ object MapRepository{
     }
 
     // ? ALl relevant data about a floor
-    private data class FloorMap (
+    data class FloorMap (
         val level: Int,                             // Which floor the map corresponds to
         val nodes: MutableMap<Double, MapNode>,     // Maps IDs to nodes within floor; fractional for multiple entrances
         val plan: Int,                              // Resource ID of raster floor plan
@@ -79,15 +79,15 @@ object MapRepository{
     )
 
     // ? All relevant data about a building
-    private data class BuildingMap (
+    data class BuildingMap (
         val id: Int,                               // Building ID
         val ports: MutableMap<MapNode, MapNode>,   // Maps outdoor nodes to corresponding indoor nodes
         val plans: MutableMap<Int, FloorMap>,      // Maps floor numbers to floors
         val northDeg: Int = 0                      // Orientation of the North direction, 0 is straight up (i.e. negative-y)
     )
 
-    private val buildings: MutableMap<Int, BuildingMap> = HashMap()    // Maps building IDs to building objects
-    private val nodes: Map<Int, MapNode> = HashMap()                   // All outdoor nodes and port nodes, currently unused
+    val buildings: MutableMap<Int, BuildingMap> = HashMap()    // Maps building IDs to building objects
+    val nodes: Map<Int, MapNode> = HashMap()                   // All outdoor nodes and port nodes, currently unused
 
     // TODO: Delete this function, it's used only for concise generation of edges
     private fun addEdge(f: FloorMap, r1: Int, r2: Int) {
@@ -2338,27 +2338,6 @@ object MapRepository{
             addEdge(2, -2203, -3203)
             addEdge(2, -3203, -4203)
             addEdge(2, -4203, -5203)
-        }
-
-        val s: MutableSet<MapNode> = HashSet()
-        for (f in buildings[1]!!.plans.values)
-            for (n in f.nodes.values)
-                s.add(n)
-
-        val q: Queue<MapNode> = LinkedList()
-        q.offer(buildings[1]!!.plans[1]!!.nodes[1419.0])
-
-        while(q.isNotEmpty()) {
-            val cur = q.poll()!!
-
-            if(s.remove(cur))
-                for(n in cur.adj.keys)
-                    q.offer(n)
-        }
-
-        if(s.isNotEmpty()) {
-            val ids = s.map { n -> n.id }.sorted()
-            Log.w("MapRepository", "E7 graph is not connected; unreachable nodes:\n$ids")
         }
     }
 
