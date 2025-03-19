@@ -264,7 +264,8 @@ fun IndoorMap(indoorViewModel: IndoorViewModel
               ) {
     val from = indoorViewModel.from
     val to = indoorViewModel.to
-    val buildingId = indoorViewModel.buildingFrom
+    val buildingFrom = indoorViewModel.buildingFrom
+    val buildingTo = indoorViewModel.buildingTo
     val compassEnabled = indoorViewModel.compassEnabled.observeAsState(initial = true)
 
     // from https://developer.android.com/develop/ui/compose/touch-input/pointer-input/multi-touch
@@ -413,9 +414,9 @@ fun IndoorMap(indoorViewModel: IndoorViewModel
         }
     }
 
-    var markedPlan = MapRepository.getMarkedPlan(buildingId, from, to)
-    if (from != to) {
-        markedPlan = MapRepository.getMarkedPlan(buildingId, from, buildingId, to)
+    var markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, to)
+    if (from != to || buildingFrom != buildingTo) {
+        markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, buildingTo, to)
     }
     indoorViewModel.updatePath(newMaxFloor = markedPlan.size - 1)
     val floor = indoorViewModel.liveFloor.observeAsState(initial = 0)
