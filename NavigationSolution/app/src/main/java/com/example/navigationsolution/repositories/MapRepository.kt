@@ -81,6 +81,7 @@ object MapRepository{
     // ? All relevant data about a building
     data class BuildingMap (
         val id: Int,                               // Building ID
+        val name: String,                          // Building name
         val ports: MutableMap<MapNode, MapNode>,   // Maps outdoor nodes to corresponding indoor nodes
         val plans: MutableMap<Int, FloorMap>,      // Maps floor numbers to floors
         val northDeg: Int = 0                      // Orientation of the North direction, 0 is straight up (i.e. negative-y)
@@ -236,6 +237,7 @@ object MapRepository{
         // Fallback
         buildings[-1] = BuildingMap(
             1,
+            "ERR",
             HashMap(),
             HashMap(),
             0
@@ -251,6 +253,7 @@ object MapRepository{
         // E7
         buildings[1] = BuildingMap(
             1,
+            "E7",
             HashMap(),
             HashMap(),
             305
@@ -1684,6 +1687,7 @@ object MapRepository{
 
         buildings[2] = BuildingMap(
             2,
+            "E6",
             HashMap(),
             HashMap(),
             305 // TODO: Update this
@@ -2338,6 +2342,10 @@ object MapRepository{
             addEdge(2, -3203, -4203)
             addEdge(2, -4203, -5203)
         }
+    }
+
+    fun getBuildingName(buildingId: Int): String {
+        return buildings[buildingId]!!.name;
     }
 
     fun roomExists(buildingId: Int, roomId: Int): Boolean {
