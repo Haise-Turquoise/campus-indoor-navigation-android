@@ -115,7 +115,7 @@ fun IndoorSearch(
                                     easing = FastOutSlowInEasing
                                 )
                             )
-                            indoorViewModel.updatePath(cur.toInt(), dest.toInt())
+                            indoorViewModel.updatePath(newFrom = cur.toInt(), newTo = dest.toInt())
                             // indoorViewModel.setFloor(getFloor(cur.toInt()))
                             indoorViewModel.setFloor(0)
                             navController.navigate(IndoorMapScreen)
