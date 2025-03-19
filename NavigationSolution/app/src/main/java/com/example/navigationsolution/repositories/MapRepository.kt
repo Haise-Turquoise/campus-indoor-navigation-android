@@ -2350,6 +2350,12 @@ object MapRepository{
             addEdge(2, -3203, -4203)
             addEdge(2, -4203, -5203)
         }
+
+        // E7 X E6
+
+        run {
+            addEdge(1, -3000.0, 2, -3000.0)
+        }
     }
 
     fun getBuildingName(buildingId: Int): String {
