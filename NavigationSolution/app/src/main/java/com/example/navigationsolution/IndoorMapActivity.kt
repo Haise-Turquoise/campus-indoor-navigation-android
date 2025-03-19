@@ -12,7 +12,6 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +20,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -30,16 +28,12 @@ import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,12 +58,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import com.example.navigationsolution.ui.theme.AppTheme
 import com.example.navigationsolution.viewmodels.IndoorViewModel
-import kotlin.math.max
-import kotlin.math.min
-import kotlinx.serialization.Serializable
-import com.example.navigationsolution.ui.auth.InfoScreen
 
 const val NO_PATH = -1
 
@@ -81,7 +70,7 @@ const val NO_PATH = -1
 fun IndoorBars(navController: NavController, indoorViewModel: IndoorViewModel) {
     val from = indoorViewModel.from
     val to = indoorViewModel.to
-    val buildingId = indoorViewModel.buildingId
+    val buildingId = indoorViewModel.buildingFrom
 
     Box (
         modifier = Modifier
@@ -182,7 +171,7 @@ fun IndoorBars(navController: NavController, indoorViewModel: IndoorViewModel) {
 fun IndoorBox(navController: NavController, indoorViewModel: IndoorViewModel) {
     val from = indoorViewModel.from
     val to = indoorViewModel.to
-    val buildingId = indoorViewModel.buildingId
+    val buildingId = indoorViewModel.buildingFrom
 
     Box(Modifier
         .fillMaxSize()
@@ -275,7 +264,8 @@ fun IndoorMap(indoorViewModel: IndoorViewModel
               ) {
     val from = indoorViewModel.from
     val to = indoorViewModel.to
-    val buildingId = indoorViewModel.buildingId
+    val buildingFrom = indoorViewModel.buildingFrom
+    val buildingTo = indoorViewModel.buildingTo
     val compassEnabled = indoorViewModel.compassEnabled.observeAsState(initial = true)
 
     // from https://developer.android.com/develop/ui/compose/touch-input/pointer-input/multi-touch
@@ -424,9 +414,9 @@ fun IndoorMap(indoorViewModel: IndoorViewModel
         }
     }
 
-    var markedPlan = MapRepository.getMarkedPlan(buildingId, from, to)
-    if (from != to) {
-        markedPlan = MapRepository.getMarkedPlan(buildingId, from, buildingId, to)
+    var markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, to)
+    if (from != to || buildingFrom != buildingTo) {
+        markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, buildingTo, to)
     }
     // markedPlan = MapRepository.getMarkedPlan(1, 1331, 2, 1004)
     indoorViewModel.updatePath(newMaxFloor = markedPlan.size - 1)
