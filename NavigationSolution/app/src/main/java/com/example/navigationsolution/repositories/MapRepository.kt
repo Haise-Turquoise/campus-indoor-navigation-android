@@ -129,6 +129,14 @@ object MapRepository{
         n2.adj[n1] = 50.0;
     }
 
+    private fun addEdge(buildingId1: Int, r1: Double, buildingId2: Int, r2: Double) {
+        val n1 = buildings[buildingId1]!!.plans[getFloor(r1)]!!.nodes[r1]!!
+        val n2 = buildings[buildingId2]!!.plans[getFloor(r2)]!!.nodes[r2]!!
+
+        n1.adj[n2] = 50.0;
+        n2.adj[n1] = 50.0;
+    }
+
     // TODO: Delete this function, it's used only for verification of graph models
     private fun drawSearchPath(map: Map<MapNode, MapNode>) {
         for(f in buildings[1]!!.plans.values) {
