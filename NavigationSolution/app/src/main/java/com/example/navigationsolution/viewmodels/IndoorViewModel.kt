@@ -44,4 +44,23 @@ class IndoorViewModel: ViewModel() {
     fun toggleCompass() {
         compassEnabled.value = !compassEnabled.value!!
     }
+
+    /*fun updateBuilding(newBuildingCode: String) {
+        from = NO_PATH
+        to = NO_PATH
+        buildingId = getBuildingResourceId(newBuildingCode)
+        setFloor(0)
+    }
+
+    private fun getBuildingResourceId(buildingCode: String): Int {
+        return when (buildingCode) {
+            "MC" -> R.drawable.mc_map // we can add actual buildings when we get
+            "DC" -> R.drawable.dc_map
+            "SLC" -> R.drawable.slc_map
+            "E5" -> R.drawable.e5_map
+            "E7" -> R.drawable.e7f1.png
+            "QNC" -> R.drawable.qnc_map
+            else -> R.drawable.default_map
+        }
+    }*/
 }
