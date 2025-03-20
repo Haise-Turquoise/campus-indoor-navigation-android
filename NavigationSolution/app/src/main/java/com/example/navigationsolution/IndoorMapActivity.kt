@@ -418,7 +418,7 @@ fun IndoorMap(indoorViewModel: IndoorViewModel
     if (from != to || buildingFrom != buildingTo) {
         markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, buildingTo, to)
     }
-    // markedPlan = MapRepository.getMarkedPlan(1, 1331, 2, 1004)
+    markedPlan = MapRepository.getMarkedPlan(1, 1331, 2, 1004)
     indoorViewModel.updatePath(newMaxFloor = markedPlan.size - 1)
     val floor = indoorViewModel.liveFloor.observeAsState(initial = 0)
 
