@@ -3,6 +3,7 @@ package com.example.navigationsolution
 import MapRepository
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -87,8 +88,8 @@ fun IndoorBars(navController: NavController, indoorViewModel: IndoorViewModel) {
         val sideEdgePadding = 10.dp
 
         var showBuildingDropdown by remember { mutableStateOf(false) }
-        val buildings = listOf("MC", "DC", "SLC", "E5", "E7", "QNC")
-        var selectedBuilding by remember { mutableStateOf("MC") }
+        val buildings = listOf("E7", "E6")
+        var selectedBuilding by remember { mutableStateOf("E7") }
 
         Box(
             modifier = Modifier
@@ -149,6 +150,16 @@ fun IndoorBars(navController: NavController, indoorViewModel: IndoorViewModel) {
                             onClick = {
                                 selectedBuilding = building
                                 showBuildingDropdown = false
+
+                                val uniqueBuildingID: Int =
+                                    indoorViewModel.getBuildingID(selectedBuilding)
+
+                                indoorViewModel.updatePath(
+                                    newFrom = NO_PATH,
+                                    newTo = NO_PATH,
+                                    newBuildingFrom = uniqueBuildingID,
+                                    newBuildingTo = uniqueBuildingID)
+                                indoorViewModel.setFloor(0)
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -481,11 +492,13 @@ fun IndoorMap(indoorViewModel: IndoorViewModel
         }
     }
 
-    var markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, to)
+    val markedPlan: List<Bitmap>
     if (from != to || buildingFrom != buildingTo) {
         markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, buildingTo, to)
+    } else {
+        markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, to)
     }
-    markedPlan = MapRepository.getMarkedPlan(1, 1331, 2, 1004)
+//    markedPlan = MapRepository.getMarkedPlan(1, 1331, 2, 1004)
     indoorViewModel.updatePath(newMaxFloor = markedPlan.size - 1)
     val floor = indoorViewModel.liveFloor.observeAsState(initial = 0)
 

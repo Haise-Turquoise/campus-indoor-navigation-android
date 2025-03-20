@@ -48,6 +48,16 @@ class IndoorViewModel: ViewModel() {
         compassEnabled.value = !compassEnabled.value!!
     }
 
+    fun getBuildingID(name: String): Int {
+        if (name == "E7") {
+            return 1
+        } else if (name == "E6") {
+            return 2
+        } else {
+            return 1
+        }
+    }
+
     /*fun updateBuilding(newBuildingCode: String) {
         from = NO_PATH
         to = NO_PATH

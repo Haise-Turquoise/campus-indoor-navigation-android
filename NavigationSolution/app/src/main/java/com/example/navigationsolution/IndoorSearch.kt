@@ -31,9 +31,9 @@ fun IndoorSearch(
     var dest by remember { mutableStateOf("") }
 
     // Building selection state
-    val buildings = listOf("MC", "DC", "SLC", "E5", "E7", "QNC")
-    var currentBuilding by remember { mutableStateOf("MC") }
-    var targetBuilding by remember { mutableStateOf("MC") }
+    val buildings = listOf("E7", "E6")
+    var currentBuilding by remember { mutableStateOf("E7") }
+    var targetBuilding by remember { mutableStateOf("E7") }
 
     // Animation state
     val scope = rememberCoroutineScope()
@@ -55,7 +55,7 @@ fun IndoorSearch(
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = { navController.navigate("IndoorMapScreen") }
+                onClick = { navController.navigate(IndoorMapScreen) }
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.ArrowBack,
@@ -252,12 +252,17 @@ fun IndoorSearch(
                             )
 
                             // Safely convert room numbers with null handling
-                            val curRoom = cur.toIntOrNull() ?: 0
-                            val destRoom = dest.toIntOrNull() ?: 0
+                            val curRoom = cur.toIntOrNull() ?: NO_PATH
+                            val destRoom = dest.toIntOrNull() ?: NO_PATH
 
-                            indoorViewModel.updatePath(curRoom, destRoom)
+                            indoorViewModel.updatePath(
+                                newFrom = curRoom,
+                                newTo = destRoom,
+                                newBuildingFrom = indoorViewModel.getBuildingID(currentBuilding),
+                                newBuildingTo = indoorViewModel.getBuildingID(targetBuilding)
+                            )
                             indoorViewModel.setFloor(0)
-                            navController.navigate("IndoorMapScreen")
+                            navController.navigate(IndoorMapScreen)
                         }
                     },
                     modifier = Modifier
