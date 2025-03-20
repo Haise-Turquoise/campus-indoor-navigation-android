@@ -70,10 +70,6 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlinx.serialization.Serializable
 import com.example.navigationsolution.ui.auth.InfoScreen
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.foundation.layout.width
 
 const val NO_PATH = -1
 
@@ -97,84 +93,22 @@ fun IndoorBars(navController: NavController, indoorViewModel: IndoorViewModel) {
         val topEdgePadding = 50.dp
         val sideEdgePadding = 10.dp
 
-        var showBuildingDropdown by remember { mutableStateOf(false) }
-        val buildings = listOf("MC", "DC", "SLC", "E5", "E7", "QNC")
-        var selectedBuilding by remember { mutableStateOf("MC") }
-
-        Box(
+        Row (
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = topEdgePadding, horizontal = sideEdgePadding)
                 .background(MaterialTheme.colorScheme.primaryContainer)
-                .align(Alignment.TopCenter)
+                .align(Alignment.TopCenter),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    "Show me ${selectedBuilding}...",
-                    modifier = Modifier.padding(horizontal = sideEdgePadding),
-                    style = MaterialTheme.typography.titleLarge
-                )
 
-                IconButton(onClick = { showBuildingDropdown = true }) {
-                    Icon(Icons.Filled.Menu, contentDescription = "Building Menu")
-                }
+            Text("Show me...",
+                modifier = Modifier.padding(horizontal = sideEdgePadding),
+                style = MaterialTheme.typography.titleLarge)
 
-                DropdownMenu(
-                    expanded = showBuildingDropdown,
-                    onDismissRequest = { showBuildingDropdown = false },
-                    modifier = Modifier
-                        .width(250.dp)
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(vertical = 8.dp)
-                ) {
-                    Text(
-                        "Select Building",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 12.dp),
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            color = MaterialTheme.colorScheme.primary
-                        ),
-                        textAlign = TextAlign.Center
-                    )
-
-                    Divider(
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        thickness = 1.dp,
-                        color = MaterialTheme.colorScheme.outlineVariant
-                    )
-
-                    buildings.forEach { building ->
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    building,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    modifier = Modifier.padding(vertical = 4.dp)
-                                )
-                            },
-                            onClick = {
-                                selectedBuilding = building
-                                showBuildingDropdown = false
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 8.dp, vertical = 2.dp)
-                        )
-
-                        if (building != buildings.last()) {
-                            Divider(
-                                modifier = Modifier.padding(horizontal = 16.dp),
-                                thickness = 0.5.dp,
-                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
-                            )
-                        }
-                    }
-                }
+            IconButton(onClick = {}) {
+                Icon(Icons.Filled.Menu , contentDescription = "")
             }
         }
 
