@@ -76,14 +76,16 @@ fun LoginScreen(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // 顶部标题区域【Top Title Area】
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
+//                    .align(Alignment.TopCenter)
                     .padding(top = 48.dp)
             ) {
                 // 应用Logo【App Logo】
@@ -97,7 +99,7 @@ fun LoginScreen(
                         .clip(shape = RoundedCornerShape(8.dp))
                 )
                 
-                Spacer(modifier = Modifier.height(16.dp))
+//                Spacer(modifier = Modifier.height(16.dp))
                 
                 // 应用标题【App Title】
                 Text(
@@ -107,7 +109,7 @@ fun LoginScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
                 
-                Spacer(modifier = Modifier.height(8.dp))
+//                Spacer(modifier = Modifier.height(8.dp))
                 
                 // 副标题【Subtitle】
                 Text(
@@ -122,9 +124,9 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .offset(y = (-100).dp) // 将原来的-40dp改为-100dp，使表单在上下元素之间更好地居中【Changed from -40dp to -100dp to better center the form between elements】
+//                    .offset(y = (-100).dp) // 将原来的-40dp改为-100dp，使表单在上下元素之间更好地居中【Changed from -40dp to -100dp to better center the form between elements】
             ) {
                 // 用户名输入框【Username Input Field】
                 OutlinedTextField(
@@ -143,7 +145,7 @@ fun LoginScreen(
                         .padding(vertical = 8.dp)
                 )
                 
-                Spacer(modifier = Modifier.height(16.dp))
+//                Spacer(modifier = Modifier.height(16.dp))
                 
                 // 密码输入框【Password Input Field】
                 OutlinedTextField(
@@ -169,7 +171,7 @@ fun LoginScreen(
                     loginResult is LoginResult.PasswordError || 
                     loginResult is LoginResult.GenericError) {
                     
-                    Spacer(modifier = Modifier.height(8.dp))
+//                    Spacer(modifier = Modifier.height(8.dp))
                     
                     Text(
                         text = when (loginResult) {
@@ -188,11 +190,12 @@ fun LoginScreen(
             // 按钮区域 - 与ModeScreen保持一致的比例位置【Button Area - Maintains the same proportional position as ModeScreen】
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(bottom = 40.dp)
                     .wrapContentHeight(Alignment.Bottom)
-                    .offset(y = (-252).dp) // 将原来的-180dp改为-252dp，向上移动约一个按钮高度【Changed from -180dp to -252dp, moved up by about one button height】
+//                    .offset(y = (-252).dp) // 将原来的-180dp改为-252dp，向上移动约一个按钮高度【Changed from -180dp to -252dp, moved up by about one button height】
             ) {
                 // 登录按钮【Login Button】
                 Button(

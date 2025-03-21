@@ -85,14 +85,16 @@ fun RegisterScreen(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize()
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // 顶部标题区域【Top Title Area】
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
+//                    .align(Alignment.TopCenter)
                     .padding(top = 35.dp)  // 调整顶部内边距，将标题放在页面顶部与第一个输入框顶部之间的一半位置【Adjust top padding to place title halfway between page top and first input field】
             ) {
                 // 删除应用Logo【App Logo removed】
@@ -105,7 +107,7 @@ fun RegisterScreen(
                     color = MaterialTheme.colorScheme.primary
                 )
                 
-                Spacer(modifier = Modifier.height(8.dp))
+//                Spacer(modifier = Modifier.height(8.dp))
                 
                 // 副标题【Subtitle】
                 Text(
@@ -120,9 +122,9 @@ fun RegisterScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(horizontal = 16.dp)
-                    .offset(y = (-140).dp) // 进一步上移输入区域位置，确保与按钮之间有足够空间【Move input area further up to ensure enough space between it and buttons】
+//                    .offset(y = (-140).dp) // 进一步上移输入区域位置，确保与按钮之间有足够空间【Move input area further up to ensure enough space between it and buttons】
             ) {
                 // 用户名输入框【Username Input Field】
                 OutlinedTextField(
@@ -204,7 +206,7 @@ fun RegisterScreen(
                     registerResult is RegisterResult.FieldsError ||
                     registerResult is RegisterResult.GenericError) {
                     
-                    Spacer(modifier = Modifier.height(8.dp))
+//                    Spacer(modifier = Modifier.height(8.dp))
                     
                     Text(
                         text = when (registerResult) {
@@ -222,17 +224,17 @@ fun RegisterScreen(
                 }
                 
                 // 添加底部空间确保表单不会被按钮覆盖【Add bottom space to ensure form is not covered by buttons】
-                Spacer(modifier = Modifier.height(50.dp)) // 增加底部间距【Increase bottom spacing】
+//                Spacer(modifier = Modifier.height(50.dp)) // 增加底部间距【Increase bottom spacing】
             }
             
             // 按钮区域 - 与LoginScreen保持一致的比例位置【Button Area - Maintains the same proportional position as LoginScreen】
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
                     .padding(bottom = 40.dp)
                     .wrapContentHeight(Alignment.Bottom)
-                    .offset(y = (-252).dp) // 向上移动约一个按钮高度【Moved up by about one button height】
+//                    .offset(y = (-252).dp) // 向上移动约一个按钮高度【Moved up by about one button height】
             ) {
                 // 注册按钮【Sign Up Button】
                 Button(
