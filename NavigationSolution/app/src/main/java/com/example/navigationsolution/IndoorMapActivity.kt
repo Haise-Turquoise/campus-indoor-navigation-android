@@ -1,6 +1,7 @@
 package com.example.navigationsolution
 
 import MapRepository
+import MapRepository.getBuildingName
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
@@ -223,11 +224,12 @@ fun IndoorBars(navController: NavController, indoorViewModel: IndoorViewModel) {
                     Button(onClick = {
                         indoorViewModel.decrFloor()
                     }) {
-                        Text(text = "Prev.\n Floor", textAlign = TextAlign.Center)
+                        Text(text = "Prev.\n Plan", textAlign = TextAlign.Center)
                     }
 
                     if (from == NO_PATH && to == NO_PATH) {
-                        Text(text = "Building Name", style = MaterialTheme.typography.titleLarge)
+                        Text(text = getBuildingName(indoorViewModel.buildingFrom),
+                            style = MaterialTheme.typography.titleLarge)
                     } else {
                         Text(text = "$from to $to", style = MaterialTheme.typography.titleLarge)
                     }
@@ -235,7 +237,7 @@ fun IndoorBars(navController: NavController, indoorViewModel: IndoorViewModel) {
                     Button(onClick = {
                         indoorViewModel.incrFloor()
                     }) {
-                        Text(text = "Next\n Floor", textAlign = TextAlign.Center)
+                        Text(text = "Next\n Plan", textAlign = TextAlign.Center)
                     }
                 }
             }
