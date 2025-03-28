@@ -1,5 +1,9 @@
 package com.example.navigationsolution
 
+import MapRepository.roomExists
+import android.os.Build
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,12 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.navigationsolution.viewmodels.IndoorViewModel
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 fun IndoorSearch(
     navController: NavController,
@@ -240,6 +246,7 @@ fun IndoorSearch(
                 }
 
                 // Search Button
+                val context = LocalContext.current
                 Button(
                     onClick = {
                         scope.launch {
@@ -255,14 +262,35 @@ fun IndoorSearch(
                             val curRoom = cur.toIntOrNull() ?: NO_PATH
                             val destRoom = dest.toIntOrNull() ?: NO_PATH
 
-                            indoorViewModel.updatePath(
-                                newFrom = curRoom,
-                                newTo = destRoom,
-                                newBuildingFrom = indoorViewModel.getBuildingID(currentBuilding),
-                                newBuildingTo = indoorViewModel.getBuildingID(targetBuilding)
-                            )
-                            indoorViewModel.setFloor(0)
-                            navController.navigate(IndoorMapScreen)
+
+
+                            // Check if room is invalid before attempting search
+                            if (!roomExists(indoorViewModel.getBuildingID(currentBuilding), curRoom) ||
+                                !roomExists(indoorViewModel.getBuildingID(targetBuilding), destRoom)
+                            ) {
+                                val text = "Invalid Room"
+                                val duration = Toast.LENGTH_SHORT
+
+                                val toast = Toast.makeText(context, text, duration)
+                                toast.show()
+
+                                searchOffset.animateTo(
+                                    targetValue = 0f,
+                                    animationSpec = tween(
+                                        durationMillis = 500,
+                                        easing = FastOutSlowInEasing
+                                    )
+                                )
+                            } else {
+                                indoorViewModel.updatePath(
+                                    newFrom = curRoom,
+                                    newTo = destRoom,
+                                    newBuildingFrom = indoorViewModel.getBuildingID(currentBuilding),
+                                    newBuildingTo = indoorViewModel.getBuildingID(targetBuilding)
+                                )
+                                indoorViewModel.setFloor(0)
+                                navController.navigate(IndoorMapScreen)
+                            }
                         }
                     },
                     modifier = Modifier
