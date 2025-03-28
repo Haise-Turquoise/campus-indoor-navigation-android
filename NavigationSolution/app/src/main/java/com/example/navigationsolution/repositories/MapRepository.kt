@@ -29,8 +29,8 @@ object MapRepository{
     private const val COLOR_STAIRS_UP = Color.MAGENTA
     private const val COLOR_STAIRS_DOWN = Color.MAGENTA
 
-    private const val RADIUS_NODE = 3f
-    private const val WIDTH_PATH = 2f
+    private const val RADIUS_NODE_FACTOR = 3f / 500;
+    private const val WIDTH_PATH_FACTOR = 2f / 500;
 
     private lateinit var applicationContext: Context
 
@@ -151,7 +151,7 @@ object MapRepository{
             val canvas = Canvas(copy)
             val paint = Paint()
 
-            paint.strokeWidth = WIDTH_PATH
+            paint.strokeWidth = WIDTH_PATH_FACTOR * Math.min(img.width, img.height)
             paint.color = COLOR_LINE
 
             for (e in map)
@@ -167,14 +167,14 @@ object MapRepository{
                     canvas.drawCircle(
                         e.key.x.toFloat(),
                         e.key.y.toFloat(),
-                        RADIUS_NODE,
+                        RADIUS_NODE_FACTOR * Math.min(img.width, img.height),
                         paint
                     )
                 else if(getFloor(e.value.id) == f.level)
                     canvas.drawCircle(
                         e.value.x.toFloat(),
                         e.value.y.toFloat(),
-                        RADIUS_NODE,
+                        RADIUS_NODE_FACTOR * Math.min(img.width, img.height),
                         paint
                     )
 
@@ -198,7 +198,7 @@ object MapRepository{
             val canvas = Canvas(copy)
             val paint = Paint()
 
-            paint.strokeWidth = WIDTH_PATH
+            paint.strokeWidth = WIDTH_PATH_FACTOR * Math.min(img.width, img.height)
             paint.color = COLOR_LINE
 
             for (n in f.nodes.values)
@@ -225,7 +225,7 @@ object MapRepository{
                 canvas.drawCircle(
                     n.x.toFloat(),
                     n.y.toFloat(),
-                    RADIUS_NODE,
+                    RADIUS_NODE_FACTOR * Math.min(img.width, img.height),
                     paint
                 )
             }
@@ -2427,7 +2427,6 @@ object MapRepository{
                 }
 
         val paint = Paint()
-        paint.strokeWidth = WIDTH_PATH
 
         // Start location
         var cur = path[0]
@@ -2436,6 +2435,8 @@ object MapRepository{
             startMap.copy(startMap.config ?: Bitmap.Config.ARGB_8888, true)
         )
 
+        paint.strokeWidth = WIDTH_PATH_FACTOR * Math.min(startMap.width, startMap.height)
+
         var canvas = Canvas(ret.last())
 
         // Draw start node
@@ -2443,7 +2444,7 @@ object MapRepository{
         canvas.drawCircle(
             cur.x.toFloat(),
             cur.y.toFloat(),
-            RADIUS_NODE,
+            RADIUS_NODE_FACTOR * Math.min(startMap.width, startMap.height),
             paint
         )
         paint.color = COLOR_LINE
@@ -2471,7 +2472,7 @@ object MapRepository{
                 canvas.drawCircle(
                     cur.x.toFloat(),
                     cur.y.toFloat(),
-                    RADIUS_NODE,
+                    RADIUS_NODE_FACTOR * Math.min(ret.last().width, ret.last().height),
                     paint
                 )
 
@@ -2483,12 +2484,14 @@ object MapRepository{
                 )
                 canvas = Canvas(ret.last())
 
+                paint.strokeWidth = WIDTH_PATH_FACTOR * Math.min(nextMap.width, nextMap.height)
+
                 // Draw floor start node
                 paint.color = COLOR_START
                 canvas.drawCircle(
                     next.x.toFloat(),
                     next.y.toFloat(),
-                    RADIUS_NODE,
+                    RADIUS_NODE_FACTOR * Math.min(ret.last().width, ret.last().height),
                     paint
                 )
 
@@ -2504,7 +2507,7 @@ object MapRepository{
         canvas.drawCircle(
             cur.x.toFloat(),
             cur.y.toFloat(),
-            RADIUS_NODE,
+            RADIUS_NODE_FACTOR * Math.min(ret.last().width, ret.last().height),
             paint
         )
 
