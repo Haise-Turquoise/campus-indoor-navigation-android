@@ -13,6 +13,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.LinkedList
 import java.util.Objects
+import java.util.PriorityQueue
 import java.util.Queue
 import java.util.TreeSet
 import kotlin.math.abs
@@ -140,47 +141,43 @@ object MapRepository{
 
     // TODO: Delete this function, it's used only for verification of graph models
     private fun drawSearchPath(map: Map<MapNode, MapNode>) {
-        for(f in buildings[1]!!.plans.values) {
-            // Load floor plan copy
-            val img = (applicationContext.resources.getDrawable(
-                f.plan,
-                null
-            ) as BitmapDrawable).bitmap
-            val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
+        val plans: MutableMap<String, Bitmap> = HashMap()
+
+        for(e in map) {
+            val id = "${e.key.floor!!.building.name}-F${e.key.floor!!.level}"
+
+            if(!plans.containsKey(id)) {
+                val img = (applicationContext.resources.getDrawable(
+                    e.key.floor!!.plan,
+                    null
+                ) as BitmapDrawable).bitmap
+
+                plans[id] = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
+            }
+
+            val f = e.key.floor!!
+            val copy = plans[id]!!
 
             val canvas = Canvas(copy)
             val paint = Paint()
 
-            paint.strokeWidth = WIDTH_PATH_FACTOR * Math.min(img.width, img.height)
+            paint.strokeWidth = WIDTH_PATH_FACTOR * Math.min(copy.width, copy.height)
             paint.color = COLOR_LINE
 
-            for (e in map)
-                if(getFloor(e.key.id) == getFloor(e.value.id) && getFloor(e.key.id) == f.level)
-                    canvas.drawLine(
-                        e.key.x.toFloat(),
-                        e.key.y.toFloat(),
-                        e.value.x.toFloat(),
-                        e.value.y.toFloat(),
-                        paint
-                    )
-                else if(getFloor(e.key.id) == f.level)
-                    canvas.drawCircle(
-                        e.key.x.toFloat(),
-                        e.key.y.toFloat(),
-                        RADIUS_NODE_FACTOR * Math.min(img.width, img.height),
-                        paint
-                    )
-                else if(getFloor(e.value.id) == f.level)
-                    canvas.drawCircle(
-                        e.value.x.toFloat(),
-                        e.value.y.toFloat(),
-                        RADIUS_NODE_FACTOR * Math.min(img.width, img.height),
-                        paint
-                    )
+            if(getFloor(e.key.id) == getFloor(e.value.id) && getFloor(e.key.id) == f.level)
+                canvas.drawLine(
+                    e.key.x.toFloat(),
+                    e.key.y.toFloat(),
+                    e.value.x.toFloat(),
+                    e.value.y.toFloat(),
+                    paint
+                )
+        }
 
-            val file = File(applicationContext.cacheDir, "temp_path_${f.level}.png")
+        for(e in plans) {
+            val file = File(applicationContext.cacheDir, "temp_path_${e.key}.png")
             val outStream = FileOutputStream(file)
-            copy.compress(Bitmap.CompressFormat.PNG, 100, outStream)
+            e.value.compress(Bitmap.CompressFormat.PNG, 100, outStream)
             outStream.flush()
             outStream.close()
         }
@@ -2556,7 +2553,7 @@ object MapRepository{
 
         val parent: MutableMap<MapNode, MapNode> = HashMap()    // Track parents to generate path
         val srcDist: MutableMap<MapNode, Double> = HashMap()    // Track shortest known distance to src
-        val queue: TreeSet<MapNode> = TreeSet(                  // Expand search based on distance
+        val queue: PriorityQueue<MapNode> = PriorityQueue(      // Expand search based on distance
             compareBy { n -> srcDist.getOrDefault(n, .0) }
         )
 
@@ -2565,8 +2562,9 @@ object MapRepository{
         srcDist[src] = .0
 
         while(queue.isNotEmpty()) {
-            val cur = queue.removeFirst()!!
+            val cur = queue.poll()!!
             val curDist = srcDist[cur]!!
+
             if(getFloor(cur.id) == 2)
                 Log.i("MapRepository", "ID ${cur.id} with dist $curDist polled")
 
@@ -2580,12 +2578,8 @@ object MapRepository{
                 val newDist = curDist + cur.adj[n]!!
 
                 // Skip if not a relaxation
-                if(srcDist.getOrDefault(n, Double.MAX_VALUE) <= newDist)
+                if(srcDist[n] != null && srcDist[n]!! <= newDist)
                     continue
-
-//                // Remove if already exists
-//                if(queue.contains(n))
-//                    queue.remove(n)
 
                 srcDist[n] = newDist
                 parent[n] = cur
