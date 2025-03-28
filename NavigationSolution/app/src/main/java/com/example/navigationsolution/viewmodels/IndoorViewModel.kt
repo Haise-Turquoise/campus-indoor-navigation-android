@@ -1,5 +1,8 @@
 package com.example.navigationsolution.viewmodels
 
+import android.graphics.Bitmap
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,11 +18,13 @@ class IndoorViewModel: ViewModel() {
     var floor = MutableLiveData(0)
     var maxFloor: Int = 0
     var compassEnabled = MutableLiveData(true)
+    var markedPlan: List<Bitmap> = listOf()
 
     var liveFloor: LiveData<Int> = floor
     var liveCompassEnabled: LiveData<Boolean> = compassEnabled
 
 
+    @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun updatePath(newFrom: Int = from,
                    newTo: Int = to,
                    newBuildingFrom: Int = buildingFrom,
@@ -30,6 +35,14 @@ class IndoorViewModel: ViewModel() {
         buildingFrom = newBuildingFrom
         buildingTo = newBuildingTo
         maxFloor = newMaxFloor
+
+        if (from != to || buildingFrom != buildingTo) {
+            markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, buildingTo, to)
+        } else {
+            markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, to)
+        }
+
+        maxFloor = markedPlan.size - 1
     }
 
     fun incrFloor() {

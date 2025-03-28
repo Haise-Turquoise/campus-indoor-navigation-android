@@ -131,6 +131,7 @@ class MainActivity : ComponentActivity() {
             val textScale = settingsModel.textScale.observeAsState(initial = 1f)
 
             val indoorModel: IndoorViewModel by viewModels()
+            indoorModel.updatePath()
             AppTheme(darkTheme = altColours.value, textScale = textScale.value) {
                 Surface() {
                     val navController = rememberNavController()

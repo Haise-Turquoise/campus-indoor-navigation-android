@@ -494,14 +494,10 @@ fun IndoorMap(indoorViewModel: IndoorViewModel
         }
     }
 
-    val markedPlan: List<Bitmap>
-    if (from != to || buildingFrom != buildingTo) {
-        markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, buildingTo, to)
-    } else {
-        markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, to)
-    }
+//    indoorViewModel.updatePath()
+    val markedPlan = indoorViewModel.markedPlan
 //    markedPlan = MapRepository.getMarkedPlan(1, 1331, 2, 1004)
-    indoorViewModel.updatePath(newMaxFloor = markedPlan.size - 1)
+
     val floor = indoorViewModel.liveFloor.observeAsState(initial = 0)
 
     Box(modifier = Modifier.fillMaxSize()) {
