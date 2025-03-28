@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -64,6 +65,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import com.example.navigationsolution.viewmodels.IndoorViewModel
 
 const val NO_PATH = -1
@@ -511,11 +513,12 @@ fun IndoorMap(indoorViewModel: IndoorViewModel
                     scaleX = scale,
                     scaleY = scale,
                     rotationZ = mapRotation,
-                    translationX = offset.x,
-                    translationY = offset.y
+//                    translationX = offset.x,
+//                    translationY = offset.y
                 )
                 .transformable(state = state)
                 .fillMaxSize()
+                .absoluteOffset { IntOffset(offset.x.toInt(), offset.y.toInt()) }
         )
     }
 
