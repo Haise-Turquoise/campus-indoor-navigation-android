@@ -24,6 +24,20 @@ class IndoorViewModel: ViewModel() {
     var liveFloor: LiveData<Int> = floor
     var liveCompassEnabled: LiveData<Boolean> = compassEnabled
 
+    private val _altColours = MutableLiveData(false)
+    val altColours: LiveData<Boolean> = _altColours
+
+    fun swapColours() {
+        _altColours.value = !_altColours.value!!
+    }
+
+    private val _textScale = MutableLiveData(1f)
+    val textScale: LiveData<Float> = _textScale
+
+    fun updateTextScale(scale: Float) {
+        _textScale.value = scale
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     fun updatePath(newFrom: Int = from,
@@ -37,10 +51,12 @@ class IndoorViewModel: ViewModel() {
         buildingTo = newBuildingTo
         maxFloor = newMaxFloor
 
+        val inv: Boolean = altColours.value == true
+
         if (from != to || buildingFrom != buildingTo) {
-            markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, buildingTo, to)
+            markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, buildingTo, to, inv)
         } else {
-            markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, to)
+            markedPlan = MapRepository.getMarkedPlan(buildingFrom, from, to, inv)
         }
 
         maxFloor = markedPlan.size - 1

@@ -39,7 +39,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.navigationsolution.ui.theme.AppTheme
 import com.example.navigationsolution.viewmodels.IndoorViewModel
-import com.example.navigationsolution.viewmodels.SettingsViewModel
 import kotlinx.serialization.Serializable
 
 
@@ -135,12 +134,12 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            val settingsModel: SettingsViewModel by viewModels()
-            val altColours = settingsModel.altColours.observeAsState(initial = false)
-            val textScale = settingsModel.textScale.observeAsState(initial = 1f)
+//            val settingsModel: SettingsViewModel by viewModels()
 
             val indoorModel: IndoorViewModel by viewModels()
             indoorModel.updatePath()
+            val altColours = indoorModel.altColours.observeAsState(initial = false)
+            val textScale = indoorModel.textScale.observeAsState(initial = 1f)
 
             val infoModel: InfoViewModel by viewModels()
             infoModel.setApplicationContext(context)
@@ -234,7 +233,7 @@ class MainActivity : ComponentActivity() {
                             val dir: SettingsScreen = backStackEntry.toRoute()
                             Settings(
                                 navController,
-                                settingsModel
+                                indoorModel
                             )
                         }
                     }

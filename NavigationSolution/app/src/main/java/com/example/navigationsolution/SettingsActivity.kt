@@ -28,11 +28,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.navigationsolution.viewmodels.IndoorViewModel
-import com.example.navigationsolution.viewmodels.SettingsViewModel
 
 @Composable
 fun Settings(navController: NavController,
-             settingsViewModel: SettingsViewModel) {
+             indoorViewModel: IndoorViewModel) {
     Column(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -83,12 +82,12 @@ fun Settings(navController: NavController,
             )
 
             // based on https://developer.android.com/develop/ui/compose/components/switch
-            val altColours = settingsViewModel.altColours.observeAsState(initial = false)
+            val altColours = indoorViewModel.altColours.observeAsState(initial = false)
 
             Switch(
                 checked = altColours.value,
                 onCheckedChange = {
-                    settingsViewModel.swapColours()
+                    indoorViewModel.swapColours()
                 },
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.primary,
@@ -113,13 +112,13 @@ fun Settings(navController: NavController,
             )
 
             // from https://developer.android.com/develop/ui/compose/components/slider
-            val textScale = settingsViewModel.textScale.observeAsState(initial = 1f)
+            val textScale = indoorViewModel.textScale.observeAsState(initial = 1f)
 
             Slider(
                 value = textScale.value,
                 valueRange = 0.01f..2f,
                 onValueChange = {
-                    settingsViewModel.updateTextScale(it)
+                    indoorViewModel.updateTextScale(it)
                 }
             )
         }
