@@ -1,5 +1,6 @@
 package com.example.navigationsolution.viewmodels
 
+import MapRepository.roomExists
 import android.graphics.Bitmap
 import android.os.Build
 import androidx.annotation.RequiresApi

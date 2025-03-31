@@ -44,6 +44,9 @@ import androidx.navigation.NavController
 import com.example.navigationsolution.IndoorMapScreen
 import com.example.navigationsolution.R
 import androidx.compose.foundation.layout.size
+import androidx.compose.ui.platform.LocalContext
+import java.io.File
+import java.io.FileWriter
 
 // 错误信息使用的橙色【Error message orange color】
 val ErrorOrange = Color(0xFFF57C00)
@@ -51,7 +54,7 @@ val ErrorOrange = Color(0xFFF57C00)
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginViewModel = viewModel()
+    viewModel: LoginViewModel
 ) {
     // 状态变量【State variables】
     var username by remember { mutableStateOf("") }

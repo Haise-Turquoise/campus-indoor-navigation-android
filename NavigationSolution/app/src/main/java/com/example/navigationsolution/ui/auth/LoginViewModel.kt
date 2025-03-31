@@ -1,5 +1,6 @@
 package com.example.navigationsolution.ui.auth
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,8 +12,8 @@ import com.example.navigationsolution.service.SupabaseService
 import com.example.navigationsolution.service.SessionManager
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.from
-
-
+import java.io.File
+import java.io.FileWriter
 
 
 // 验证结果的密封类【Sealed class for validation results】
@@ -35,6 +36,11 @@ class LoginViewModel : ViewModel() {
     // 验证结果状态【Validation result state】
     private val _loginResult = MutableStateFlow<LoginResult>(LoginResult.Initial)
     val loginResult: StateFlow<LoginResult> = _loginResult.asStateFlow()
+
+    private lateinit var applicationContext: Context
+    fun setApplicationContext(applicationContext: Context) {
+        this.applicationContext = applicationContext
+    }
     
     // 验证用户凭据【Validate user credentials】
     fun login(username: String, password: String) {
@@ -112,6 +118,13 @@ class LoginViewModel : ViewModel() {
                             sessionManager.setUserSession(username, email)
                             
                             _loginResult.value = LoginResult.Success
+
+                            // Store credentials locally for automatic login
+                            val file = File(applicationContext.filesDir, "credentials")
+                            file.createNewFile()
+                            val fileWriter = FileWriter(file)
+                            fileWriter.write("$username\n$password\n")
+                            fileWriter.close()
                         } else {
                             Log.e(TAG, "无法获取用户数据，返回结果为空")
                             _loginResult.value = LoginResult.GenericError("登录成功但无法获取用户数据")
