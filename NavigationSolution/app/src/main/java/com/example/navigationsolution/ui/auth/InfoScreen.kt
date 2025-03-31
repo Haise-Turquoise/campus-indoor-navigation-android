@@ -47,7 +47,7 @@ import com.example.navigationsolution.ui.auth.ErrorOrange
 @Composable
 fun InfoScreen(
     navController: NavController,
-    viewModel: InfoViewModel = viewModel()
+    viewModel: InfoViewModel
 ) {
     // 收集状态【Collect states】
     val username by viewModel.username.collectAsState()

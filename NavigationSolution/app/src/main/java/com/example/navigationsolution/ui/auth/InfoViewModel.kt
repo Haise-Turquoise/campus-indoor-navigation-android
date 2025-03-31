@@ -1,5 +1,6 @@
 package com.example.navigationsolution.ui.auth
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,8 @@ import com.example.navigationsolution.service.SupabaseService
 import kotlinx.coroutines.launch
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.from
+import java.io.File
+import java.io.FileWriter
 
 // 删除账户结果的密封类【Sealed class for delete account results】
 sealed class DeleteAccountResult {
@@ -52,6 +55,11 @@ class InfoViewModel : ViewModel() {
     // 删除结果状态【Deletion result state】
     private val _deleteResult = MutableStateFlow<DeleteAccountResult>(DeleteAccountResult.Initial)
     val deleteResult: StateFlow<DeleteAccountResult> = _deleteResult.asStateFlow()
+
+    private lateinit var applicationContext: Context
+    fun setApplicationContext(applicationContext: Context) {
+        this.applicationContext = applicationContext
+    }
     
     init {
         Log.d(TAG, "InfoViewModel初始化: 用户名=${_username.value}, 邮箱=${_email.value}, 访客模式=${_isVisitorMode.value}【InfoViewModel initialization: username=${_username.value}, email=${_email.value}, visitor mode=${_isVisitorMode.value}】")
@@ -158,6 +166,15 @@ class InfoViewModel : ViewModel() {
     
     // 登出 - 调用SessionManager.logout()【Logout - Call SessionManager.logout()】
     fun logout() {
+        // Remove locally stored credentials for automatic login
+        val file = File(applicationContext.filesDir, "credentials")
+        file.createNewFile()
+        val fileWriter = FileWriter(file)
+        fileWriter.write("\n")
+        fileWriter.close()
+
+
+
         Log.d(TAG, "User logged out")
         sessionManager.logout()
     }

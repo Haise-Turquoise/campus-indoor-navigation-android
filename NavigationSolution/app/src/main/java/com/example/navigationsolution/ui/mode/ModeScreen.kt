@@ -21,11 +21,33 @@ import com.example.navigationsolution.OpeningScreen
 import com.example.navigationsolution.R
 import com.example.navigationsolution.service.SessionManager
 import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.example.navigationsolution.ui.auth.LoginResult
+import com.example.navigationsolution.ui.auth.LoginViewModel
 
 @Composable
-fun ModeScreen(navController: NavController) {
+fun ModeScreen(navController: NavController,
+               viewModel: LoginViewModel) {
     // 记录日志标签
     val TAG = "ModeScreen"
+
+    // 收集登录结果状态【Collect login result state】
+    val loginResult by viewModel.loginResult.collectAsState()
+
+    // 处理登录成功【Handle successful automatic login】
+    LaunchedEffect(loginResult) {
+        if (loginResult is LoginResult.Success) {
+            viewModel.resetLoginState()
+            navController.navigate(route = IndoorMapScreen) {
+                // 清除返回栈上的登录页面【Clear login page from back stack】
+                popUpTo(navController.graph.startDestinationId) {
+                    inclusive = true
+                }
+            }
+        }
+    }
     
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -85,6 +107,7 @@ fun ModeScreen(navController: NavController) {
                 Button(
                     onClick = { 
                         // 导航到登录页面【Navigate to login page】
+                        viewModel.resetLoginState()
                         navController.navigate(route = LoginScreenRoute)
                     },
                     modifier = Modifier

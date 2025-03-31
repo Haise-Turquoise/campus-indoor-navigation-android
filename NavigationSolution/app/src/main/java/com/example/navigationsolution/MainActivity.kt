@@ -55,6 +55,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -76,6 +78,13 @@ import com.example.navigationsolution.ui.mode.ModeScreen
 import com.example.navigationsolution.ui.auth.LoginScreen
 import com.example.navigationsolution.ui.auth.RegisterScreen
 import com.example.navigationsolution.ui.auth.InfoScreen
+import com.example.navigationsolution.ui.auth.InfoViewModel
+import com.example.navigationsolution.ui.auth.LoginResult
+import com.example.navigationsolution.ui.auth.LoginViewModel
+import kotlinx.coroutines.runBlocking
+import java.io.File
+import java.io.FileReader
+import java.io.FileWriter
 
 
 @Serializable
@@ -112,7 +121,8 @@ class MainActivity : ComponentActivity() {
         Log.d("MainActivity", "sessionManager当前用户登录状态: ${sessionManager.isLoggedIn()}")
         Log.d("MainActivity", "sessionManager当前用户: ${sessionManager.getCurrentUser()}")
 
-        MapRepository.initialize(this.applicationContext)
+        val context = this.applicationContext
+        MapRepository.initialize(context)
 
         // 连通性测试：调用 SupabaseService.fetchAllUsers() 并在 Logcat 输出结果【Connectivity test: Call SupabaseService.fetchAllUsers() and output results in Logcat】
         lifecycleScope.launch {
@@ -124,7 +134,6 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-
         setContent {
             val settingsModel: SettingsViewModel by viewModels()
             val altColours = settingsModel.altColours.observeAsState(initial = false)
@@ -132,6 +141,51 @@ class MainActivity : ComponentActivity() {
 
             val indoorModel: IndoorViewModel by viewModels()
             indoorModel.updatePath()
+
+            val infoModel: InfoViewModel by viewModels()
+            infoModel.setApplicationContext(context)
+
+            val loginModel: LoginViewModel by viewModels()
+            loginModel.setApplicationContext(context)
+
+            // attempt to fetch locally stored login info and login automatically
+            val file = File(applicationContext.filesDir, "credentials")
+            file.createNewFile()
+            val fileReader = FileReader(file)
+            val userBuilder = StringBuilder("")
+            while(true) {
+                val read = fileReader.read()
+                if (read == -1 || read == '\n'.code) {
+                    break
+                } else {
+                    userBuilder.append(read.toChar())
+                }
+            }
+            val username = userBuilder.toString()
+
+            val passBuilder = StringBuilder("")
+            while(true) {
+                val read = fileReader.read()
+                if (read == -1 || read == '\n'.code) {
+                    break
+                } else {
+                    passBuilder.append(read.toChar())
+                }
+            }
+            val password = passBuilder.toString()
+            fileReader.close()
+
+            runBlocking {
+                loginModel.login(username, password)
+            }
+
+//            val loginResult by loginModel.loginResult.collectAsState()
+//            var start: Any = ModeSelectionScreen
+
+//            if (loginResult is LoginResult.Success) {
+//                start = IndoorMapScreen
+//            }
+
             AppTheme(darkTheme = altColours.value, textScale = textScale.value) {
                 Surface() {
                     val navController = rememberNavController()
@@ -140,11 +194,11 @@ class MainActivity : ComponentActivity() {
                         startDestination = ModeSelectionScreen
                     ){
                         composable<ModeSelectionScreen> {
-                            ModeScreen(navController)
+                            ModeScreen(navController, loginModel)
                         }
 
                         composable<LoginScreenRoute> {
-                            LoginScreen(navController)
+                            LoginScreen(navController, loginModel)
                         }
 
                         composable<RegisterScreenRoute> {
@@ -153,7 +207,7 @@ class MainActivity : ComponentActivity() {
 
                         // 添加InfoScreenRoute路由注册
                         composable<InfoScreenRoute> {
-                            InfoScreen(navController)
+                            InfoScreen(navController, infoModel)
                         }
 
                         composable<OpeningScreen> {
