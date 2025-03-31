@@ -3,6 +3,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.Paint
 import android.graphics.drawable.BitmapDrawable
 import android.os.Build
@@ -11,11 +13,8 @@ import androidx.annotation.RequiresApi
 import com.example.navigationsolution.R
 import java.io.File
 import java.io.FileOutputStream
-import java.util.LinkedList
 import java.util.Objects
 import java.util.PriorityQueue
-import java.util.Queue
-import java.util.TreeSet
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -30,8 +29,17 @@ object MapRepository{
     private const val COLOR_STAIRS_UP = Color.MAGENTA
     private const val COLOR_STAIRS_DOWN = Color.MAGENTA
 
-    private const val RADIUS_NODE_FACTOR = 3f / 500;
-    private const val WIDTH_PATH_FACTOR = 2f / 500;
+    private val INVERT_MATRIX = ColorMatrix(
+        floatArrayOf(
+            -1f, 0f, 0f, 0f, 255f,
+            0f, -1f, 0f, 0f, 255f,
+            0f, 0f, -1f, 0f, 255f,
+            0f, 0f, 0f, 1f, 0f
+        )
+    )
+
+    private const val RADIUS_NODE_FACTOR = 3f / 500
+    private const val WIDTH_PATH_FACTOR = 2f / 500
 
     private lateinit var applicationContext: Context
 
@@ -89,7 +97,6 @@ object MapRepository{
     )
 
     val buildings: MutableMap<Int, BuildingMap> = HashMap()    // Maps building IDs to building objects
-    val nodes: Map<Int, MapNode> = HashMap()                   // All outdoor nodes and port nodes, currently unused
 
     val buildingNameToId: MutableMap<String, Int> = HashMap()  // Exactly what it sounds like
 
@@ -112,8 +119,8 @@ object MapRepository{
 
         val dist = sqrt((n1.x - n2.x).toDouble().pow(2.0) + (n1.y - n2.y).toDouble().pow(2.0))
 
-        n1.adj[n2] = dist;
-        n2.adj[n1] = dist;
+        n1.adj[n2] = dist
+        n2.adj[n1] = dist
     }
 
     private fun addEdge(buildingId: Int, r1: Int, r2: Int) {
@@ -129,16 +136,16 @@ object MapRepository{
             return
         }
 
-        n1.adj[n2] = 50.0;
-        n2.adj[n1] = 50.0;
+        n1.adj[n2] = 50.0
+        n2.adj[n1] = 50.0
     }
 
     private fun addEdge(buildingId1: Int, r1: Double, buildingId2: Int, r2: Double) {
         val n1 = buildings[buildingId1]!!.plans[getFloor(r1)]!!.nodes[r1]!!
         val n2 = buildings[buildingId2]!!.plans[getFloor(r2)]!!.nodes[r2]!!
 
-        n1.adj[n2] = 50.0;
-        n2.adj[n1] = 50.0;
+        n1.adj[n2] = 50.0
+        n2.adj[n1] = 50.0
     }
 
     // TODO: Delete this function, it's used only for verification of graph models
@@ -1705,7 +1712,7 @@ object MapRepository{
         buildingNameToId["E6"] = 2
 
         buildings[2]!!.plans[1] = FloorMap(
-            1,buildings[2]!!.
+            1,
             HashMap(),
             R.drawable.e6f1,
             buildings[2]!!
@@ -2362,14 +2369,14 @@ object MapRepository{
     }
 
     fun getBuildingName(buildingId: Int): String {
-        return buildings[buildingId]!!.name;
+        return buildings[buildingId]!!.name
     }
 
     fun roomExists(buildingId: Int, roomId: Int): Boolean {
         if(buildings[buildingId] == null)
-            throw Exception("Building ID does not exist");
+            throw Exception("Building ID does not exist")
         return buildings[buildingId]!!.plans[getFloor(roomId.toDouble())] != null &&
-                buildings[buildingId]!!.plans[getFloor(roomId.toDouble())]!!.nodes[roomId.toDouble()] != null;
+                buildings[buildingId]!!.plans[getFloor(roomId.toDouble())]!!.nodes[roomId.toDouble()] != null
     }
 
     fun getNorthHeading(buildingId: Int): Int {
@@ -2378,43 +2385,46 @@ object MapRepository{
 
     // ? Returns marked floor plans for a given start and end room (cross-building)
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-    fun getMarkedPlan(srcBuildingId: Int, srcId: Int, destBuildingId: Int, destId: Int): List<Bitmap> {
+    fun getMarkedPlan(srcBuildingId: Int, srcId: Int, destBuildingId: Int, destId: Int, invert: Boolean = false): List<Bitmap> {
         val sNode = buildings[srcBuildingId]!!.plans[getFloor(srcId.toDouble())]!!.nodes[srcId.toDouble()]!!
         val dNode = buildings[destBuildingId]!!.plans[getFloor(destId.toDouble())]!!.nodes[destId.toDouble()]!!
 
         if(sNode == dNode)
-            return drawPath(srcBuildingId, listOf())
+            return drawPath(srcBuildingId, listOf(), invert)
 
-        return drawPath(srcBuildingId, getPath(sNode, dNode))
+        return drawPath(srcBuildingId, getPath(sNode, dNode), invert)
     }
 
     // ? Returns marked floor plan for a given building ID and start/end room IDs
     // ? May return a list in case of routes spanning floors
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-    fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int): List<Bitmap> {
+    fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int, invert: Boolean = false): List<Bitmap> {
         if(srcId == destId)
-            return drawPath(buildingId, listOf())
+            return drawPath(buildingId, listOf(), invert)
 
         // Get nodes corresponding to src and dest targets
         val sNode = buildings[buildingId]!!.plans[getFloor(srcId.toDouble())]!!.nodes[srcId.toDouble()]!!
         val dNode = buildings[buildingId]!!.plans[getFloor(destId.toDouble())]!!.nodes[destId.toDouble()]!!
 
-        return drawPath(buildingId, getPath(sNode, dNode))
+        return drawPath(buildingId, getPath(sNode, dNode), invert)
     }
 
     // ? Returns marked floor plan for a given building ID, start ID, and PoI type
     // ? May return a list in case of routes spanning floors
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-    fun getMarkedPlan(buildingId: Int, srcId: Int, destType: NodeType): List<Bitmap> {
+    fun getMarkedPlan(buildingId: Int, srcId: Int, destType: NodeType, invert: Boolean = false): List<Bitmap> {
         // Get node corresponding to src
         val sNode = buildings[buildingId]!!.plans[getFloor(srcId.toDouble())]!!.nodes[srcId.toDouble()]
 
-        return drawPath(buildingId, getPath(sNode!!, destType))
+        return drawPath(buildingId, getPath(sNode!!, destType), invert)
     }
 
     // ? Draws a line on floor plan(s) given the path
     @SuppressLint("UseCompatLoadingForDrawables")
-    private fun drawPath(buildingId: Int, path: List<MapNode>): List<Bitmap> {
+    private fun drawPath(buildingId: Int, path: List<MapNode>, invert: Boolean): List<Bitmap> {
+        val paintInvert = Paint()
+        paintInvert.colorFilter = ColorMatrixColorFilter(INVERT_MATRIX)
+
         // Return all floor plans for building ID if path empty
         if(path.isEmpty())
             return buildings[buildingId]!!.plans.entries
@@ -2426,7 +2436,14 @@ object MapRepository{
                         null
                     ) as BitmapDrawable).bitmap
 
-                    img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
+                    val copy = img.copy(img.config ?: Bitmap.Config.ARGB_8888, true)
+
+                    if(invert) {
+                        val invertCanvas = Canvas(copy)
+                        invertCanvas.drawBitmap(img, 0f, 0f, paintInvert)
+                    }
+
+                    copy
                 }
 
         val paint = Paint()
@@ -2441,6 +2458,7 @@ object MapRepository{
         paint.strokeWidth = WIDTH_PATH_FACTOR * Math.min(startMap.width, startMap.height)
 
         var canvas = Canvas(ret.last())
+        if(invert) canvas.drawBitmap(ret.last(), 0f, 0f, paintInvert)
 
         // Draw start node
         paint.color = COLOR_START
@@ -2479,13 +2497,13 @@ object MapRepository{
                     paint
                 )
 
-
                 // Switch canvas
                 val nextMap = (applicationContext.resources.getDrawable(next.floor!!.plan, null) as BitmapDrawable).bitmap
                 ret.add(
                     nextMap.copy(nextMap.config ?: Bitmap.Config.ARGB_8888, true)
                 )
                 canvas = Canvas(ret.last())
+                if(invert) canvas.drawBitmap(ret.last(), 0f, 0f, paintInvert)
 
                 paint.strokeWidth = WIDTH_PATH_FACTOR * Math.min(nextMap.width, nextMap.height)
 
@@ -2528,7 +2546,7 @@ object MapRepository{
     // ? For pathing to a specific room
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
     private fun getPath(src: MapNode, dest: MapNode): List<MapNode> {
-        return getPath(src, { n -> n.id == dest.id }, dest)
+        return getPath(src, { n -> n.id == dest.id })
     }
 
     // ? For pathing to a type of PoI
@@ -2554,7 +2572,7 @@ object MapRepository{
 
     // ? Actual pathing implementation
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-    private fun getPath(src: MapNode, isTarget: (MapNode) -> Boolean, dest: MapNode? = null): List<MapNode> {
+    private fun getPath(src: MapNode, isTarget: (MapNode) -> Boolean): List<MapNode> {
         Log.i("MapRepository", "Pathing started")
 
         val parent: MutableMap<MapNode, MapNode> = HashMap()    // Track parents to generate path
@@ -2603,11 +2621,11 @@ object MapRepository{
     // ? Returns the floor number given a room ID
     private fun getFloor(roomId: Double): Int {
         // ! REPLACE THIS IF NOT ALL BUILDINGS FOLLOW THIS PATTERN
-        return abs(roomId.toInt()) / 1000;
+        return abs(roomId.toInt()) / 1000
     }
 
     private fun getFloor(roomId: Int): Int {
         // ! REPLACE THIS IF NOT ALL BUILDINGS FOLLOW THIS PATTERN
-        return abs(roomId) / 1000;
+        return abs(roomId) / 1000
     }
 }
