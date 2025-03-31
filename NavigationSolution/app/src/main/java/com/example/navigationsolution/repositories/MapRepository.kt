@@ -91,6 +91,8 @@ object MapRepository{
     val buildings: MutableMap<Int, BuildingMap> = HashMap()    // Maps building IDs to building objects
     val nodes: Map<Int, MapNode> = HashMap()                   // All outdoor nodes and port nodes, currently unused
 
+    val buildingNameToId: MutableMap<String, Int> = HashMap()  // Exactly what it sounds like
+
     // TODO: Delete this function, it's used only for concise generation of edges
     private fun addEdge(f: FloorMap, r1: Int, r2: Int) {
         addEdge(f, r1.toDouble(), r2.toDouble())
@@ -263,6 +265,8 @@ object MapRepository{
             HashMap(),
             305
         )
+
+        buildingNameToId["E7"] = 1
 
         buildings[1]!!.plans[1] = FloorMap(
             1,
@@ -1698,8 +1702,10 @@ object MapRepository{
             305 // TODO: Update this
         )
 
+        buildingNameToId["E6"] = 2
+
         buildings[2]!!.plans[1] = FloorMap(
-            1,
+            1,buildings[2]!!.
             HashMap(),
             R.drawable.e6f1,
             buildings[2]!!
