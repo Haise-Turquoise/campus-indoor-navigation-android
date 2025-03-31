@@ -2385,7 +2385,7 @@ object MapRepository{
 
     // ? Returns marked floor plans for a given start and end room (cross-building)
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-    fun getMarkedPlan(srcBuildingId: Int, srcId: Int, destBuildingId: Int, destId: Int, invert: Boolean = true): List<Bitmap> {
+    fun getMarkedPlan(srcBuildingId: Int, srcId: Int, destBuildingId: Int, destId: Int, invert: Boolean = false): List<Bitmap> {
         val sNode = buildings[srcBuildingId]!!.plans[getFloor(srcId.toDouble())]!!.nodes[srcId.toDouble()]!!
         val dNode = buildings[destBuildingId]!!.plans[getFloor(destId.toDouble())]!!.nodes[destId.toDouble()]!!
 
@@ -2398,7 +2398,7 @@ object MapRepository{
     // ? Returns marked floor plan for a given building ID and start/end room IDs
     // ? May return a list in case of routes spanning floors
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-    fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int, invert: Boolean = true): List<Bitmap> {
+    fun getMarkedPlan(buildingId: Int, srcId: Int, destId: Int, invert: Boolean = false): List<Bitmap> {
         if(srcId == destId)
             return drawPath(buildingId, listOf(), invert)
 
@@ -2412,7 +2412,7 @@ object MapRepository{
     // ? Returns marked floor plan for a given building ID, start ID, and PoI type
     // ? May return a list in case of routes spanning floors
     @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-    fun getMarkedPlan(buildingId: Int, srcId: Int, destType: NodeType, invert: Boolean = true): List<Bitmap> {
+    fun getMarkedPlan(buildingId: Int, srcId: Int, destType: NodeType, invert: Boolean = false): List<Bitmap> {
         // Get node corresponding to src
         val sNode = buildings[buildingId]!!.plans[getFloor(srcId.toDouble())]!!.nodes[srcId.toDouble()]
 
