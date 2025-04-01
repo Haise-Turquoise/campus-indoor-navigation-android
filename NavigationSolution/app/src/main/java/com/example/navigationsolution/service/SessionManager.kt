@@ -15,7 +15,8 @@ import kotlinx.coroutines.flow.asStateFlow
 data class UserSession(
     val username: String,
     val email: String,
-    val userId: String? = null
+    val userId: String? = null,
+    val building_search_history: List<String> = emptyList() // 添加搜索历史字段【Add search history field】
 )
 
 /**
@@ -42,6 +43,7 @@ class SessionManager private constructor() {
     private val KEY_EMAIL = "email"
     private val KEY_USER_ID = "user_id"
     private val KEY_IS_LOGGED_IN = "is_logged_in"
+    private val KEY_BUILDING_HISTORY = "building_history"
     
     /**
      * 初始化 SessionManager，从SharedPreferences加载会话数据【Initialize SessionManager, load session data from SharedPreferences】
@@ -60,10 +62,10 @@ class SessionManager private constructor() {
     /**
      * 设置当前用户会话【Set current user session】
      */
-    fun setUserSession(username: String, email: String, userId: String? = null) {
+    fun setUserSession(username: String, email: String, userId: String? = null, buildingSearchHistory: List<String> = emptyList()) {
         Log.d(TAG, "设置用户会话【Setting user session】: username=$username, email=$email")
         
-        val userSession = UserSession(username, email, userId)
+        val userSession = UserSession(username, email, userId, buildingSearchHistory)
         _currentUser.value = userSession
         _isLoggedIn.value = true
         
@@ -94,8 +96,15 @@ class SessionManager private constructor() {
      */
     fun logout() {
         Log.d(TAG, "用户退出登录【User logout】")
+        
+        // 记录旧用户信息用于日志【Record old user info for logging】
+        val oldUsername = _currentUser.value?.username
+        
+        // 完全重置用户会话【Completely reset user session】
         _currentUser.value = null
         _isLoggedIn.value = false
+        
+        Log.d(TAG, "用户 $oldUsername 会话数据已清除【User $oldUsername session data cleared】")
         
         // 清除SharedPreferences中的会话数据【Clear session data in SharedPreferences】
         prefs.edit().apply {
@@ -111,10 +120,24 @@ class SessionManager private constructor() {
         val username = prefs.getString(KEY_USERNAME, null)
         val email = prefs.getString(KEY_EMAIL, null)
         val userId = prefs.getString(KEY_USER_ID, null)
+        val historyJson = prefs.getString(KEY_BUILDING_HISTORY, "[]")
+        val buildingHistory = try {
+            // 简单解析JSON数组【Simple JSON array parsing】
+            historyJson?.trim()
+                ?.removePrefix("[")
+                ?.removeSuffix("]")
+                ?.takeIf { it.isNotEmpty() }
+                ?.split(",")
+                ?.map { it.trim().removeSurrounding("\"") }
+                ?: emptyList()
+        } catch (e: Exception) {
+            Log.e(TAG, "解析搜索历史出错【Error parsing search history】", e)
+            emptyList()
+        }
         
         if (username != null && email != null) {
             Log.d(TAG, "从持久化存储加载会话【Loading session from persistent storage】: username=$username, email=$email")
-            _currentUser.value = UserSession(username, email, userId)
+            _currentUser.value = UserSession(username, email, userId, buildingHistory)
             _isLoggedIn.value = true
         } else {
             Log.d(TAG, "无法从持久化存储加载有效会话【Unable to load valid session from persistent storage】")
@@ -127,8 +150,17 @@ class SessionManager private constructor() {
      */
     private fun saveUserSession(userSession: UserSession) {
         Log.d(TAG, "保存会话到持久化存储【Saving session to persistent storage】")
+        
+        // 创建一个默认的空JSON数组字符串【Create a default empty JSON array string】
+        val historyJson = if (userSession.building_search_history.isNotEmpty()) {
+            userSession.building_search_history.joinToString(",", "[", "]") { "\"$it\"" }
+        } else {
+            "[]"  // 默认空数组【Default empty array】
+        }
+        
         prefs.edit().apply {
             putString(KEY_USERNAME, userSession.username)
+            putString(KEY_BUILDING_HISTORY, historyJson)
             putString(KEY_EMAIL, userSession.email)
             userSession.userId?.let { putString(KEY_USER_ID, it) }
             putBoolean(KEY_IS_LOGGED_IN, true)

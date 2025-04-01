@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import com.example.navigationsolution.service.SessionManager
 import com.example.navigationsolution.service.SupabaseService
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.from
@@ -31,17 +32,16 @@ class InfoViewModel : ViewModel() {
     
     // 从SessionManager获取用户信息【Get user information from SessionManager】
     private val sessionManager = SessionManager.getInstance()
-    private val currentUser = sessionManager.getCurrentUser()
     
     // 账户信息 - 从SessionManager获取【Account information - Retrieved from SessionManager】
-    private val _username = MutableStateFlow(currentUser?.username ?: "unknown")
+    private val _username = MutableStateFlow("unknown")
     val username: StateFlow<String> = _username.asStateFlow()
     
-    private val _email = MutableStateFlow(currentUser?.email ?: "unknown")
+    private val _email = MutableStateFlow("unknown")
     val email: StateFlow<String> = _email.asStateFlow()
     
     // 判断是否为访客模式【Determine if in visitor mode】
-    private val _isVisitorMode = MutableStateFlow(_username.value == "visitor" && _email.value == "visitor")
+    private val _isVisitorMode = MutableStateFlow(false)
     val isVisitorMode: StateFlow<Boolean> = _isVisitorMode.asStateFlow()
     
     // 删除状态【Deletion state】
@@ -62,6 +62,30 @@ class InfoViewModel : ViewModel() {
     }
     
     init {
+        // 观察会话状态变化【Observe session state changes】
+        viewModelScope.launch {
+            sessionManager.currentUser.collectLatest { user ->
+                Log.d(TAG, "SessionManager.currentUser 更新: ${user?.username ?: "null"}【SessionManager.currentUser updated: ${user?.username ?: "null"}】")
+                if (user != null) {
+                    _username.value = user.username
+                    _email.value = user.email
+                    _isVisitorMode.value = user.username == "visitor" && user.email == "visitor"
+                } else {
+                    _username.value = "unknown"
+                    _email.value = "unknown"
+                    _isVisitorMode.value = false
+                }
+            }
+        }
+        
+        // 立即获取当前用户信息（为了快速初始化）【Get current user info immediately (for quick initialization)】
+        val currentUser = sessionManager.getCurrentUser()
+        if (currentUser != null) {
+            _username.value = currentUser.username
+            _email.value = currentUser.email
+            _isVisitorMode.value = currentUser.username == "visitor" && currentUser.email == "visitor"
+        }
+        
         Log.d(TAG, "InfoViewModel初始化: 用户名=${_username.value}, 邮箱=${_email.value}, 访客模式=${_isVisitorMode.value}【InfoViewModel initialization: username=${_username.value}, email=${_email.value}, visitor mode=${_isVisitorMode.value}】")
     }
     

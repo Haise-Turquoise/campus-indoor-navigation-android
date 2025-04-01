@@ -30,7 +30,7 @@ class LoginViewModel : ViewModel() {
     
     private val TAG = "LoginViewModel" // 日志标签【Log tag】
 
-    // 获取SessionManager实例
+    // 获取SessionManager实例【Get SessionManager instance】
     private val sessionManager = SessionManager.getInstance()
     
     // 验证结果状态【Validation result state】
@@ -102,19 +102,19 @@ class LoginViewModel : ViewModel() {
                     Log.d(TAG, "Password incorrect for user: $username - Empty credentials data")
                     _loginResult.value = LoginResult.PasswordError()
                 } else {
-                    // 列表非空，表示找到了匹配的用户名和密码
-                    Log.d(TAG, "登录成功，用户: $username")
+                    // 列表非空，表示找到了匹配的用户名和密码【Non-empty list means username and password match】
+                    Log.d(TAG, "登录成功，用户: $username【Login successful, user: $username】")
                     
-                    // 获取用户数据
+                    // 获取用户数据【Get user data】
                     try {
-                        // 从查询结果中获取第一个用户数据
+                        // 从查询结果中获取第一个用户数据【Get the first user data from query results】
                         val userData = usersWithCredentials.decodeList<com.example.navigationsolution.data.UserData>().firstOrNull()
                         
                         if (userData != null) {
                             val email = userData.email
                             
-                            // 更新session manager，只记录username和email
-                            Log.d(TAG, "设置用户会话数据: $username, $email")
+                            // 更新session manager，只记录username和email【Update session manager, only store username and email】
+                            Log.d(TAG, "设置用户会话数据: $username, $email【Setting user session data: $username, $email】")
                             sessionManager.setUserSession(username, email)
                             
                             _loginResult.value = LoginResult.Success
@@ -126,12 +126,12 @@ class LoginViewModel : ViewModel() {
                             fileWriter.write("$username\n$password\n")
                             fileWriter.close()
                         } else {
-                            Log.e(TAG, "无法获取用户数据，返回结果为空")
-                            _loginResult.value = LoginResult.GenericError("登录成功但无法获取用户数据")
+                            Log.e(TAG, "无法获取用户数据，返回结果为空【Cannot get user data, returned result is empty】")
+                            _loginResult.value = LoginResult.GenericError("登录成功但无法获取用户数据【Login successful but cannot get user data】")
                         }
                     } catch (e: Exception) {
-                        Log.e(TAG, "解析用户数据失败: ${e.message}", e)
-                        _loginResult.value = LoginResult.GenericError("登录成功但无法解析用户数据")
+                        Log.e(TAG, "解析用户数据失败: ${e.message}【Failed to parse user data: ${e.message}】")
+                        _loginResult.value = LoginResult.GenericError("登录成功但无法解析用户数据【Login successful but cannot parse user data】")
                     }
                 }
             } catch (e: Exception) {

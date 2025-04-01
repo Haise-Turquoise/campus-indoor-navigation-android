@@ -8,5 +8,6 @@ data class UserData(
     val username: String,
     val pwd: String,
     val permission: Int,
-    val email: String
+    val email: String,
+    val building_search_history: List<String> = emptyList() // 添加搜索历史字段【Add search history field】
 )
